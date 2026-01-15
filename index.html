@@ -29,6 +29,8 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 .dot:nth-child(2){animation-delay:0.2s;}
 .dot:nth-child(3){animation-delay:0.4s;}
 @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.avatar-float {animation:floatY 2s ease-in-out infinite alternate;}
+@keyframes floatY {0%{transform:translateY(0px);}100%{transform:translateY(2px);}}
 </style>
 </head>
 <body>
@@ -83,9 +85,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
     <div id="composer" class="hidden flex gap-3 items-start">
       <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1 p-3 rounded-lg border resize-none h-16 text-sm bg-gray-800 text-lightgray"></textarea>
-      <div class="flex flex-col gap-2">
-        <button id="send-btn" class="px-4 py-2 rounded btn-accent text-sm">Send</button>
-      </div>
+      <button id="send-btn" class="px-4 py-2 rounded btn-accent text-sm">Send</button>
     </div>
   </div>
 
@@ -96,6 +96,10 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     <h2 class="text-sm font-semibold text-lightgray">Member sidebar (verified)</h2>
     <span class="text-xs text-muted">Realistic view</span>
   </div>
+
+  <!-- Online avatars list -->
+  <div id="sidebar-online-list" class="flex flex-wrap gap-2 mb-3"></div>
+
   <dl class="grid grid-cols-2 gap-2 text-sm text-muted">
     <div>
       <dt class="text-xs text-lightgray">Admin</dt>
@@ -116,10 +120,9 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
       <dd id="total-members" class="font-medium">~200</dd>
     </div>
   </dl>
+
   <hr class="my-3 border-subtle" />
-  <div class="text-sm">
-    <button class="w-full text-left text-xs p-2 rounded border border-subtle hover:bg-gray-700">View verified member roles</button>
-  </div>
+  <button class="w-full text-left text-xs p-2 rounded border border-subtle hover:bg-gray-700">View verified member roles</button>
 </aside>
 
 </main>
@@ -138,16 +141,14 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 </div>
 
 <script>
-// ---------------- DATA ----------------
-const GROUP_TITLE="Private Digital Asset Discussion (Iran)";
-const APPROX_TOTAL_MEMBERS=200;
+// ---------- DATA ----------
+const memberSidebar={admins:2,moderators:4,online:6,totalApprox:200};
 const pinned=[
   "Group rules: privacy, Iran-only",
   "Verification required before posting",
   "Purpose: value protection, not investment",
   "Do NOT share this link outside"
 ];
-const memberSidebar={admins:2,moderators:4,online:6,totalApprox:APPROX_TOTAL_MEMBERS};
 const seededMessages=[
   {time:"09:05 AM", member:"Admin", text:"Welcome to the group. Please review pinned rules.", role:"admin"},
   {time:"09:10 AM", member:"Moderator", text:"If you have questions, DM admin privately.", role:"mod"},
@@ -160,144 +161,129 @@ const seededMessages=[
 ];
 let messages=[...seededMessages];
 
-// ---------------- AVATARS ----------------
-function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function getRandomAvatar(role='member'){
-  const chance=Math.random();
-  if(chance<0.5){ const gender=Math.random()<0.5?'men':'women'; const id=Math.floor(Math.random()*99)+1; return `https://randomuser.me/api/portraits/${gender}/${id}.jpg`; }
-  else if(chance<0.7){ return randomItem(['https://i.pravatar.cc/150?img=68','https://placekitten.com/50/50','https://place-puppy.com/50x50','https://avatars.dicebear.com/api/bottts/random.svg','https://placeimg.com/50/50/any','https://placebear.com/50/50']); }
-  else{return '';}
+const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
+const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
+const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
+
+// ---------- AVATAR UTILS ----------
+function getRandomAvatar(){
+  const r=Math.random();
+  if(r<0.6) return `https://randomuser.me/api/portraits/${Math.random()<0.5?'women':'men'}/${Math.floor(Math.random()*99)}.jpg`;
+  if(r<0.8) return `https://placekitten.com/50/50`;
+  return ""; // blank for realism
 }
-seededMessages.forEach(m=>m.avatar=getRandomAvatar(m.role));
 
-// ---------------- RENDER & EVENTS ----------------
-const pinnedList=document.getElementById('pinned-list');
-const messagesList=document.getElementById('messages-list');
-const copyPinnedBtn=document.getElementById('copy-pinned');
-const toggleNotesBtn=document.getElementById('toggle-notes');
-const behaviorNotes=document.getElementById('behavior-notes');
-const verifyBtn=document.getElementById('verify-btn');
-const composerLocked=document.getElementById('composer-locked');
-const composer=document.getElementById('composer');
-const composerText=document.getElementById('composer-text');
-const sendBtn=document.getElementById('send-btn');
-const chatWindow=document.getElementById('chat-window');
-const onlineCount=document.getElementById('online-count');
-const totalMembers=document.getElementById('total-members');
+// ---------- RENDER SIDEBAR ONLINE ----------
+function renderSidebarOnline(){
+  const container=document.getElementById('sidebar-online-list');
+  container.innerHTML='';
+  for(let i=0;i<memberSidebar.online;i++){
+    const wrapper=document.createElement('div'); wrapper.className="relative avatar-float";
+    const img=document.createElement('img'); img.className="h-8 w-8 rounded-full border border-subtle";
+    if(Math.random()>0.3){ img.src=getRandomAvatar(); }
+    img.style.transform=`translateY(${Math.floor(Math.random()*4-2)}px)`; 
+    wrapper.appendChild(img);
+    const dot=document.createElement('i'); dot.setAttribute('data-lucide','circle');
+    dot.className="absolute -bottom-1 -right-1 text-[#4CAF50] w-3 h-3";
+    wrapper.appendChild(dot);
+    container.appendChild(wrapper);
+  }
+  lucide.createIcons();
+}
 
+// ---------- RENDER PINNED ----------
 function renderPinned(){
-  pinnedList.innerHTML='';
+  const pinnedList=document.getElementById('pinned-list'); pinnedList.innerHTML='';
   pinned.forEach(p=>{
-    const li=document.createElement('li');
-    li.className='leading-snug text-lightgray flex items-center gap-1';
-    li.innerHTML=`<i data-lucide="pin" class="w-3.5 h-3.5"></i> ${p}`;
+    const li=document.createElement('li'); li.className='leading-snug text-lightgray flex items-center gap-1';
+    li.innerHTML=`<i data-lucide="pin" class="w-4 h-4"></i> ${p}`;
     pinnedList.appendChild(li);
   });
   lucide.createIcons();
 }
 
+// ---------- RENDER MESSAGES ----------
+const messagesList=document.getElementById('messages-list'); 
 function renderMessages(){
   messagesList.innerHTML='';
-  messages.forEach(m=>{
+  messages.forEach((m,i)=>{
     const article=document.createElement('article');
-    const randDelay=Math.random()*0.4;
-    article.style.animationDelay=`${randDelay}s`;
-    const rotDeg=(Math.random()*2-1);
-    article.style.transform=`rotate(${rotDeg}deg)`;
     article.className=`p-3 rounded-lg flex items-start gap-2 ${m.role==='admin'?'chat-message-admin':'chat-message-member'} fade-in`;
-    const img=document.createElement('img');
-    if(m.avatar){img.src=m.avatar;}else{img.style.backgroundColor='#555';}
-    img.alt=m.member;
-    img.className='h-8 w-8 rounded-full flex-shrink-0';
-    img.style.transform=`translateY(${Math.floor(Math.random()*4-2)}px)`;
-    const contentDiv=document.createElement('div');
-    contentDiv.className='flex-1';
-    const header=document.createElement('div');
-    header.className='flex items-baseline justify-between';
-    const name=document.createElement('div');
-    name.className='text-sm font-medium';
-    name.textContent=m.member;
-    const time=document.createElement('time');
-    time.className='text-xs text-muted';
-    time.textContent=m.time;
+    article.style.animationDelay=`${i*0.15}s`; // stagger fade-in
+    article.style.transform=`rotate(${Math.random()*4-2}deg)`;
+    const img=document.createElement('img'); 
+    if(m.avatar) img.src=m.avatar; else img.style.backgroundColor='#555';
+    img.className='h-8 w-8 rounded-full flex-shrink-0 avatar-float';
+    img.style.transform=`translateY(${Math.floor(Math.random()*6-3)}px)`;
+    const contentDiv=document.createElement('div'); contentDiv.className='flex-1';
+    const header=document.createElement('div'); header.className='flex items-baseline justify-between';
+    const name=document.createElement('div'); name.className='text-sm font-medium'; name.textContent=m.member;
+    const time=document.createElement('time'); time.className='text-xs text-muted'; time.textContent=m.time;
     header.appendChild(name); header.appendChild(time);
-    const p=document.createElement('p');
-    p.className='mt-1 text-sm text-muted';
-    p.textContent=m.text;
+    const p=document.createElement('p'); p.className='mt-1 text-sm text-muted'; p.textContent=m.text;
     contentDiv.appendChild(header); contentDiv.appendChild(p);
     article.appendChild(img); article.appendChild(contentDiv);
     messagesList.appendChild(article);
   });
-  chatWindow.scrollTo({top: chatWindow.scrollHeight, behavior:'smooth'});
+  document.getElementById('chat-window').scrollTo({top:document.getElementById('chat-window').scrollHeight, behavior:'smooth'});
 }
 
-copyPinnedBtn.addEventListener('click', async()=>{try{await navigator.clipboard.writeText(pinned.join('\n'));alert('Pinned rules copied');}catch(err){alert('Unable to copy');}});
-toggleNotesBtn.addEventListener('click',()=>{behaviorNotes.classList.toggle('hidden'); toggleNotesBtn.setAttribute('aria-expanded',String(!behaviorNotes.classList.contains('hidden')));});
-verifyBtn.addEventListener('click',()=>{composerLocked.classList.add('hidden'); composer.classList.remove('hidden'); composerText.focus();});
-sendBtn.addEventListener('click',()=>{
-  const txt=composerText.value.trim();
-  if(!txt)return;
-  messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});
-  composerText.value='';
-  renderMessages(); updateSidebar();
-});
-composerText.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); sendBtn.click();}});
+// ---------- UPDATE SIDEBAR ----------
+function updateSidebar(){ 
+  document.getElementById('online-count').textContent=memberSidebar.online;
+  document.getElementById('total-members').textContent=`~${memberSidebar.totalApprox}`;
+  document.getElementById('online-members').innerHTML=`<i data-lucide="circle" class="text-[#4CAF50] w-3 h-3"></i> ${memberSidebar.online}`;
+  renderSidebarOnline();
+}
 
-// ---------------- SIMULATION ----------------
-const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
-const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
-const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
+// ---------- EVENTS ----------
+document.getElementById('copy-pinned').addEventListener('click',()=>navigator.clipboard.writeText(pinned.join('\n')));
+document.getElementById('toggle-notes').addEventListener('click',()=>{document.getElementById('behavior-notes').classList.toggle('hidden');});
+document.getElementById('verify-btn').addEventListener('click',()=>{document.getElementById('composer-locked').classList.add('hidden'); document.getElementById('composer').classList.remove('hidden'); document.getElementById('composer-text').focus();});
+document.getElementById('send-btn').addEventListener('click',()=>{const txt=document.getElementById('composer-text').value.trim(); if(!txt) return; messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:'You', text:txt, role:'member', avatar:getRandomAvatar()}); document.getElementById('composer-text').value=''; renderMessages(); updateSidebar();});
+document.getElementById('composer-text').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); document.getElementById('send-btn').click();}});
 
-function scheduleNextActivity(){const delay=Math.floor(Math.random()*3600000)+60000; setTimeout(()=>{simulateNewActivity(); scheduleNextActivity();}, delay);}
+// ---------- LIVE SIMULATION ----------
+function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function showTypingIndicator(name){
+  removeTypingIndicator();
+  const indicator=document.createElement('div'); indicator.id='typing-indicator'; indicator.className='typing-indicator';
+  indicator.innerHTML=`${name} is typing <span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+  messagesList.appendChild(indicator);
+  document.getElementById('chat-window').scrollTo({top:document.getElementById('chat-window').scrollHeight, behavior:'smooth'});
+}
+function removeTypingIndicator(){const el=document.getElementById('typing-indicator'); if(el) el.remove();}
+
 function simulateNewActivity(){
   if(Math.random()<0.7){
     const name=randomItem(iranNames)+' '+Math.floor(Math.random()*1000);
     showTypingIndicator(name);
     setTimeout(()=>{
-      messages.push({time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), member:name, text:randomItem(joinerMessages), role:'new', avatar:getRandomAvatar('member')});
+      messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:name, text:randomItem(joinerMessages), role:'new', avatar:getRandomAvatar()});
       memberSidebar.totalApprox+=1; removeTypingIndicator(); renderMessages(); updateSidebar();
-    }, Math.floor(Math.random()*4000)+2000);
+    },Math.random()*3000+2000);
   }
   if(Math.random()<0.5){
     const replyGroup=randomItem(passiveReplies);
     const repName=replyGroup.role==='mod'?'Moderator':randomItem(iranNames);
     showTypingIndicator(repName);
     setTimeout(()=>{
-      messages.push({time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), member:repName, text:randomItem(replyGroup.texts), role:replyGroup.role, avatar:getRandomAvatar(replyGroup.role)});
+      messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:repName, text:randomItem(replyGroup.texts), role:replyGroup.role, avatar:getRandomAvatar()});
       removeTypingIndicator(); renderMessages(); updateSidebar();
-    }, Math.floor(Math.random()*4000)+2000);
+    },Math.random()*3000+2000);
   }
+  setTimeout(simulateNewActivity, Math.random()*8000+2000);
 }
 
 function fluctuateOnline(){
   memberSidebar.online=3+Math.floor(Math.random()*8);
-  memberSidebar.online=Math.min(memberSidebar.online,memberSidebar.totalApprox);
-  updateSidebar(); 
+  memberSidebar.online=Math.min(memberSidebar.online, memberSidebar.totalApprox);
+  updateSidebar();
   setTimeout(fluctuateOnline, 5000+Math.random()*5000);
 }
 
-function updateSidebar(){
-  onlineCount.textContent=memberSidebar.online;
-  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
-  document.getElementById('online-members').innerHTML=`<i data-lucide="circle" class="text-[#4CAF50] w-3 h-3"></i> ${memberSidebar.online}`;
-  lucide.createIcons();
-}
-
-function showTypingIndicator(name){
-  removeTypingIndicator();
-  const indicator=document.createElement('div');
-  indicator.className='typing-indicator';
-  indicator.id='typing-indicator';
-  indicator.innerHTML=`${name} is typing <span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
-  messagesList.appendChild(indicator);
-  chatWindow.scrollTo({top: chatWindow.scrollHeight, behavior:'smooth'});
-}
-
-function removeTypingIndicator(){const existing=document.getElementById('typing-indicator'); if(existing)existing.remove();}
-
-// ---------------- INIT ----------------
-function init(){renderPinned(); renderMessages(); updateSidebar(); scheduleNextActivity(); fluctuateOnline();}
-init();
+// ---------- INIT ----------
+renderPinned(); renderMessages(); updateSidebar(); simulateNewActivity(); fluctuateOnline();
 </script>
 </body>
 </html>
