@@ -4,96 +4,149 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Group: Private Digital Asset Discussion (Iran)</title>
+
+  <!-- Tailwind for layout only -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+
   <style>
+    /* -------------------------
+       Theme: Quiet Institutional Dark Mode
+       ------------------------- */
+    :root{
+      --bg: #232323;         /* primary dark gray */
+      --panel: #262626;      /* panel slightly lighter */
+      --text: #DADADA;       /* off-white for body text */
+      --muted: #BFBFBF;      /* secondary text */
+      --divider: #333333;    /* subtle dividers */
+      --accent: #43A047;     /* muted green accent */
+      --accent-dark: #3d923f;
+    }
     html,body,#app{height:100%}
-    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-    .avatar-fallback {
-      background: linear-gradient(135deg,#e5e7eb,#f3f4f6);
-      display:flex; align-items:center; justify-content:center;
-      color:#334155; font-weight:600; text-transform:uppercase;
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* STATUS (tasteful stimulation) */
+    /* containers */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--divider);
+      border-radius: 12px;
+    }
+
+    .avatar-fallback {
+      background: linear-gradient(135deg,#2e2e2e,#383838);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--text); font-weight:600; text-transform:uppercase;
+    }
+
+    /* STATUS */
     .status-icon-wrap { display:inline-flex; align-items:center; gap:8px; }
     @keyframes blinkPulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.35; transform: scale(1.06); }
-      100% { opacity: 1; transform: scale(1); }
+      0% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+      50% { opacity: 0.45; transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(67,160,71,0.12)); }
+      100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
     }
-    /* apply to the generated svg (we add class 'online-svg' after lucide.replace) */
+    /* faster/louder pulse when new join arrives */
+    @keyframes joinPulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(67,160,71,0)); opacity:1; }
+      40% { transform: scale(1.18); filter: drop-shadow(0 0 14px rgba(67,160,71,0.18)); opacity:1; }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(67,160,71,0)); opacity:1; }
+    }
+
     .online-svg {
-      color: #16a34a; /* green (affects stroke via currentColor) */
-      width: 14px;
-      height: 14px;
-      display:inline-block;
-      vertical-align:middle;
-      animation: blinkPulse 1.4s infinite ease-in-out;
+      width: 14px; height: 14px; display:inline-block; vertical-align:middle;
+      color: var(--accent); /* stroke uses currentColor */
+      animation: blinkPulse 1.6s infinite ease-in-out;
       transform-origin: 50% 50%;
     }
+
+    /* when we highlight a new join */
+    .new-join-pulse {
+      animation: joinPulse 900ms ease-in-out;
+    }
+
     /* numeric subtle pulse */
     @keyframes numberPulse {
       0% { transform: translateY(0); opacity: 1; }
-      50% { transform: translateY(-1px) scale(1.02); opacity: 0.95; }
+      50% { transform: translateY(-1px) scale(1.02); opacity: 0.98; }
       100% { transform: translateY(0); opacity: 1; }
     }
-    .status-number { animation: numberPulse 2.2s infinite ease-in-out; color: #065f46; font-weight:700; }
+    .status-number { animation: numberPulse 2200ms infinite ease-in-out; color: var(--accent-dark); font-weight:700; }
 
-    /* pinned icon svg class applied after replace */
+    /* pinned icon styling (we add .pin-svg to lucide pin) */
     .pin-svg {
-      color: #374151; /* dark slate */
-      width: 16px;
-      height: 16px;
-      vertical-align: -2px;
-      margin-right: 6px; /* correct side for LTR */
+      width: 16px; height: 16px; vertical-align: -2px; margin-right: 6px;
+      color: #BFBFBF; /* subtle */
       display:inline-block;
     }
 
-    /* message visual tweaks */
-    .msg-admin { background-color: #f1f5f9; border-left: 4px solid #bfdbfe; padding:12px; border-radius:0.5rem; }
-    .msg-mod { background-color: #ffffff; border-left: 4px solid #e5e7eb; padding:12px; border-radius:0.5rem; }
-    .msg-system { font-style: italic; color: #6b7280; padding: 8px; }
+    /* messages */
+    .msg-admin { background: linear-gradient(180deg,#2b2b2b,#272727); border-left:4px solid rgba(74,144,226,0.12); padding:12px; border-radius:10px; }
+    .msg-mod { background: linear-gradient(180deg,#262626,#232323); border-left:4px solid rgba(120,120,120,0.08); padding:12px; border-radius:10px; }
+    .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
+    .msg-regular { background: linear-gradient(180deg,#262626,#242424); padding:12px; border-radius:10px; }
+
+    /* highlight when new member joins */
+    @keyframes newJoinHighlight {
+      0% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: rgba(255,255,255,0); }
+      10% { background-color: rgba(67,160,71,0.06); transform: scale(1.015); }
+      60% { box-shadow: 0 8px 28px rgba(67,160,71,0.12); transform: scale(1.02); }
+      100% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
+    }
+    .highlight-new {
+      animation: newJoinHighlight 3200ms ease-in-out forwards;
+      border-radius: 10px;
+    }
 
     img.round-avatar { width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0; }
 
-    @media (max-width:640px) {
-      .online-svg { width:10px; height:10px; }
-      .pin-svg { width:14px; height:14px; margin-right:4px; }
+    /* subtle divider */
+    .divider { border-top: 1px solid #333333; margin: 12px 0; }
+
+    /* responsiveness */
+    @media (max-width:640px){
+      .online-svg{ width:12px; height:12px; }
+      .pin-svg{ width:14px; height:14px; margin-right:4px; }
     }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 md:p-8 font-sans">
-  <div id="app" class="flex flex-col min-h-screen">
+<body>
+  <div id="app" class="min-h-screen p-4 md:p-8">
     <header class="flex items-center justify-between mb-4">
       <div>
-        <h1 id="group-title" class="text-xl md:text-2xl font-semibold">Group: Private Digital Asset Discussion (Iran)</h1>
-        <div class="text-sm text-gray-500 mt-1">
+        <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text)">Group: Private Digital Asset Discussion (Iran)</h1>
+        <div class="text-sm" style="color:var(--muted); margin-top:6px;">
           <strong id="member-approx">Members (visible): ~140</strong> — <span id="date-range">Period: 8 January 2026 — 15 January 2026</span>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
         <div class="text-right">
-          <div class="text-sm font-medium">Status</div>
+          <div class="text-sm font-medium" style="color:var(--muted)">Status</div>
           <div class="status-icon-wrap" role="status" aria-live="polite" aria-atomic="true">
             <i data-lucide="circle" aria-hidden="true"></i>
-            <div id="status-text" class="text-sm text-gray-700">Active now: <span id="status-number" class="status-number">6</span></div>
+            <div id="status-text" class="text-sm" style="color:var(--text)">Active now: <span id="status-number" class="status-number">6</span></div>
           </div>
         </div>
       </div>
     </header>
 
     <main class="flex flex-1 flex-col md:flex-row gap-4">
-      <section class="flex-1 flex flex-col bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="p-4 border-b flex items-start justify-between">
+      <section class="flex-1 flex flex-col panel overflow-hidden">
+        <div class="p-4 border-b" style="border-color:var(--divider); display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
-            <div class="text-sm font-medium">PINNED CONTENT (always visible)</div>
-            <ul id="pinned-list" class="mt-2 text-sm text-gray-700 space-y-1"></ul>
+            <div class="text-sm font-medium" style="color:var(--text)">PINNED CONTENT (always visible)</div>
+            <ul id="pinned-list" class="mt-2 text-sm" style="color:var(--muted); list-style:none; padding-left:0; gap:6px;"></ul>
           </div>
-          <div class="flex flex-col items-end gap-2">
-            <button id="copy-pinned" class="text-xs px-3 py-1 rounded-full border hover:bg-gray-50" aria-label="Copy pinned rules">Copy</button>
-            <button id="toggle-notes" class="text-xs px-3 py-1 rounded-full border hover:bg-gray-50" aria-expanded="false">Notes</button>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+            <button id="copy-pinned" class="px-3 py-1 rounded-full border" style="background:transparent; border-color:var(--divider); color:var(--text); font-size:12px;">Copy</button>
+            <button id="toggle-notes" class="px-3 py-1 rounded-full border" style="background:transparent; border-color:var(--divider); color:var(--text); font-size:12px;" aria-expanded="false">Notes</button>
           </div>
         </div>
 
@@ -101,44 +154,55 @@
           <div id="messages-list" class="space-y-3"></div>
         </div>
 
-        <div class="p-4 border-t bg-gray-50">
-          <div id="composer-locked" class="flex items-center justify-between gap-4">
-            <div class="text-sm text-gray-600">Posting is locked until verification. Please request verification to post.</div>
-            <div class="flex gap-2">
-              <button id="verify-btn" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">Request verification</button>
+        <div class="p-4 border-t" style="border-color:var(--divider); background:transparent;">
+          <div id="composer-locked" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <div style="color:var(--muted)">Posting is locked until verification. Please request verification to post.</div>
+            <div>
+              <button id="verify-btn" class="px-3 py-1 rounded bg-[var(--accent)]" style="background:var(--accent); color:#fff;">Request verification</button>
             </div>
           </div>
 
-          <div id="composer" class="hidden flex gap-3 items-start">
-            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1 p-3 rounded-lg border resize-none h-16 text-sm" aria-label="Message composer"></textarea>
-            <div class="flex flex-col gap-2">
-              <button id="send-btn" class="px-4 py-2 rounded bg-green-600 text-white text-sm">Send</button>
+          <div id="composer" class="hidden" style="display:flex; gap:12px; margin-top:8px; align-items:flex-start;">
+            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1" style="padding:12px; border-radius:10px; border:1px solid var(--divider); background:#262626; color:var(--text); min-height:64px;"></textarea>
+            <div>
+              <button id="send-btn" style="padding:8px 12px; border-radius:8px; background:#2E7D32; color:#fff;">Send</button>
             </div>
           </div>
         </div>
       </section>
 
-      <aside class="w-full md:w-72 flex-shrink-0 bg-white rounded-2xl shadow-sm p-4">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-semibold">MEMBERS (names)</h2>
-          <span class="text-xs text-gray-400">Realistic view</span>
+      <aside class="w-full md:w-72 flex-shrink-0 panel p-4">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+          <h2 style="font-weight:600; color:var(--text); font-size:14px;">MEMBERS (names)</h2>
+          <span style="color:var(--muted); font-size:12px;">Realistic view</span>
         </div>
-
-        <div id="members-list" class="space-y-2 text-sm text-gray-700"></div>
+        <div id="members-list" style="display:flex; flex-direction:column; gap:10px; color:var(--muted);"></div>
       </aside>
     </main>
 
-    <div id="behavior-notes" class="mt-4 p-4 bg-white rounded-lg shadow text-sm text-gray-700 hidden">
-      <h3 class="font-semibold">REALISTIC CHAT PARTICIPATION (pattern & stats)</h3>
-      <pre class="whitespace-pre-wrap">(Overview & instructor notes stored in the script)</pre>
+    <div id="behavior-notes" class="panel" style="display:none; margin-top:16px; padding:12px; color:var(--muted);">
+      <h3 style="color:var(--text); font-weight:600;">REALISTIC CHAT PARTICIPATION (pattern & stats)</h3>
+      <pre style="white-space:pre-wrap; color:var(--muted)">(Overview & instructor notes stored in the script)</pre>
     </div>
 
-    <footer class="mt-4 text-xs text-gray-400">To host on GitHub Pages, save this file as <code>index.html</code> in your repo root (or /docs).</footer>
+    <footer style="margin-top:12px; color:var(--muted); font-size:12px;">To host on GitHub Pages, save this file as <code>index.html</code> in your repo root (or /docs). Demo content is fictional.</footer>
   </div>
 
   <script>
-    // --- Full data arrays (exact, complete, preserved) ---
+    /************************************************************************
+     * Full logic preserved:
+     * - pinned array
+     * - members array (140)
+     * - seededMessages array (Day1..Day7 + backlog)
+     * - avatar heuristics with randomuser.me?nat=ir fetch
+     * - lucide wiring & stroke coloring
+     * - verification composer gating
+     * - new-member stronger animation (message highlight + status pulse)
+     ************************************************************************/
 
+    /* ---------------------------
+       Pinned content
+       --------------------------- */
     const pinned = [
       "Privacy rules (Iran-focused)",
       "Verification required to participate in sensitive discussions",
@@ -147,6 +211,9 @@
       "Sensitive questions → DM the admin"
     ];
 
+    /* ---------------------------
+       Members (140) - same as your list
+       --------------------------- */
     const members = [
       "Ariamen Niknam","Zhinos Farmani","Misaq Dashti","Pardis Sohrabi","Pouyan Tarabnia","Zhaleh Pourbakhtiar","Derina Kermani","Sohrab Mehrayin","Sepand Yaghmaei","Bakhtiar Kohandel",
       "Taraneh Rozbehani","Saman Tihu","Padideh Naderi","Niko Foroughi","Hamoon Zagros","Naysabeh Tahmasbi","Diana Siavoshi","Bahman Azarpi","Negin Koneshlu","Rosta Mehrayin",
@@ -164,6 +231,10 @@
       "Farshad Kamkar","Pegah Naderian","Arzu Farozand","Delara Niri","Niko Golrokh","Sepehr Nikrosh","Samaneh Arvand","Yousef Rouzbeh","Mahtab Nobahar","Pedram Shakiba"
     ];
 
+    /* ---------------------------
+       Seeded messages (Day1..Day7 + backlog)
+       (copied exactly from your provided transcript)
+       --------------------------- */
     const seededMessages = [
       { time: "08:57", member: "System", text: "You joined the group.", role: "system" },
       { time: "08:59", member: "System", text: "Online: Tehran, Isfahan, Shiraz, Mashhad (4 people online)", role: "system" },
@@ -249,88 +320,95 @@
       { time: "20:05", member: "Member (Karaj) — Narges Delaram", text: "My USDT mention is personal experience. Not advice.", role: "member" }
     ];
 
-    // Avatar token list and helpers
+    /* ---------------------------
+       Avatar heuristics
+       --------------------------- */
     const femaleTokens = [
       "zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges",
       "sudeh","niloufar","pegah","shaparak","mina","roonak","zaria","mojgan","azadeh","yasaman",
       "delara","bahareh","mehrnoush","zarrin","mahtab","niusha","golsa","yekta","nazanin","homa",
       "farah","parida","parisa","soheila","zahra","fatemeh","marjan","sara","roxana","rosta"
     ];
-
-    function looksFemale(name){
-      if(!name) return false;
-      const lower = name.toLowerCase();
-      return femaleTokens.some(t => lower.includes(t));
-    }
+    function looksFemale(name){ if(!name) return false; const lower=name.toLowerCase(); return femaleTokens.some(t=>lower.includes(t)); }
     function randInt(max){ return Math.floor(Math.random()*max); }
 
-    const memberProfiles = members.map((name) => {
-      const hasAvatar = Math.random() < 0.6;
-      const genderFolder = looksFemale(name) ? "women" : "men";
-      const avatarIndex = randInt(100);
-      return {
-        name,
-        avatar: hasAvatar ? `https://randomuser.me/api/portraits/${genderFolder}/${avatarIndex}.jpg` : null,
-        gender: looksFemale(name) ? "female" : "male"
-      };
-    });
+    // initial profiles with null avatars; we'll fetch nat=ir portraits next
+    const memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male' }));
 
-    // DOM refs
-    const pinnedList = document.getElementById("pinned-list");
-    const messagesList = document.getElementById("messages-list");
-    const copyPinnedBtn = document.getElementById("copy-pinned");
-    const toggleNotesBtn = document.getElementById("toggle-notes");
-    const behaviorNotes = document.getElementById("behavior-notes");
-    const verifyBtn = document.getElementById("verify-btn");
-    const composerLocked = document.getElementById("composer-locked");
-    const composer = document.getElementById("composer");
-    const composerText = document.getElementById("composer-text");
-    const sendBtn = document.getElementById("send-btn");
-    const chatWindow = document.getElementById("chat-window");
-    const statusNumberEl = document.getElementById("status-number");
-    const membersListEl = document.getElementById("members-list");
+    /* ---------------------------
+       DOM refs
+       --------------------------- */
+    const pinnedList = document.getElementById('pinned-list');
+    const membersListEl = document.getElementById('members-list');
+    const messagesList = document.getElementById('messages-list');
+    const chatWindow = document.getElementById('chat-window');
+    const statusNumberEl = document.getElementById('status-number');
 
+    /* ---------------------------
+       Render functions
+       --------------------------- */
     function renderPinned(){
-      pinnedList.innerHTML = "";
-      pinned.forEach(p=>{
-        const li = document.createElement("li");
-        li.className = "leading-snug flex items-center";
-        const icon = document.createElement("i");
-        icon.setAttribute("data-lucide","pin");
-        icon.setAttribute("aria-hidden","true");
+      pinnedList.innerHTML = '';
+      pinned.forEach(p => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.gap = '8px';
+        li.style.marginBottom = '6px';
+        // placeholder icon
+        const icon = document.createElement('i');
+        icon.setAttribute('data-lucide','pin');
+        icon.setAttribute('aria-hidden','true');
         li.appendChild(icon);
-        const span = document.createElement("span");
+        const span = document.createElement('span');
         span.textContent = p;
+        span.style.color = 'var(--muted)';
         li.appendChild(span);
         pinnedList.appendChild(li);
       });
+      // lucide will be wired later
     }
 
     function createFallbackElement(name){
-      const fallback = document.createElement("div");
-      fallback.className = "h-10 w-10 rounded-full avatar-fallback text-xs flex-shrink-0";
-      const initials = (name || "").split(" ").map(s => s[0]).slice(0,2).join("") || "M";
+      const fallback = document.createElement('div');
+      fallback.className = 'avatar-fallback';
+      fallback.style.width = '40px';
+      fallback.style.height = '40px';
+      fallback.style.borderRadius = '9999px';
+      fallback.style.fontSize = '12px';
+      fallback.style.flexShrink = '0';
+      const initials = (name || '').split(' ').map(s => s[0]).slice(0,2).join('') || 'M';
       fallback.textContent = initials;
       return fallback;
     }
 
     function renderMembers(){
-      membersListEl.innerHTML = "";
-      memberProfiles.forEach(m=>{
-        const row = document.createElement("div");
-        row.className = "flex items-center gap-3";
+      membersListEl.innerHTML = '';
+      memberProfiles.forEach(m => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.gap = '10px';
+        const left = document.createElement('div');
         if(m.avatar){
-          const img = document.createElement("img");
+          const img = document.createElement('img');
           img.src = m.avatar;
           img.alt = m.name;
-          img.className = "round-avatar";
-          img.onerror = () => { img.remove(); row.insertBefore(createFallbackElement(m.name), row.firstChild || null); };
-          row.appendChild(img);
+          img.className = 'round-avatar';
+          img.style.width = '40px';
+          img.style.height = '40px';
+          img.style.borderRadius = '9999px';
+          img.style.objectFit = 'cover';
+          img.style.flexShrink = '0';
+          img.onerror = () => { img.remove(); left.appendChild(createFallbackElement(m.name)); };
+          left.appendChild(img);
         } else {
-          row.appendChild(createFallbackElement(m.name));
+          left.appendChild(createFallbackElement(m.name));
         }
-        const nameDiv = document.createElement("div");
-        nameDiv.className = "text-sm";
+        row.appendChild(left);
+        const nameDiv = document.createElement('div');
+        nameDiv.style.color = 'var(--muted)';
+        nameDiv.style.fontSize = '14px';
         nameDiv.textContent = m.name;
         row.appendChild(nameDiv);
         membersListEl.appendChild(row);
@@ -338,99 +416,216 @@
     }
 
     function renderMessages(){
-      messagesList.innerHTML = "";
-      seededMessages.forEach(m=>{
-        const article = document.createElement("article");
-        if(m.role === "system"){
-          article.className = "msg-system";
+      messagesList.innerHTML = '';
+      seededMessages.forEach((m, idx) => {
+        const article = document.createElement('article');
+        article.style.marginBottom = '8px';
+        if(m.role === 'system'){
+          article.className = 'msg-system';
           article.textContent = `${m.time} ${m.text}`;
         } else {
-          article.className = m.role === "admin" ? "msg-admin" : m.role === "mod" ? "msg-mod" : "p-3 rounded-lg bg-gray-50";
-          const header = document.createElement("div");
-          header.className = "flex items-center justify-between";
-          const left = document.createElement("div");
-          left.className = "flex items-center gap-3";
+          article.className = m.role === 'admin' ? 'msg-admin' : m.role === 'mod' ? 'msg-mod' : 'msg-regular';
+          article.style.padding = '12px';
+          article.style.borderRadius = '10px';
+          const header = document.createElement('div');
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.alignItems = 'center';
+
+          const left = document.createElement('div');
+          left.style.display = 'flex';
+          left.style.alignItems = 'center';
+          left.style.gap = '10px';
+
           const profile = memberProfiles.find(p => m.member && p.name && m.member.includes(p.name));
           if(profile && profile.avatar){
-            const img = document.createElement("img");
+            const img = document.createElement('img');
             img.src = profile.avatar;
             img.alt = profile.name;
-            img.className = "round-avatar";
+            img.className = 'round-avatar';
+            img.style.width = '40px';
+            img.style.height = '40px';
+            img.style.borderRadius = '9999px';
+            img.style.objectFit = 'cover';
             img.onerror = () => { img.remove(); left.insertBefore(createFallbackElement(profile.name), left.firstChild || null); };
             left.appendChild(img);
           } else {
             left.appendChild(createFallbackElement(m.member));
           }
-          const nameDiv = document.createElement("div");
-          nameDiv.className = "text-sm font-medium";
-          nameDiv.textContent = m.member || "Member";
+
+          const nameDiv = document.createElement('div');
+          nameDiv.style.fontWeight = '600';
+          nameDiv.style.color = 'var(--text)';
+          nameDiv.textContent = m.member || 'Member';
           left.appendChild(nameDiv);
+
           header.appendChild(left);
-          const time = document.createElement("div");
-          time.className = "text-xs text-gray-400";
+
+          const time = document.createElement('div');
+          time.style.color = 'var(--muted)';
+          time.style.fontSize = '12px';
           time.textContent = m.time;
           header.appendChild(time);
-          const p = document.createElement("p");
-          p.className = "mt-2 text-sm text-gray-700";
+
+          const p = document.createElement('p');
+          p.style.marginTop = '8px';
+          p.style.color = 'var(--text)';
+          p.style.fontSize = '14px';
           p.textContent = m.text;
+
           article.appendChild(header);
           article.appendChild(p);
+
+          // If this is a "new member" event, add highlight and trigger status pulse
+          const isNewMember = (m.role === 'new') || (m.role === 'system' && m.text && m.text.toLowerCase().includes('new member'));
+          if (isNewMember) {
+            // apply highlight; remove after animation duration
+            article.classList.add('highlight-new');
+            // also apply a stronger pulse to status icon/number
+            triggerStatusJoinPulse();
+            // remove highlight after 3.2s
+            setTimeout(() => { article.classList.remove('highlight-new'); }, 3200);
+          }
         }
         messagesList.appendChild(article);
       });
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    copyPinnedBtn.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(pinned.join("\n")); alert("Pinned rules copied to clipboard"); }
-      catch(e) { console.warn("copy failed", e); alert("Unable to copy"); }
+    /* ---------------------------
+       Copy pinned, toggle notes, composer logic (unchanged)
+       --------------------------- */
+    document.getElementById('copy-pinned').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(pinned.join('\n')); alert('Pinned rules copied to clipboard'); }
+      catch (err) { console.warn('copy failed', err); alert('Unable to copy'); }
     });
 
-    toggleNotesBtn.addEventListener("click", () => {
-      const isHidden = behaviorNotes.classList.contains("hidden");
-      behaviorNotes.classList.toggle("hidden");
-      toggleNotesBtn.setAttribute("aria-expanded", String(!isHidden));
+    document.getElementById('toggle-notes').addEventListener('click', () => {
+      const el = document.getElementById('behavior-notes');
+      const isHidden = el.style.display === 'none' || el.style.display === '';
+      el.style.display = isHidden ? 'block' : 'none';
+      document.getElementById('toggle-notes').setAttribute('aria-expanded', String(isHidden));
     });
 
-    verifyBtn.addEventListener("click", () => {
-      composerLocked.classList.add("hidden");
-      composer.classList.remove("hidden");
-      composerText.focus();
+    document.getElementById('verify-btn').addEventListener('click', () => {
+      document.getElementById('composer-locked').style.display = 'none';
+      document.getElementById('composer').style.display = 'flex';
+      document.getElementById('composer-text').focus();
     });
 
-    sendBtn.addEventListener("click", () => {
-      const txt = composerText.value.trim();
-      if(!txt) return;
+    document.getElementById('send-btn').addEventListener('click', () => {
+      const txt = document.getElementById('composer-text').value.trim();
+      if (!txt) return;
       const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      seededMessages.push({ time: timeStr, member: "You", text: txt, role: "member" });
-      composerText.value = "";
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      seededMessages.push({ time: timeStr, member: 'You', text: txt, role: 'member' });
+      document.getElementById('composer-text').value = '';
       renderMessages();
     });
 
-    composerText.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+    document.getElementById('composer-text').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('send-btn').click(); }
     });
 
+    /* ---------------------------
+       Status number fluctuation & join pulse
+       --------------------------- */
     function updateStatusNumber(){
-      const val = 3 + Math.floor(Math.random()*6); // 3..8
+      const val = 3 + Math.floor(Math.random() * 6); // 3..8
       statusNumberEl.textContent = val;
     }
 
-    function wireLucideSvgs(){
-      if(window.lucide && typeof lucide.replace === "function"){
-        lucide.replace();
-        document.querySelectorAll("svg.lucide-circle").forEach(svg => svg.classList.add("online-svg"));
-        document.querySelectorAll("svg.lucide-pin").forEach(svg => svg.classList.add("pin-svg"));
+    function triggerStatusJoinPulse(){
+      // find the lucide circle svg (we add .online-svg on wire)
+      const svg = document.querySelector('svg.online-svg');
+      const num = document.getElementById('status-number');
+      if (svg) {
+        svg.classList.add('new-join-pulse');
+        setTimeout(()=> svg.classList.remove('new-join-pulse'), 900);
+      }
+      if (num) {
+        num.style.transform = 'scale(1.12)';
+        num.style.transition = 'transform 420ms ease-out';
+        setTimeout(()=> { num.style.transform = ''; }, 420);
       }
     }
 
+    /* ---------------------------
+       Fetch Iranian portraits (randomuser.me?nat=ir)
+       Assign to ~60% of members randomly; fallbacks remain
+       --------------------------- */
+    async function fetchIranAvatars(count = 80){
+      try {
+        const res = await fetch(`https://randomuser.me/api/?nat=ir&results=${count}`);
+        if (!res.ok) throw new Error('randomuser fetch failed');
+        const json = await res.json();
+        const portraits = (json.results || []).map(u => (u.picture && u.picture.large) ? u.picture.large : null).filter(Boolean);
+        // Shuffle portraits for distribution
+        for (let i = portraits.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [portraits[i], portraits[j]] = [portraits[j], portraits[i]];
+        }
+        let pIdx = 0;
+        for (let i = 0; i < memberProfiles.length; i++) {
+          if (Math.random() < 0.6 && pIdx < portraits.length) {
+            memberProfiles[i].avatar = portraits[pIdx++];
+          } else {
+            memberProfiles[i].avatar = null;
+          }
+        }
+        // rerender members & messages (so matched names show avatars)
+        renderMembers();
+        renderMessages();
+      } catch (err) {
+        console.warn('Could not fetch iran avatars:', err);
+        renderMembers();
+        renderMessages();
+      }
+    }
+
+    /* ---------------------------
+       Lucide wiring - replace & style svgs
+       --------------------------- */
+    function wireLucideSvgs(){
+      if (window.lucide && typeof lucide.replace === 'function') {
+        lucide.replace();
+        // add classes and set stroke attributes for visibility on dark background
+        document.querySelectorAll('svg.lucide-circle').forEach(svg => {
+          svg.classList.add('online-svg');
+          try {
+            svg.setAttribute('stroke', '#43A047');
+            svg.setAttribute('stroke-width', '2.2');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.style.display = 'inline-block';
+          } catch(e){}
+        });
+        document.querySelectorAll('svg.lucide-pin').forEach(svg => {
+          svg.classList.add('pin-svg');
+          try {
+            svg.setAttribute('stroke', '#BFBFBF');
+            svg.setAttribute('stroke-width', '1.6');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('aria-hidden', 'true');
+          } catch(e){}
+        });
+      } else {
+        // retry if lucide not loaded yet
+        setTimeout(wireLucideSvgs, 250);
+      }
+    }
+
+    /* ---------------------------
+       Init
+       --------------------------- */
     function init(){
       renderPinned();
-      renderMembers();
+      renderMembers(); // initials may show until avatars fetched
       renderMessages();
       updateStatusNumber();
       wireLucideSvgs();
+      fetchIranAvatars(80);
+      // periodic subtle status updates
       setInterval(updateStatusNumber, 5000 + Math.floor(Math.random()*7000));
     }
 
