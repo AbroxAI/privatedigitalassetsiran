@@ -1,18 +1,12 @@
-<!--
-PrivateDigitalAssetChat_DarkMode_Realistic_EnhancedFull_Polished_Animated.html
-Fully blended logic with avatars (Iranian humans + random misc), dark institutional theme, live simulation with passive member/mod replies.
-Recommended members: ~200
-Frontend-only, safe to host on GitHub Pages.
--->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Private Digital Asset Discussion (Iran)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-html,body,#app{height:100%}
+html,body,#app{height:100%;}
 body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 .chat-bg {background-color:#262626;}
 .chat-message-member {background-color:#1F1F1F; transition: all 0.5s ease; opacity:1;}
@@ -41,7 +35,10 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 <header class="flex items-center justify-between mb-4">
   <div>
-    <h1 id="group-title" class="text-xl md:text-2xl font-semibold">Private Digital Asset Discussion (Iran) <span id="member-approx" class="text-sm text-muted">~200 members</span></h1>
+    <h1 id="group-title" class="text-xl md:text-2xl font-semibold">
+      Private Digital Asset Discussion (Iran) 
+      <span id="member-approx" class="text-sm text-muted">~200 members</span>
+    </h1>
     <p class="text-xs text-lightgray">Member count approximate — online indicator shows only active users</p>
   </div>
   <div class="flex items-center gap-4">
@@ -58,12 +55,14 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 <main class="flex flex-1 flex-col md:flex-row gap-4">
 
+<!-- Chat area -->
 <section class="flex-1 flex flex-col chat-bg rounded-2xl shadow-sm overflow-hidden">
 
+  <!-- Pinned -->
   <div class="p-4 border-b border-subtle pinned-bg flex items-start justify-between">
     <div>
       <div class="text-sm font-medium text-lightgray">Pinned Messages</div>
-      <ul id="pinned-list" class="mt-2 text-sm text-muted space-y-1"></ul>
+      <ul id="pinned-list" class="mt-2 text-sm text-lightgray space-y-1"></ul>
     </div>
     <div class="flex flex-col items-end gap-2">
       <button id="copy-pinned" class="text-xs px-3 py-1 rounded-full border border-subtle hover:bg-gray-700">Copy</button>
@@ -71,10 +70,12 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
   </div>
 
+  <!-- Messages -->
   <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
     <div id="messages-list" class="space-y-3"></div>
   </div>
 
+  <!-- Composer / verification -->
   <div class="p-4 border-t border-subtle composer-bg">
     <div id="composer-locked" class="flex items-center justify-between gap-4 text-lightgray">
       <div class="text-sm">Posting is locked until verification. Please request verification to post.</div>
@@ -92,6 +93,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 </section>
 
+<!-- Sidebar -->
 <aside class="w-full md:w-72 flex-shrink-0 sidebar-bg rounded-2xl shadow-sm p-4">
   <div class="flex items-center justify-between mb-3">
     <h2 class="text-sm font-semibold text-lightgray">Member sidebar (sanitized)</h2>
@@ -108,7 +110,9 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
     <div>
       <dt class="text-xs text-lightgray">Online members</dt>
-      <dd id="online-members" class="font-medium flex items-center gap-2"><span class="h-2 w-2 rounded-full online-dot"/> 6</dd>
+      <dd id="online-members" class="font-medium flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full online-dot"></span> 6
+      </dd>
     </div>
     <div>
       <dt class="text-xs text-lightgray">Total members</dt>
@@ -117,7 +121,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
   </dl>
   <hr class="my-3 border-subtle" />
   <div class="text-sm text-muted">
-    <p>Online indicator = green dot. Offline members are not listed individually to preserve privacy — only a total number is shown.</p>
+    <p>Online indicator = green dot. Offline members are not listed individually — only a total number is shown.</p>
   </div>
   <hr class="my-3 border-subtle" />
   <div class="text-sm">
@@ -141,10 +145,15 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 </div>
 
 <script>
-// --- Config ---
+// --- Data + avatars ---
 const GROUP_TITLE="Private Digital Asset Discussion (Iran)";
-const APPROX_TOTAL_MEMBERS=200; // updated
-const pinned=["Group rules: privacy, Iran-only","Verification required before posting","Purpose: value protection, not investment","Do NOT share this link outside"];
+const APPROX_TOTAL_MEMBERS=200;
+const pinned=[
+  "Group rules: privacy, Iran-only",
+  "Verification required before posting",
+  "Purpose: value protection, not investment",
+  "Do NOT share this link outside"
+];
 const memberSidebar={admins:2,moderators:4,online:6,totalApprox:APPROX_TOTAL_MEMBERS};
 const seededMessages=[
   {time:"09:05 AM", member:"Admin", text:"Welcome to the group. Please review pinned rules.", role:"admin"},
@@ -158,18 +167,29 @@ const seededMessages=[
 ];
 
 let lastAvatar='';
+function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+// --- Realistic avatar function ---
 function getRandomAvatar(role='member'){
-  let url;
-  do {
-    if(Math.random()<0.65){
-      const gender=Math.random()<0.5?'men':'women';
-      const id=Math.floor(Math.random()*99)+1;
-      url=`https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
-    } else {
-      const misc=['https://i.pravatar.cc/150?img=68','https://placekitten.com/50/50','https://place-puppy.com/50x50','https://avatars.dicebear.com/api/bottts/random.svg','https://placeimg.com/50/50/any'];
-      url=misc[Math.floor(Math.random()*misc.length)];
-    }
-  } while(url===lastAvatar);
+  let url='';
+  const chance=Math.random();
+  if(chance<0.5){
+    const gender=Math.random()<0.5?'men':'women';
+    const id=Math.floor(Math.random()*99)+1;
+    url=`https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
+  } else if(chance<0.7){
+    const misc=[
+      'https://i.pravatar.cc/150?img=68',
+      'https://placekitten.com/50/50',
+      'https://place-puppy.com/50x50',
+      'https://avatars.dicebear.com/api/bottts/random.svg',
+      'https://placeimg.com/50/50/any',
+      'https://placebear.com/50/50'
+    ];
+    url=randomItem(misc);
+  } else {
+    url=''; // blank avatar
+  }
   lastAvatar=url;
   return url;
 }
@@ -190,19 +210,29 @@ const chatWindow=document.getElementById('chat-window');
 const onlineCount=document.getElementById('online-count');
 const totalMembers=document.getElementById('total-members');
 
-let verified=false;
-let messages=seededMessages.slice();
-let typingTimeout=null;
-
 // --- Render ---
-function renderPinned(){pinnedList.innerHTML='';pinned.forEach(p=>{const li=document.createElement('li');li.className='leading-snug';li.textContent=`• ${p}`;pinnedList.appendChild(li);});}
+function renderPinned(){
+  pinnedList.innerHTML='';
+  pinned.forEach(p=>{
+    const li=document.createElement('li');
+    li.className='leading-snug text-lightgray';
+    li.textContent=`• ${p}`;
+    pinnedList.appendChild(li);
+  });
+}
+
 function renderMessages(){
   messagesList.innerHTML='';
   messages.forEach(m=>{
     const article=document.createElement('article');
     article.className=`p-3 rounded-lg flex items-start gap-2 ${m.role==='admin'?'chat-message-admin':'chat-message-member'} fade-in`;
     const img=document.createElement('img');
-    img.src=m.avatar||getRandomAvatar(m.role);
+    if(m.avatar){
+      img.src=m.avatar;
+    } else {
+      img.src='';
+      img.style.backgroundColor='#555';
+    }
     img.alt=m.member;
     img.className='h-8 w-8 rounded-full flex-shrink-0';
     const contentDiv=document.createElement('div');
@@ -227,18 +257,16 @@ function renderMessages(){
 }
 
 // --- Events ---
-copyPinnedBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pinned.join('\n'));alert('Pinned rules copied to clipboard');}catch(err){console.warn(err);alert('Unable to copy');}});
+copyPinnedBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pinned.join('\n'));alert('Pinned rules copied');}catch(err){console.warn(err);alert('Unable to copy');}});
 toggleNotesBtn.addEventListener('click',()=>{behaviorNotes.classList.toggle('hidden');toggleNotesBtn.setAttribute('aria-expanded',String(!behaviorNotes.classList.contains('hidden')));});
-verifyBtn.addEventListener('click',()=>{verified=true;composerLocked.classList.add('hidden');composer.classList.remove('hidden');composerText.focus();});
-sendBtn.addEventListener('click',()=>{if(!verified)return;const txt=composerText.value.trim();if(!txt)return;const now=new Date();const timeStr=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});messages.push({time:timeStr, member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});composerText.value='';renderMessages();});
+verifyBtn.addEventListener('click',()=>{composerLocked.classList.add('hidden');composer.classList.remove('hidden');composerText.focus();});
+sendBtn.addEventListener('click',()=>{const txt=composerText.value.trim();if(!txt)return;const now=new Date();const timeStr=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});messages.push({time:timeStr, member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});composerText.value='';renderMessages();updateSidebar();});
 composerText.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 
 // --- Live simulation ---
 const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
 const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
 const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
-
-function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
 
 function scheduleNextActivity(){
   const delay=Math.floor(Math.random()*80000)+10000; // 10-90s
@@ -251,15 +279,15 @@ function scheduleNextActivity(){
 function simulateNewActivity(){
   if(Math.random()<0.7){
     const name=randomItem(iranNames)+' '+Math.floor(Math.random()*1000);
-    const msg=randomItem(joinerMessages);
     showTypingIndicator(name);
     setTimeout(()=>{
+      const msg=randomItem(joinerMessages);
       const newMsg={time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:name, text:msg, role:'new', avatar:getRandomAvatar('member')};
       messages.push(newMsg);
       memberSidebar.totalApprox+=1;
-      memberSidebar.online=Math.min(memberSidebar.totalApprox, memberSidebar.online + Math.floor(Math.random()*3)+1);
       removeTypingIndicator();
       renderMessages();
+      updateSidebar();
     }, Math.floor(Math.random()*3000)+2000);
   }
   if(Math.random()<0.5){
@@ -271,12 +299,26 @@ function simulateNewActivity(){
       messages.push(repMsg);
       removeTypingIndicator();
       renderMessages();
+      updateSidebar();
     }, Math.floor(Math.random()*3000)+2000);
   }
-  onlineCount.textContent=memberSidebar.online;
-  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
 }
 
+// --- Sidebar live online fluctuation ---
+function fluctuateOnline() {
+  const newOnline = 3 + Math.floor(Math.random() * 8); // 3–10
+  memberSidebar.online = Math.min(newOnline, memberSidebar.totalApprox);
+  updateSidebar();
+  setTimeout(fluctuateOnline, 5000 + Math.random()*5000); // 5–10s
+}
+
+function updateSidebar(){
+  onlineCount.textContent=memberSidebar.online;
+  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
+  document.getElementById('online-members').innerHTML=`<span class="h-2 w-2 rounded-full online-dot"></span> ${memberSidebar.online}`;
+}
+
+// --- Typing indicator ---
 function showTypingIndicator(name){
   removeTypingIndicator();
   const indicator=document.createElement('div');
@@ -294,14 +336,15 @@ function removeTypingIndicator(){
 
 // --- Init ---
 function init(){
+  renderPinned();
   document.getElementById('group-title').textContent=GROUP_TITLE;
   document.getElementById('member-approx').textContent=`~${APPROX_TOTAL_MEMBERS} members`;
-  onlineCount.textContent=memberSidebar.online;
-  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
-  renderPinned();
+  updateSidebar();
   renderMessages();
   scheduleNextActivity();
+  fluctuateOnline(); // start live online fluctuation
 }
+
 init();
 </script>
 </body>
