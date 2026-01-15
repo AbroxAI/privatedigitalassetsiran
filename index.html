@@ -1,7 +1,7 @@
 <!--
-PrivateDigitalAssetChat_DarkMode_Realistic_EnhancedFull_Polished_Animated_Typing.html
+PrivateDigitalAssetChat_DarkMode_Realistic_EnhancedFull_Polished_Animated.html
 Fully blended logic with avatars (Iranian humans + random misc), dark institutional theme, live simulation with passive member/mod replies.
-Enhanced: avatars never repeat consecutively, message timing staggered 10–90s, new member fade-in animation, typing indicators.
+Recommended members: ~200
 Frontend-only, safe to host on GitHub Pages.
 -->
 <!doctype html>
@@ -41,7 +41,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 <header class="flex items-center justify-between mb-4">
   <div>
-    <h1 id="group-title" class="text-xl md:text-2xl font-semibold">Private Digital Asset Discussion (Iran) <span id="member-approx" class="text-sm text-muted">~100 members</span></h1>
+    <h1 id="group-title" class="text-xl md:text-2xl font-semibold">Private Digital Asset Discussion (Iran) <span id="member-approx" class="text-sm text-muted">~200 members</span></h1>
     <p class="text-xs text-lightgray">Member count approximate — online indicator shows only active users</p>
   </div>
   <div class="flex items-center gap-4">
@@ -58,10 +58,8 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 <main class="flex flex-1 flex-col md:flex-row gap-4">
 
-<!-- Chat area -->
 <section class="flex-1 flex flex-col chat-bg rounded-2xl shadow-sm overflow-hidden">
 
-  <!-- Pinned -->
   <div class="p-4 border-b border-subtle pinned-bg flex items-start justify-between">
     <div>
       <div class="text-sm font-medium text-lightgray">Pinned Messages</div>
@@ -73,12 +71,10 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
   </div>
 
-  <!-- Messages -->
   <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
     <div id="messages-list" class="space-y-3"></div>
   </div>
 
-  <!-- Composer / verification -->
   <div class="p-4 border-t border-subtle composer-bg">
     <div id="composer-locked" class="flex items-center justify-between gap-4 text-lightgray">
       <div class="text-sm">Posting is locked until verification. Please request verification to post.</div>
@@ -96,7 +92,6 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 </section>
 
-<!-- Sidebar -->
 <aside class="w-full md:w-72 flex-shrink-0 sidebar-bg rounded-2xl shadow-sm p-4">
   <div class="flex items-center justify-between mb-3">
     <h2 class="text-sm font-semibold text-lightgray">Member sidebar (sanitized)</h2>
@@ -117,7 +112,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
     <div>
       <dt class="text-xs text-lightgray">Total members</dt>
-      <dd id="total-members" class="font-medium">~100</dd>
+      <dd id="total-members" class="font-medium">~200</dd>
     </div>
   </dl>
   <hr class="my-3 border-subtle" />
@@ -146,9 +141,9 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 </div>
 
 <script>
-// --- Seeded data + avatars ---
+// --- Config ---
 const GROUP_TITLE="Private Digital Asset Discussion (Iran)";
-const APPROX_TOTAL_MEMBERS=100;
+const APPROX_TOTAL_MEMBERS=200; // updated
 const pinned=["Group rules: privacy, Iran-only","Verification required before posting","Purpose: value protection, not investment","Do NOT share this link outside"];
 const memberSidebar={admins:2,moderators:4,online:6,totalApprox:APPROX_TOTAL_MEMBERS};
 const seededMessages=[
@@ -199,9 +194,8 @@ let verified=false;
 let messages=seededMessages.slice();
 let typingTimeout=null;
 
-// --- Render functions w/ animation ---
+// --- Render ---
 function renderPinned(){pinnedList.innerHTML='';pinned.forEach(p=>{const li=document.createElement('li');li.className='leading-snug';li.textContent=`• ${p}`;pinnedList.appendChild(li);});}
-
 function renderMessages(){
   messagesList.innerHTML='';
   messages.forEach(m=>{
@@ -239,7 +233,7 @@ verifyBtn.addEventListener('click',()=>{verified=true;composerLocked.classList.a
 sendBtn.addEventListener('click',()=>{if(!verified)return;const txt=composerText.value.trim();if(!txt)return;const now=new Date();const timeStr=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});messages.push({time:timeStr, member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});composerText.value='';renderMessages();});
 composerText.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 
-// --- Live simulation w/ staggered timing, join animation & typing indicator ---
+// --- Live simulation ---
 const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
 const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
 const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
@@ -266,7 +260,7 @@ function simulateNewActivity(){
       memberSidebar.online=Math.min(memberSidebar.totalApprox, memberSidebar.online + Math.floor(Math.random()*3)+1);
       removeTypingIndicator();
       renderMessages();
-    }, Math.floor(Math.random()*3000)+2000); // 2-5s typing
+    }, Math.floor(Math.random()*3000)+2000);
   }
   if(Math.random()<0.5){
     const replyGroup=randomItem(passiveReplies);
@@ -299,7 +293,15 @@ function removeTypingIndicator(){
 }
 
 // --- Init ---
-function init(){document.getElementById('group-title').textContent=GROUP_TITLE;document.getElementById('member-approx').textContent=`~${APPROX_TOTAL_MEMBERS} members`;onlineCount.textContent=memberSidebar.online;totalMembers.textContent=`~${memberSidebar.totalApprox}`;renderPinned();renderMessages();scheduleNextActivity();}
+function init(){
+  document.getElementById('group-title').textContent=GROUP_TITLE;
+  document.getElementById('member-approx').textContent=`~${APPROX_TOTAL_MEMBERS} members`;
+  onlineCount.textContent=memberSidebar.online;
+  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
+  renderPinned();
+  renderMessages();
+  scheduleNextActivity();
+}
 init();
 </script>
 </body>
