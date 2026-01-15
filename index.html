@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Private Digital Asset Discussion (Iran)</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.286.0/dist/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide@0.286.0/dist/lucide.css">
 <style>
 html,body,#app{height:100%;}
 body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
@@ -17,7 +19,6 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 .text-lightgray {color:#CCCCCC;}
 .text-muted {color:#BFBFBF;}
 .border-subtle {border-color:#333333;}
-.online-dot {background-color:#4CAF50;}
 .btn-accent {background-color:#4CAF50; color:#fff;}
 #chat-window::-webkit-scrollbar {width:6px;}
 #chat-window::-webkit-scrollbar-thumb {background-color:#383838; border-radius:3px;}
@@ -28,6 +29,9 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 .dot:nth-child(2){animation-delay:0.2s;}
 .dot:nth-child(3){animation-delay:0.4s;}
 @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+/* Online dot pulse */
+.online-dot {animation:onlinePulse 1.5s infinite alternate;}
+@keyframes onlinePulse {0%{opacity:0.6; transform:scale(0.9);}50%{opacity:1; transform:scale(1.1);}100%{opacity:0.6; transform:scale(0.95);}}
 </style>
 </head>
 <body>
@@ -47,7 +51,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
       <div id="online-count" class="text-lg font-semibold text-lightgray">6</div>
     </div>
     <div class="flex items-center gap-2">
-      <span class="h-3 w-3 rounded-full online-dot" aria-hidden="true"></span>
+      <i data-lucide="circle" class="text-[#4CAF50] w-4 h-4 online-dot"></i>
       <span class="text-sm text-lightgray">Active now</span>
     </div>
   </div>
@@ -55,13 +59,13 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 <main class="flex flex-1 flex-col md:flex-row gap-4">
 
-<!-- Chat area -->
 <section class="flex-1 flex flex-col chat-bg rounded-2xl shadow-sm overflow-hidden">
 
-  <!-- Pinned -->
   <div class="p-4 border-b border-subtle pinned-bg flex items-start justify-between">
     <div>
-      <div class="text-sm font-medium text-lightgray">Pinned Messages</div>
+      <div class="text-sm font-medium text-lightgray flex items-center gap-1">
+        <span>Pinned Messages</span> <i data-lucide="pin" class="w-4 h-4 online-dot"></i>
+      </div>
       <ul id="pinned-list" class="mt-2 text-sm text-lightgray space-y-1"></ul>
     </div>
     <div class="flex flex-col items-end gap-2">
@@ -70,12 +74,10 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
   </div>
 
-  <!-- Messages -->
   <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
     <div id="messages-list" class="space-y-3"></div>
   </div>
 
-  <!-- Composer / verification -->
   <div class="p-4 border-t border-subtle composer-bg">
     <div id="composer-locked" class="flex items-center justify-between gap-4 text-lightgray">
       <div class="text-sm">Posting is locked until verification. Please request verification to post.</div>
@@ -93,10 +95,9 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
 
 </section>
 
-<!-- Sidebar -->
 <aside class="w-full md:w-72 flex-shrink-0 sidebar-bg rounded-2xl shadow-sm p-4">
   <div class="flex items-center justify-between mb-3">
-    <h2 class="text-sm font-semibold text-lightgray">Member sidebar (sanitized)</h2>
+    <h2 class="text-sm font-semibold text-lightgray">Member sidebar (verified)</h2>
     <span class="text-xs text-muted">Realistic view</span>
   </div>
   <dl class="grid grid-cols-2 gap-2 text-sm text-muted">
@@ -111,7 +112,7 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     <div>
       <dt class="text-xs text-lightgray">Online members</dt>
       <dd id="online-members" class="font-medium flex items-center gap-2">
-        <span class="h-2 w-2 rounded-full online-dot"></span> 6
+        <i data-lucide="circle" class="text-[#4CAF50] w-3 h-3 online-dot"></i> 6
       </dd>
     </div>
     <div>
@@ -120,12 +121,8 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     </div>
   </dl>
   <hr class="my-3 border-subtle" />
-  <div class="text-sm text-muted">
-    <p>Online indicator = green dot. Offline members are not listed individually — only a total number is shown.</p>
-  </div>
-  <hr class="my-3 border-subtle" />
   <div class="text-sm">
-    <button class="w-full text-left text-xs p-2 rounded border border-subtle hover:bg-gray-700">View sanitized member roles</button>
+    <button class="w-full text-left text-xs p-2 rounded border border-subtle hover:bg-gray-700">View verified member roles</button>
   </div>
 </aside>
 
@@ -141,11 +138,11 @@ body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
     <li>No hype, no promises, no tutorials</li>
   </ul>
 </div>
-<footer class="mt-4 text-xs text-muted">UI for frontend-only hosting. Fully sandbox-ready.</footer>
+<footer class="mt-4 text-xs text-muted"></footer>
 </div>
 
 <script>
-// --- Data + avatars ---
+// ---------------- DATA ----------------
 const GROUP_TITLE="Private Digital Asset Discussion (Iran)";
 const APPROX_TOTAL_MEMBERS=200;
 const pinned=[
@@ -165,37 +162,19 @@ const seededMessages=[
   {time:"10:20 AM", member:"New Joiner", text:"Hello, just joined!", role:"new"},
   {time:"10:30 AM", member:"Member 4", text:"Yes, same, waiting for verification.", role:"member"}
 ];
+let messages=[...seededMessages];
 
-let lastAvatar='';
+// ---------------- AVATARS ----------------
 function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
-
-// --- Realistic avatar function ---
 function getRandomAvatar(role='member'){
-  let url='';
   const chance=Math.random();
-  if(chance<0.5){
-    const gender=Math.random()<0.5?'men':'women';
-    const id=Math.floor(Math.random()*99)+1;
-    url=`https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
-  } else if(chance<0.7){
-    const misc=[
-      'https://i.pravatar.cc/150?img=68',
-      'https://placekitten.com/50/50',
-      'https://place-puppy.com/50x50',
-      'https://avatars.dicebear.com/api/bottts/random.svg',
-      'https://placeimg.com/50/50/any',
-      'https://placebear.com/50/50'
-    ];
-    url=randomItem(misc);
-  } else {
-    url=''; // blank avatar
-  }
-  lastAvatar=url;
-  return url;
+  if(chance<0.5){ const gender=Math.random()<0.5?'men':'women'; const id=Math.floor(Math.random()*99)+1; return `https://randomuser.me/api/portraits/${gender}/${id}.jpg`; }
+  else if(chance<0.7){ return randomItem(['https://i.pravatar.cc/150?img=68','https://placekitten.com/50/50','https://place-puppy.com/50x50','https://avatars.dicebear.com/api/bottts/random.svg','https://placeimg.com/50/50/any','https://placebear.com/50/50']); }
+  else{return '';}
 }
 seededMessages.forEach(m=>m.avatar=getRandomAvatar(m.role));
 
-// --- DOM refs ---
+// ---------------- DOM ----------------
 const pinnedList=document.getElementById('pinned-list');
 const messagesList=document.getElementById('messages-list');
 const copyPinnedBtn=document.getElementById('copy-pinned');
@@ -210,31 +189,32 @@ const chatWindow=document.getElementById('chat-window');
 const onlineCount=document.getElementById('online-count');
 const totalMembers=document.getElementById('total-members');
 
-// --- Render ---
+// ---------------- RENDER ----------------
 function renderPinned(){
   pinnedList.innerHTML='';
   pinned.forEach(p=>{
     const li=document.createElement('li');
-    li.className='leading-snug text-lightgray';
-    li.textContent=`• ${p}`;
+    li.className='leading-snug text-lightgray flex items-center gap-1';
+    li.innerHTML=`<i data-lucide="pin" class="w-4 h-4 online-dot"></i> ${p}`;
     pinnedList.appendChild(li);
   });
+  lucide.createIcons();
 }
 
 function renderMessages(){
   messagesList.innerHTML='';
   messages.forEach(m=>{
     const article=document.createElement('article');
+    const randDelay=Math.random()*0.4;
+    article.style.animationDelay=`${randDelay}s`;
+    const rotDeg=(Math.random()*4-2);
+    article.style.transform=`rotate(${rotDeg}deg)`;
     article.className=`p-3 rounded-lg flex items-start gap-2 ${m.role==='admin'?'chat-message-admin':'chat-message-member'} fade-in`;
     const img=document.createElement('img');
-    if(m.avatar){
-      img.src=m.avatar;
-    } else {
-      img.src='';
-      img.style.backgroundColor='#555';
-    }
+    if(m.avatar){img.src=m.avatar;}else{img.style.backgroundColor='#555';}
     img.alt=m.member;
     img.className='h-8 w-8 rounded-full flex-shrink-0';
+    img.style.transform=`translateY(${Math.floor(Math.random()*6-3)}px)`;
     const contentDiv=document.createElement('div');
     contentDiv.className='flex-1';
     const header=document.createElement('div');
@@ -253,98 +233,56 @@ function renderMessages(){
     article.appendChild(img); article.appendChild(contentDiv);
     messagesList.appendChild(article);
   });
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  const scrollOffset=Math.random()*10;
+  chatWindow.scrollTo({top: chatWindow.scrollHeight+scrollOffset, behavior:'smooth'});
 }
 
-// --- Events ---
-copyPinnedBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pinned.join('\n'));alert('Pinned rules copied');}catch(err){console.warn(err);alert('Unable to copy');}});
-toggleNotesBtn.addEventListener('click',()=>{behaviorNotes.classList.toggle('hidden');toggleNotesBtn.setAttribute('aria-expanded',String(!behaviorNotes.classList.contains('hidden')));});
-verifyBtn.addEventListener('click',()=>{composerLocked.classList.add('hidden');composer.classList.remove('hidden');composerText.focus();});
-sendBtn.addEventListener('click',()=>{const txt=composerText.value.trim();if(!txt)return;const now=new Date();const timeStr=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});messages.push({time:timeStr, member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});composerText.value='';renderMessages();updateSidebar();});
-composerText.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
+// ---------------- EVENTS ----------------
+copyPinnedBtn.addEventListener('click', async()=>{try{await navigator.clipboard.writeText(pinned.join('\n'));alert('Pinned rules copied');}catch(err){alert('Unable to copy');}});
+toggleNotesBtn.addEventListener('click',()=>{behaviorNotes.classList.toggle('hidden'); toggleNotesBtn.setAttribute('aria-expanded',String(!behaviorNotes.classList.contains('hidden')));});
+verifyBtn.addEventListener('click',()=>{composerLocked.classList.add('hidden'); composer.classList.remove('hidden'); composerText.focus();});
+sendBtn.addEventListener('click',()=>{
+  const txt=composerText.value.trim();
+  if(!txt)return;
+  messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:'You', text:txt, role:'member', avatar:getRandomAvatar('member')});
+  composerText.value='';
+  renderMessages(); updateSidebar();
+});
+composerText.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); sendBtn.click();}});
 
-// --- Live simulation ---
+// ---------------- LIVE SIMULATION ----------------
 const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
 const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
 const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
 
-function scheduleNextActivity(){
-  const delay=Math.floor(Math.random()*80000)+10000; // 10-90s
-  setTimeout(()=>{
-    simulateNewActivity();
-    scheduleNextActivity();
-  }, delay);
-}
-
+function scheduleNextActivity(){const delay=Math.floor(Math.random()*80000)+10000; setTimeout(()=>{simulateNewActivity(); scheduleNextActivity();}, delay);}
 function simulateNewActivity(){
   if(Math.random()<0.7){
     const name=randomItem(iranNames)+' '+Math.floor(Math.random()*1000);
     showTypingIndicator(name);
     setTimeout(()=>{
-      const msg=randomItem(joinerMessages);
-      const newMsg={time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:name, text:msg, role:'new', avatar:getRandomAvatar('member')};
-      messages.push(newMsg);
-      memberSidebar.totalApprox+=1;
-      removeTypingIndicator();
-      renderMessages();
-      updateSidebar();
-    }, Math.floor(Math.random()*3000)+2000);
+      messages.push({time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), member:name, text:randomItem(joinerMessages), role:'new', avatar:getRandomAvatar('member')});
+      memberSidebar.totalApprox+=1; removeTypingIndicator(); renderMessages(); updateSidebar();
+    }, Math.floor(Math.random()*4000)+2000);
   }
   if(Math.random()<0.5){
     const replyGroup=randomItem(passiveReplies);
     const repName=replyGroup.role==='mod'?'Moderator':randomItem(iranNames);
     showTypingIndicator(repName);
     setTimeout(()=>{
-      const repMsg={time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:repName, text:randomItem(replyGroup.texts), role:replyGroup.role, avatar:getRandomAvatar(replyGroup.role)};
-      messages.push(repMsg);
-      removeTypingIndicator();
-      renderMessages();
-      updateSidebar();
-    }, Math.floor(Math.random()*3000)+2000);
+      messages.push({time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), member:repName, text:randomItem(replyGroup.texts), role:replyGroup.role, avatar:getRandomAvatar(replyGroup.role)});
+      removeTypingIndicator(); renderMessages(); updateSidebar();
+    }, Math.floor(Math.random()*4000)+2000);
   }
 }
 
-// --- Sidebar live online fluctuation ---
-function fluctuateOnline() {
-  const newOnline = 3 + Math.floor(Math.random() * 8); // 3–10
-  memberSidebar.online = Math.min(newOnline, memberSidebar.totalApprox);
-  updateSidebar();
-  setTimeout(fluctuateOnline, 5000 + Math.random()*5000); // 5–10s
-}
+function fluctuateOnline(){memberSidebar.online=3+Math.floor(Math.random()*8); memberSidebar.online=Math.min(memberSidebar.online,memberSidebar.totalApprox); updateSidebar(); setTimeout(fluctuateOnline, 5000+Math.random()*5000);}
+function updateSidebar(){onlineCount.textContent=memberSidebar.online; totalMembers.textContent=`~${memberSidebar.totalApprox}`; document.getElementById('online-members').innerHTML=`<i data-lucide="circle" class="text-[#4CAF50] w-3 h-3 online-dot"></i> ${memberSidebar.online}`; lucide.createIcons();}
+function showTypingIndicator(name){removeTypingIndicator(); const indicator=document.createElement('div'); indicator.className='typing-indicator'; indicator.id='typing-indicator'; indicator.innerHTML=`${name} is typing <span class="dot"></span><span class="dot"></span><span class="dot"></span>`; messagesList.appendChild(indicator); chatWindow.scrollTo({top: chatWindow.scrollHeight, behavior:'smooth'});}
+function removeTypingIndicator(){const existing=document.getElementById('typing-indicator'); if(existing)existing.remove();}
 
-function updateSidebar(){
-  onlineCount.textContent=memberSidebar.online;
-  totalMembers.textContent=`~${memberSidebar.totalApprox}`;
-  document.getElementById('online-members').innerHTML=`<span class="h-2 w-2 rounded-full online-dot"></span> ${memberSidebar.online}`;
-}
-
-// --- Typing indicator ---
-function showTypingIndicator(name){
-  removeTypingIndicator();
-  const indicator=document.createElement('div');
-  indicator.className='typing-indicator';
-  indicator.id='typing-indicator';
-  indicator.innerHTML=`${name} is typing <span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
-  messagesList.appendChild(indicator);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function removeTypingIndicator(){
-  const existing=document.getElementById('typing-indicator');
-  if(existing)existing.remove();
-}
-
-// --- Init ---
-function init(){
-  renderPinned();
-  document.getElementById('group-title').textContent=GROUP_TITLE;
-  document.getElementById('member-approx').textContent=`~${APPROX_TOTAL_MEMBERS} members`;
-  updateSidebar();
-  renderMessages();
-  scheduleNextActivity();
-  fluctuateOnline(); // start live online fluctuation
-}
-
+// ---------------- INIT ----------------
+function init(){renderPinned(); renderMessages(); updateSidebar(); scheduleNextActivity(); fluctuateOnline();}
 init();
 </script>
 </body>
