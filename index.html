@@ -1,276 +1,440 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Private Digital Asset Discussion (Iran)</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.286.0/dist/lucide.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide@0.286.0/dist/lucide.css">
-<style>
-html,body,#app{height:100%; margin:0;}
-body {background-color:#232323; color:#DADADA; font-family:sans-serif;}
-.chat-bg {background-color:#262626;}
-.chat-message-member {background-color:#1F1F1F; transition: all 0.5s ease; opacity:1;}
-.chat-message-admin {background-color:#2A2A2A; transition: all 0.5s ease; opacity:1;}
-.sidebar-bg {background-color:#262626;}
-.pinned-bg {background-color:#1F1F1F;}
-.composer-bg {background-color:#1F1F1F;}
-.text-lightgray {color:#CCCCCC;}
-.text-muted {color:#BFBFBF;}
-.border-subtle {border-color:#333333;}
-.btn-accent {background-color:#4CAF50; color:#fff;}
-#chat-window::-webkit-scrollbar {width:6px;}
-#chat-window::-webkit-scrollbar-thumb {background-color:#383838; border-radius:3px;}
-.fade-in {opacity:0; transform:translateY(10px); animation:fadeInUp 0.5s forwards;}
-@keyframes fadeInUp {to{opacity:1; transform:translateY(0);}}
-.typing-indicator {height:20px; display:flex; align-items:center; gap:2px; font-size:0.75rem; color:#BFBFBF;}
-.dot {width:5px; height:5px; background:#BFBFBF; border-radius:50%; animation:blink 1s infinite;}
-.dot:nth-child(2){animation-delay:0.2s;}
-.dot:nth-child(3){animation-delay:0.4s;}
-@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
-.avatar-float {animation:floatY 2s ease-in-out infinite alternate;}
-@keyframes floatY {0%{transform:translateY(0px);}100%{transform:translateY(2px);}}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Group: Private Digital Asset Discussion (Iran)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+  <style>
+    html,body,#app{height:100%}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+    .avatar-fallback {
+      background: linear-gradient(135deg,#e5e7eb,#f3f4f6);
+      display:flex; align-items:center; justify-content:center;
+      color:#334155; font-weight:600; text-transform:uppercase;
+    }
+
+    /* STATUS (tasteful stimulation) */
+    .status-icon-wrap { display:inline-flex; align-items:center; gap:8px; }
+    @keyframes blinkPulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.06); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    /* apply to the generated svg (we add class 'online-svg' after lucide.replace) */
+    .online-svg {
+      color: #16a34a; /* green (affects stroke via currentColor) */
+      width: 14px;
+      height: 14px;
+      display:inline-block;
+      vertical-align:middle;
+      animation: blinkPulse 1.4s infinite ease-in-out;
+      transform-origin: 50% 50%;
+    }
+    /* numeric subtle pulse */
+    @keyframes numberPulse {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-1px) scale(1.02); opacity: 0.95; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .status-number { animation: numberPulse 2.2s infinite ease-in-out; color: #065f46; font-weight:700; }
+
+    /* pinned icon svg class applied after replace */
+    .pin-svg {
+      color: #374151; /* dark slate */
+      width: 16px;
+      height: 16px;
+      vertical-align: -2px;
+      margin-right: 6px; /* correct side for LTR */
+      display:inline-block;
+    }
+
+    /* message visual tweaks */
+    .msg-admin { background-color: #f1f5f9; border-left: 4px solid #bfdbfe; padding:12px; border-radius:0.5rem; }
+    .msg-mod { background-color: #ffffff; border-left: 4px solid #e5e7eb; padding:12px; border-radius:0.5rem; }
+    .msg-system { font-style: italic; color: #6b7280; padding: 8px; }
+
+    img.round-avatar { width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0; }
+
+    @media (max-width:640px) {
+      .online-svg { width:10px; height:10px; }
+      .pin-svg { width:14px; height:14px; margin-right:4px; }
+    }
+  </style>
 </head>
-<body>
-<div id="app" class="flex flex-col min-h-screen p-4 md:p-8">
-
-<header class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-2">
-  <div>
-    <h1 id="group-title" class="text-xl md:text-2xl font-semibold">
-      Private Digital Asset Discussion (Iran)
-    </h1>
-    <div class="flex items-center gap-4 mt-1 md:mt-2">
-      <span id="member-approx" class="text-sm text-muted">~200 members</span>
-      <div class="flex items-center gap-2">
-        <i data-lucide="circle" class="text-[#4CAF50] w-3.5 h-3.5"></i>
-        <span class="text-sm text-lightgray" id="online-count">6 Active now</span>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8 font-sans">
+  <div id="app" class="flex flex-col min-h-screen">
+    <header class="flex items-center justify-between mb-4">
+      <div>
+        <h1 id="group-title" class="text-xl md:text-2xl font-semibold">Group: Private Digital Asset Discussion (Iran)</h1>
+        <div class="text-sm text-gray-500 mt-1">
+          <strong id="member-approx">Members (visible): ~140</strong> — <span id="date-range">Period: 8 January 2026 — 15 January 2026</span>
+        </div>
       </div>
-    </div>
-  </div>
-</header>
 
-<main class="flex flex-1 flex-col md:flex-row gap-4">
-
-<section class="flex-1 flex flex-col chat-bg rounded-2xl shadow-sm overflow-hidden">
-
-  <div class="p-4 border-b border-subtle pinned-bg flex items-start justify-between">
-    <div>
-      <div class="text-sm font-medium text-lightgray flex items-center gap-1">
-        <span>Pinned Messages</span> <i data-lucide="pin" class="w-4 h-4"></i>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div class="text-sm font-medium">Status</div>
+          <div class="status-icon-wrap" role="status" aria-live="polite" aria-atomic="true">
+            <i data-lucide="circle" aria-hidden="true"></i>
+            <div id="status-text" class="text-sm text-gray-700">Active now: <span id="status-number" class="status-number">6</span></div>
+          </div>
+        </div>
       </div>
-      <ul id="pinned-list" class="mt-2 text-sm text-lightgray space-y-1"></ul>
+    </header>
+
+    <main class="flex flex-1 flex-col md:flex-row gap-4">
+      <section class="flex-1 flex flex-col bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-4 border-b flex items-start justify-between">
+          <div>
+            <div class="text-sm font-medium">PINNED CONTENT (always visible)</div>
+            <ul id="pinned-list" class="mt-2 text-sm text-gray-700 space-y-1"></ul>
+          </div>
+          <div class="flex flex-col items-end gap-2">
+            <button id="copy-pinned" class="text-xs px-3 py-1 rounded-full border hover:bg-gray-50" aria-label="Copy pinned rules">Copy</button>
+            <button id="toggle-notes" class="text-xs px-3 py-1 rounded-full border hover:bg-gray-50" aria-expanded="false">Notes</button>
+          </div>
+        </div>
+
+        <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
+          <div id="messages-list" class="space-y-3"></div>
+        </div>
+
+        <div class="p-4 border-t bg-gray-50">
+          <div id="composer-locked" class="flex items-center justify-between gap-4">
+            <div class="text-sm text-gray-600">Posting is locked until verification. Please request verification to post.</div>
+            <div class="flex gap-2">
+              <button id="verify-btn" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">Request verification</button>
+            </div>
+          </div>
+
+          <div id="composer" class="hidden flex gap-3 items-start">
+            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1 p-3 rounded-lg border resize-none h-16 text-sm" aria-label="Message composer"></textarea>
+            <div class="flex flex-col gap-2">
+              <button id="send-btn" class="px-4 py-2 rounded bg-green-600 text-white text-sm">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="w-full md:w-72 flex-shrink-0 bg-white rounded-2xl shadow-sm p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold">MEMBERS (names)</h2>
+          <span class="text-xs text-gray-400">Realistic view</span>
+        </div>
+
+        <div id="members-list" class="space-y-2 text-sm text-gray-700"></div>
+      </aside>
+    </main>
+
+    <div id="behavior-notes" class="mt-4 p-4 bg-white rounded-lg shadow text-sm text-gray-700 hidden">
+      <h3 class="font-semibold">REALISTIC CHAT PARTICIPATION (pattern & stats)</h3>
+      <pre class="whitespace-pre-wrap">(Overview & instructor notes stored in the script)</pre>
     </div>
-    <div class="flex flex-col items-end gap-2">
-      <button id="copy-pinned" class="text-xs px-3 py-1 rounded-full border border-subtle hover:bg-gray-700">Copy</button>
-      <button id="toggle-notes" class="text-xs px-3 py-1 rounded-full border border-subtle hover:bg-gray-700" aria-expanded="false">Notes</button>
-    </div>
+
+    <footer class="mt-4 text-xs text-gray-400">To host on GitHub Pages, save this file as <code>index.html</code> in your repo root (or /docs).</footer>
   </div>
 
-  <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
-    <div id="messages-list" class="space-y-3"></div>
-  </div>
+  <script>
+    // --- Full data arrays (exact, complete, preserved) ---
 
-  <div class="p-4 border-t border-subtle composer-bg">
-    <div id="composer-locked" class="flex items-center justify-between gap-4 text-lightgray">
-      <div class="text-sm">Posting is locked until verification. Please request verification to post.</div>
-      <div class="flex gap-2">
-        <button id="verify-btn" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">Request verification</button>
-      </div>
-    </div>
-    <div id="composer" class="hidden flex gap-3 items-start">
-      <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1 p-3 rounded-lg border resize-none h-16 text-sm bg-gray-800 text-lightgray"></textarea>
-      <button id="send-btn" class="px-4 py-2 rounded btn-accent text-sm">Send</button>
-    </div>
-  </div>
+    const pinned = [
+      "Privacy rules (Iran-focused)",
+      "Verification required to participate in sensitive discussions",
+      "Group purpose: protect asset value, not investment advice",
+      "No screenshots or forwarding",
+      "Sensitive questions → DM the admin"
+    ];
 
-</section>
+    const members = [
+      "Ariamen Niknam","Zhinos Farmani","Misaq Dashti","Pardis Sohrabi","Pouyan Tarabnia","Zhaleh Pourbakhtiar","Derina Kermani","Sohrab Mehrayin","Sepand Yaghmaei","Bakhtiar Kohandel",
+      "Taraneh Rozbehani","Saman Tihu","Padideh Naderi","Niko Foroughi","Hamoon Zagros","Naysabeh Tahmasbi","Diana Siavoshi","Bahman Azarpi","Negin Koneshlu","Rosta Mehrayin",
+      "Saman-yar Ahoui","Yara Zhilavand","Parsa Shayeg","Mahraz Golestani","Siamak Hoorami","Helia Mahinpour","Nima Taban","Parvosh Ramyar","Hooshang Bahari","Naghmeh Soroush",
+      "Kourosh Nikmanesh","Kian Rudbar","Narges Delaram","Sudeh Kianpour","Amin Shayegan","Niloufar Behrbakhsh","Soha Armaghani","Dara Firoozi","Zhila Mehraban","Samyar Rudgar",
+      "Mahrokh Khodadadi","Nava Sayad","Parmida Sahli","Parham Soleimani-Nejad","Sepideh Nikandish","Pegah Derakhshan","Toranj Keyvani","Shahin Pejmanfar","Sheyda Alavi","Hoshmand Kateb",
+      "Mojgan Forouhar","Ahura Bahrami","Azadeh Nistani","Farshid Yousefi","Yeganeh Semnani","Siros Padidar","Ainaz Goodarzi","Mani Arashid","Roonak Ghaffari","Radin Sepehri",
+      "Mahshad Barghaei","Keyvan Rostami","Nazanin Dehghani","Homa Nadali","Nira Eghbali","Pouyan Kohanzad","Matiah Khoramdel","Baran Jamshidi","Kiarash Mardani","Zaria Farhang",
+      "Dihim Nazari","Behnam Alghasi","Golareh Malkani","Koroshian Tarkan","Raha Beheshti","Soheil Nikkhah","Zhaki Zhalehpoor","Rambod Hejri","Shaparak Fallahi","Kamyar Homayounfar",
+      "Tarlan Daryabigi","Kimia Khojasteh","Pouya Nasrollahi","Mahyar Farahani","Ladan Soleimani","Niusha Mehraban","Sina Khaleghi","Golsa Shayegan","Abtin Kamali","Farnaz Bahrampour",
+      "Mehrangiz Rabiei","Arshan Mahdavi","Yasaman Azarban","Shervin Ganji","Tarnam Mahasti","Arshin Boroumand","Nikzad Shahidi","Bahareh Sirafi","Kikavous Niknami","Mehrnoush Azargun",
+      "Parsa Delshad","Zhubin Razaqi","Tahmineh Nikkhah","Houtan Delpak","Roya Danaei","Niloufar Shahryar","Zhyar Kamyab","Mina Salimi","Shayan Mazinani","Diana Farahmand",
+      "Arian Mehranfar","Yekta Feyzi","Naderah Pasandideh","Kianoush Damghani","Azadeh Mehrgostar","Samdel Shahrokhi","Mahtab Forouzh","Shayan Nikpour","Koraogh Lilizad","Hamasin Kouhi",
+      "Pouyan Zanganeh","Ramin Yarmohammadi","Niloufar Arshidi","Gerard Golchin","Hooman Panjabi","Rana Keyvani","Shahrooz Mehrabi","Minoudokht Bahrami","Adrian Feyzabad","Zarrin Golmohammadi",
+      "Farshad Kamkar","Pegah Naderian","Arzu Farozand","Delara Niri","Niko Golrokh","Sepehr Nikrosh","Samaneh Arvand","Yousef Rouzbeh","Mahtab Nobahar","Pedram Shakiba"
+    ];
 
-<aside class="w-full md:w-72 flex-shrink-0 sidebar-bg rounded-2xl shadow-sm p-4">
-  <div class="flex items-center justify-between mb-3">
-    <h2 class="text-sm font-semibold text-lightgray">Member sidebar (verified)</h2>
-    <span class="text-xs text-muted">Realistic view</span>
-  </div>
+    const seededMessages = [
+      { time: "08:57", member: "System", text: "You joined the group.", role: "system" },
+      { time: "08:59", member: "System", text: "Online: Tehran, Isfahan, Shiraz, Mashhad (4 people online)", role: "system" },
+      { time: "09:02", member: "admin (Naghmeh Soroush)", text: "Welcome. Please read the pinned rules.", role: "admin" },
+      { time: "09:11", member: "moderator A (Hooshang Bahari)", text: "For sensitive issues, verification is required. DM the admin.", role: "mod" },
+      { time: "09:18", member: "Member (Tehran) — Amin Shayegan", text: "I read the rules.", role: "member" },
+      { time: "09:28", member: "System", text: "(Seen) a few members are browsing the pinned items.", role: "system" },
+      { time: "09:41", member: "Member (Isfahan) — Sudeh Kianpour", text: "Bank transfers were delayed today.", role: "member" },
+      { time: "09:44", member: "moderator B (Parvosh Ramyar)", text: "Please take banking questions to the admin privately.", role: "mod" },
+      { time: "10:01", member: "Member (Tehran) — Amin Shayegan", text: "Understood.", role: "member" },
+      { time: "12:10", member: "System", text: "Pause — members are reading pinned rules.", role: "system" },
+      { time: "15:08", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "Morning traffic in Tehran was bad.", role: "member" },
+      { time: "15:10", member: "Member (Karaj) — Narges Delaram", text: "I saw the same problem.", role: "member" },
+      { time: "16:55", member: "System", text: "Pause — new members are quietly browsing.", role: "system" },
+      { time: "17:30", member: "System", text: "New member Rosta Mehrayin is viewing the group.", role: "system" },
+      { time: "19:12", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "It seems the rial is weaker today.", role: "member" },
+      { time: "19:50", member: "admin (Naghmeh Soroush)", text: "Remember to DM for sensitive matters.", role: "admin" },
+      { time: "20:05", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "Just my experience — USDT helped me last week.", role: "member" },
+      { time: "21:00", member: "System", text: "Quiet — most members are offline.", role: "system" },
 
-  <div id="sidebar-online-list" class="flex flex-wrap gap-2 mb-3"></div>
+      { time: "08:50", member: "Member (Tehran) — Amin Shayegan", text: "I joined yesterday. Still not verified.", role: "member" },
+      { time: "09:15", member: "System", text: "(Scrolling) New member reads some messages from last week.", role: "system" },
+      { time: "11:00", member: "admin (Naghmeh Soroush)", text: "The verification queue is nearly full today. Next review window is tomorrow.", role: "admin" },
+      { time: "13:15", member: "Member (Isfahan) — Sudeh Kianpour", text: "I was verified yesterday.", role: "member" },
+      { time: "13:16", member: "moderator A (Hooshang Bahari)", text: "Welcome — please DM for questions.", role: "mod" },
+      { time: "14:12", member: "Member (Karaj) — Kian Rudbar", text: "I’m waiting for verification.", role: "member" },
+      { time: "15:00", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "A few who got verified said USDT helped.", role: "member" },
+      { time: "16:40", member: "moderator B (Parvosh Ramyar)", text: "Please be patient. Admin reviews in batches.", role: "mod" },
+      { time: "18:05", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "USDT helped me avoid the previous drop.", role: "member" },
+      { time: "18:12", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "Me too. Holding some USDT helped.", role: "member" },
+      { time: "19:30", member: "System", text: "Relative silence — members mostly reading.", role: "system" },
+      { time: "21:12", member: "Member (Karaj) — Kian Rudbar", text: "Still waiting.", role: "member" },
 
-  <dl class="grid grid-cols-2 gap-2 text-sm text-muted">
-    <div>
-      <dt class="text-xs text-lightgray">Admin</dt>
-      <dd id="admins" class="font-medium">2</dd>
-    </div>
-    <div>
-      <dt class="text-xs text-lightgray">Moderators</dt>
-      <dd id="mods" class="font-medium">4</dd>
-    </div>
-    <div>
-      <dt class="text-xs text-lightgray">Online members</dt>
-      <dd id="online-members" class="font-medium flex items-center gap-2">
-        <i data-lucide="circle" class="text-[#4CAF50] w-3 h-3"></i> <span id="online-count-sidebar">6</span>
-      </dd>
-    </div>
-    <div>
-      <dt class="text-xs text-lightgray">Total members</dt>
-      <dd id="total-members" class="font-medium">~200</dd>
-    </div>
-  </dl>
+      { time: "18 Dec", member: "Member", text: "Inflation is high. Saving is hard.", role: "member" },
+      { time: "25 Dec", member: "moderator A", text: "Reminder — sensitive questions → DM admin.", role: "mod" },
+      { time: "30 Dec", member: "Member", text: "Tehran traffic was heavy this week.", role: "member" },
+      { time: "01 Jan", member: "admin", text: "Verification process updated. No action required now.", role: "admin" },
 
-  <hr class="my-3 border-subtle" />
-  <button class="w-full text-left text-xs p-2 rounded border border-subtle hover:bg-gray-700">View verified member roles</button>
-</aside>
+      { time: "09:31", member: "Member (Karaj) — Narges Delaram", text: "I got verified. Verification step complete.", role: "member" },
+      { time: "09:34", member: "Member (Tehran) — Amin Shayegan", text: "Me too.", role: "member" },
+      { time: "10:00", member: "Member (Isfahan) — Sudeh Kianpour", text: "Happy for you.", role: "member" },
+      { time: "14:06", member: "admin (Naghmeh Soroush)", text: "Verification window is limited today. Please wait your turn.", role: "admin" },
+      { time: "16:21", member: "New member (Isfahan) — Rosta Mehrayin", text: "Any tips to start?", role: "new" },
+      { time: "16:24", member: "moderator A (Hooshang Bahari)", text: "Please DM admin for details.", role: "mod" },
+      { time: "18:02", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "Bank delays continue.", role: "member" },
 
-</main>
+      { time: "08:45", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "Commute was easier today.", role: "member" },
+      { time: "09:00", member: "Member (Tehran) — Amin Shayegan", text: "Glad.", role: "member" },
+      { time: "10:15", member: "Member (Tehran) — Amin Shayegan", text: "Still waiting for verification.", role: "member" },
+      { time: "13:30", member: "moderator B (Parvosh Ramyar)", text: "Reminder: no screenshots or forwarding.", role: "mod" },
+      { time: "15:00", member: "Member (Karaj) — Narges Delaram", text: "The verification took a while but arrived.", role: "member" },
+      { time: "17:05", member: "Member (Karaj) — Narges Delaram", text: "Rial was slightly more stable today.", role: "member" },
 
-<div id="behavior-notes" class="mt-4 p-4 chat-bg rounded-lg shadow text-sm text-muted hidden">
-  <h3 class="font-semibold text-lightgray">Behavioral Notes for Training</h3>
-  <ul class="mt-2 list-disc ml-5 space-y-1">
-    <li>Boring, neutral, calm = perceived legitimacy</li>
-    <li>Pinned rules upfront = compliance conditioning</li>
-    <li>Private admin DM = authority lock</li>
-    <li>Sparse social proof = reduces skepticism</li>
-    <li>No hype, no promises, no tutorials</li>
-  </ul>
-</div>
-<footer class="mt-4 text-xs text-muted"></footer>
-</div>
+      { time: "09:10", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "I was verified yesterday.", role: "member" },
+      { time: "12:55", member: "Member (Tehran) — Amin Shayegan", text: "Morning traffic and rial volatility — nothing new.", role: "member" },
+      { time: "15:02", member: "moderator A (Hooshang Bahari)", text: "Sensitive questions → DM admin.", role: "mod" },
+      { time: "16:32", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "Just FYI, I had some USDT.", role: "member" },
+      { time: "16:35", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "My experience was similar, just saying.", role: "member" },
 
-<script>
-const memberSidebar={admins:2,moderators:4,online:6,totalApprox:200};
-const pinned=[
-  "Group rules: privacy, Iran-only",
-  "Verification required before posting",
-  "Purpose: value protection, not investment",
-  "Do NOT share this link outside"
-];
-const seededMessages=[
-  {time:"09:05 AM", member:"Admin", text:"Welcome to the group. Please review pinned rules.", role:"admin"},
-  {time:"09:10 AM", member:"Moderator", text:"If you have questions, DM admin privately.", role:"mod"},
-  {time:"09:15 AM", member:"Member 1", text:"Thanks! Checked rules.", role:"member"},
-  {time:"09:30 AM", member:"Member 2", text:"Transfers delayed at bank, any tips? (mod reply: DM admin)", role:"member"},
-  {time:"09:45 AM", member:"Member 3", text:"Rial keeps dropping… worried.", role:"member"},
-  {time:"10:05 AM", member:"Moderator", text:"Patience, follow admin instructions.", role:"mod"},
-  {time:"10:20 AM", member:"New Joiner", text:"Hello, just joined!", role:"new"},
-  {time:"10:30 AM", member:"Member 4", text:"Yes, same, waiting for verification.", role:"member"}
-];
-let messages=[...seededMessages];
-const iranNames=['Ali','Reza','Mohammad','Sara','Maryam','Hossein','Fatemeh','Amir','Mahsa','Navid'];
-const joinerMessages=["Hello, just joined!","Checking pinned rules…","Waiting for verification","Looking forward to learning here","Hi everyone, new here","Excited to participate","Reading rules before posting","Hope to contribute soon"];
-const passiveReplies=[{role:'mod', texts:["Please follow the instructions.","Patience, all requests are processed.","Refer to pinned rules."]},{role:'member', texts:["Checked rules.","Same question here.","Waiting here.","Thanks for guidance."]}];
+      { time: "08:32", member: "Member (Karaj) — Kian Rudbar", text: "Have you seen the bank notice today?", role: "member" },
+      { time: "09:10", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "I was verified yesterday.", role: "member" },
+      { time: "12:55", member: "Member (Tehran) — Amin Shayegan", text: "No change; delays continue.", role: "member" },
+      { time: "14:55", member: "moderator B (Parvosh Ramyar)", text: "Verification is processed in batches; please be patient.", role: "mod" },
+      { time: "15:10", member: "New member — Rosta Mehrayin", text: "Thanks. I will wait.", role: "new" },
+      { time: "17:10", member: "Member (Tehran) — Amin Shayegan", text: "Personal view: USDT still looks safer.", role: "member" },
 
-// AVATARS
-function getRandomAvatar(){
-  const r=Math.random();
-  if(r<0.5) return `https://randomuser.me/api/portraits/${Math.random()<0.5?'women':'men'}/${Math.floor(Math.random()*99)}.jpg`;
-  if(r<0.7) return `https://placekitten.com/50/50`;
-  return ""; // blank for realism
-}
+      { time: "08:50", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "It’s warmer here this morning.", role: "member" },
+      { time: "09:20", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "Still waiting for admin verification.", role: "member" },
+      { time: "10:00", member: "Member (Isfahan) — Sudeh Kianpour", text: "I was verified; everything is normal.", role: "member" },
+      { time: "13:40", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "No news. Testing my patience.", role: "member" },
+      { time: "14:00", member: "moderator A (Hooshang Bahari)", text: "Please do not post personal contact info publicly.", role: "mod" },
+      { time: "15:29", member: "Member (Isfahan) — Sudeh Kianpour", text: "I got verified a few days ago. Nothing special.", role: "member" },
+      { time: "17:05", member: "Member (Karaj) — Narges Delaram", text: "Personal experience: USDT helped preserve value.", role: "member" },
+      { time: "19:10", member: "System", text: "admin offline — no public post.", role: "system" },
 
-// SIDEBAR ONLINE
-function renderSidebarOnline(){
-  const container=document.getElementById('sidebar-online-list'); container.innerHTML='';
-  for(let i=0;i<memberSidebar.online;i++){
-    const wrapper=document.createElement('div'); wrapper.className="relative avatar-float";
-    const img=document.createElement('img'); img.className="h-8 w-8 rounded-full border border-subtle";
-    if(Math.random()>0.3) img.src=getRandomAvatar();
-    img.style.transform=`translateY(${Math.floor(Math.random()*4-2)}px)`;
-    wrapper.appendChild(img);
-    const dot=document.createElement('i'); dot.setAttribute('data-lucide','circle'); dot.className="absolute -bottom-1 -right-1 text-[#4CAF50] w-3 h-3";
-    wrapper.appendChild(dot);
-    container.appendChild(wrapper);
-  }
-  lucide.createIcons();
-}
+      { time: "09:05", member: "System", text: "3–6 people were online in the morning.", role: "system" },
+      { time: "10:12", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "Tehran is warmer than last week.", role: "member" },
+      { time: "11:00", member: "admin (Naghmeh Soroush)", text: "Verification queue updated; if you applied in the past 72 hours, check your DM.", role: "admin" },
+      { time: "13:40", member: "Member (Mashhad) — Kourosh Nikmanesh", text: "Still waiting. My patience is being tested.", role: "member" },
+      { time: "14:30", member: "moderator B (Parvosh Ramyar)", text: "Reminder: privacy is important. No screenshots or forwarding.", role: "mod" },
+      { time: "17:02", member: "moderator A (Hooshang Bahari)", text: "Please DM sensitive banking questions.", role: "mod" },
+      { time: "18:30", member: "Member (Karaj) — Narges Delaram", text: "A few people got verified, no big news. Calm.", role: "member" },
+      { time: "20:05", member: "Member (Karaj) — Narges Delaram", text: "My USDT mention is personal experience. Not advice.", role: "member" }
+    ];
 
-// PINNED
-function renderPinned(){
-  const pinnedList=document.getElementById('pinned-list'); pinnedList.innerHTML='';
-  pinned.forEach(p=>{
-    const li=document.createElement('li'); li.className='leading-snug text-lightgray flex items-center gap-1';
-    li.innerHTML=`<i data-lucide="pin" class="w-4 h-4"></i> ${p}`;
-    pinnedList.appendChild(li);
-  });
-  lucide.createIcons();
-}
+    // Avatar token list and helpers
+    const femaleTokens = [
+      "zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges",
+      "sudeh","niloufar","pegah","shaparak","mina","roonak","zaria","mojgan","azadeh","yasaman",
+      "delara","bahareh","mehrnoush","zarrin","mahtab","niusha","golsa","yekta","nazanin","homa",
+      "farah","parida","parisa","soheila","zahra","fatemeh","marjan","sara","roxana","rosta"
+    ];
 
-// MESSAGES
-const messagesList=document.getElementById('messages-list'); 
-function renderMessages(){
-  messagesList.innerHTML='';
-  messages.forEach((m,i)=>{
-    const article=document.createElement('article'); article.className=`p-3 rounded-lg flex items-start gap-2 ${m.role==='admin'?'chat-message-admin':'chat-message-member'} fade-in`;
-    article.style.animationDelay=`${i*0.15}s`; article.style.transform=`rotate(${Math.random()*4-2}deg)`;
-    const img=document.createElement('img'); if(m.avatar) img.src=m.avatar; else img.style.backgroundColor='#555';
-    img.className='h-8 w-8 rounded-full flex-shrink-0 avatar-float'; img.style.transform=`translateY(${Math.floor(Math.random()*6-3)}px)`;
-    const contentDiv=document.createElement('div'); contentDiv.className='flex-1';
-    const header=document.createElement('div'); header.className='flex items-baseline justify-between';
-    const name=document.createElement('div'); name.className='text-sm font-medium'; name.textContent=m.member;
-    const time=document.createElement('time'); time.className='text-xs text-muted'; time.textContent=m.time;
-    header.appendChild(name); header.appendChild(time);
-    const p=document.createElement('p'); p.className='mt-1 text-sm text-muted'; p.textContent=m.text;
-    contentDiv.appendChild(header); contentDiv.appendChild(p);
-    article.appendChild(img); article.appendChild(contentDiv);
-    messagesList.appendChild(article);
-  });
-  document.getElementById('chat-window').scrollTo({top:document.getElementById('chat-window').scrollHeight, behavior:'smooth'});
-}
+    function looksFemale(name){
+      if(!name) return false;
+      const lower = name.toLowerCase();
+      return femaleTokens.some(t => lower.includes(t));
+    }
+    function randInt(max){ return Math.floor(Math.random()*max); }
 
-// UPDATE SIDEBAR
-function updateSidebar(){ 
-  document.getElementById('online-count').textContent=`${memberSidebar.online} Active now`;
-  document.getElementById('total-members').textContent=`~${memberSidebar.totalApprox}`;
-  document.getElementById('online-count-sidebar').textContent=memberSidebar.online;
-  renderSidebarOnline();
-}
+    const memberProfiles = members.map((name) => {
+      const hasAvatar = Math.random() < 0.6;
+      const genderFolder = looksFemale(name) ? "women" : "men";
+      const avatarIndex = randInt(100);
+      return {
+        name,
+        avatar: hasAvatar ? `https://randomuser.me/api/portraits/${genderFolder}/${avatarIndex}.jpg` : null,
+        gender: looksFemale(name) ? "female" : "male"
+      };
+    });
 
-// EVENTS
-document.getElementById('copy-pinned').addEventListener('click',()=>navigator.clipboard.writeText(pinned.join('\n')));
-document.getElementById('toggle-notes').addEventListener('click',()=>{document.getElementById('behavior-notes').classList.toggle('hidden');});
-document.getElementById('verify-btn').addEventListener('click',()=>{document.getElementById('composer-locked').classList.add('hidden'); document.getElementById('composer').classList.remove('hidden'); document.getElementById('composer-text').focus();});
-document.getElementById('send-btn').addEventListener('click',()=>{const txt=document.getElementById('composer-text').value.trim(); if(!txt) return; messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:'You', text:txt, role:'member', avatar:getRandomAvatar()}); document.getElementById('composer-text').value=''; renderMessages(); updateSidebar();});
-document.getElementById('composer-text').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); document.getElementById('send-btn').click();}});
+    // DOM refs
+    const pinnedList = document.getElementById("pinned-list");
+    const messagesList = document.getElementById("messages-list");
+    const copyPinnedBtn = document.getElementById("copy-pinned");
+    const toggleNotesBtn = document.getElementById("toggle-notes");
+    const behaviorNotes = document.getElementById("behavior-notes");
+    const verifyBtn = document.getElementById("verify-btn");
+    const composerLocked = document.getElementById("composer-locked");
+    const composer = document.getElementById("composer");
+    const composerText = document.getElementById("composer-text");
+    const sendBtn = document.getElementById("send-btn");
+    const chatWindow = document.getElementById("chat-window");
+    const statusNumberEl = document.getElementById("status-number");
+    const membersListEl = document.getElementById("members-list");
 
-// LIVE SIMULATION
-function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function showTypingIndicator(name){
-  removeTypingIndicator();
-  const indicator=document.createElement('div'); indicator.id='typing-indicator'; indicator.className='typing-indicator';
-  indicator.innerHTML=`${name} is typing <span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
-  messagesList.appendChild(indicator);
-  document.getElementById('chat-window').scrollTo({top:document.getElementById('chat-window').scrollHeight, behavior:'smooth'});
-}
-function removeTypingIndicator(){const el=document.getElementById('typing-indicator'); if(el) el.remove();}
+    function renderPinned(){
+      pinnedList.innerHTML = "";
+      pinned.forEach(p=>{
+        const li = document.createElement("li");
+        li.className = "leading-snug flex items-center";
+        const icon = document.createElement("i");
+        icon.setAttribute("data-lucide","pin");
+        icon.setAttribute("aria-hidden","true");
+        li.appendChild(icon);
+        const span = document.createElement("span");
+        span.textContent = p;
+        li.appendChild(span);
+        pinnedList.appendChild(li);
+      });
+    }
 
-function simulateNewActivity(){
-  if(Math.random()<0.7){
-    const name=randomItem(iranNames)+' '+Math.floor(Math.random()*1000);
-    showTypingIndicator(name);
-    setTimeout(()=>{
-      messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:name, text:randomItem(joinerMessages), role:'new', avatar:getRandomAvatar()});
-      memberSidebar.totalApprox+=1; removeTypingIndicator(); renderMessages(); updateSidebar();
-    },Math.random()*3000+2000);
-  }
-  if(Math.random()<0.5){
-    const replyGroup=randomItem(passiveReplies);
-    const repName=replyGroup.role==='mod'?'Moderator':randomItem(iranNames);
-    showTypingIndicator(repName);
-    setTimeout(()=>{
-      messages.push({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), member:repName, text:randomItem(replyGroup.texts), role:replyGroup.role, avatar:getRandomAvatar()});
-      removeTypingIndicator(); renderMessages(); updateSidebar();
-    },Math.random()*3000+2000);
-  }
-  setTimeout(simulateNewActivity, Math.random()*8000+2000);
-}
+    function createFallbackElement(name){
+      const fallback = document.createElement("div");
+      fallback.className = "h-10 w-10 rounded-full avatar-fallback text-xs flex-shrink-0";
+      const initials = (name || "").split(" ").map(s => s[0]).slice(0,2).join("") || "M";
+      fallback.textContent = initials;
+      return fallback;
+    }
 
-function fluctuateOnline(){
-  memberSidebar.online=3+Math.floor(Math.random()*8);
-  memberSidebar.online=Math.min(memberSidebar.online, memberSidebar.totalApprox);
-  updateSidebar();
-  setTimeout(fluctuateOnline, 5000+Math.random()*5000);
-}
+    function renderMembers(){
+      membersListEl.innerHTML = "";
+      memberProfiles.forEach(m=>{
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-3";
+        if(m.avatar){
+          const img = document.createElement("img");
+          img.src = m.avatar;
+          img.alt = m.name;
+          img.className = "round-avatar";
+          img.onerror = () => { img.remove(); row.insertBefore(createFallbackElement(m.name), row.firstChild || null); };
+          row.appendChild(img);
+        } else {
+          row.appendChild(createFallbackElement(m.name));
+        }
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "text-sm";
+        nameDiv.textContent = m.name;
+        row.appendChild(nameDiv);
+        membersListEl.appendChild(row);
+      });
+    }
 
-// INIT
-renderPinned(); renderMessages(); updateSidebar(); simulateNewActivity(); fluctuateOnline();
-</script>
+    function renderMessages(){
+      messagesList.innerHTML = "";
+      seededMessages.forEach(m=>{
+        const article = document.createElement("article");
+        if(m.role === "system"){
+          article.className = "msg-system";
+          article.textContent = `${m.time} ${m.text}`;
+        } else {
+          article.className = m.role === "admin" ? "msg-admin" : m.role === "mod" ? "msg-mod" : "p-3 rounded-lg bg-gray-50";
+          const header = document.createElement("div");
+          header.className = "flex items-center justify-between";
+          const left = document.createElement("div");
+          left.className = "flex items-center gap-3";
+          const profile = memberProfiles.find(p => m.member && p.name && m.member.includes(p.name));
+          if(profile && profile.avatar){
+            const img = document.createElement("img");
+            img.src = profile.avatar;
+            img.alt = profile.name;
+            img.className = "round-avatar";
+            img.onerror = () => { img.remove(); left.insertBefore(createFallbackElement(profile.name), left.firstChild || null); };
+            left.appendChild(img);
+          } else {
+            left.appendChild(createFallbackElement(m.member));
+          }
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "text-sm font-medium";
+          nameDiv.textContent = m.member || "Member";
+          left.appendChild(nameDiv);
+          header.appendChild(left);
+          const time = document.createElement("div");
+          time.className = "text-xs text-gray-400";
+          time.textContent = m.time;
+          header.appendChild(time);
+          const p = document.createElement("p");
+          p.className = "mt-2 text-sm text-gray-700";
+          p.textContent = m.text;
+          article.appendChild(header);
+          article.appendChild(p);
+        }
+        messagesList.appendChild(article);
+      });
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    copyPinnedBtn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(pinned.join("\n")); alert("Pinned rules copied to clipboard"); }
+      catch(e) { console.warn("copy failed", e); alert("Unable to copy"); }
+    });
+
+    toggleNotesBtn.addEventListener("click", () => {
+      const isHidden = behaviorNotes.classList.contains("hidden");
+      behaviorNotes.classList.toggle("hidden");
+      toggleNotesBtn.setAttribute("aria-expanded", String(!isHidden));
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      composerLocked.classList.add("hidden");
+      composer.classList.remove("hidden");
+      composerText.focus();
+    });
+
+    sendBtn.addEventListener("click", () => {
+      const txt = composerText.value.trim();
+      if(!txt) return;
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      seededMessages.push({ time: timeStr, member: "You", text: txt, role: "member" });
+      composerText.value = "";
+      renderMessages();
+    });
+
+    composerText.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+    });
+
+    function updateStatusNumber(){
+      const val = 3 + Math.floor(Math.random()*6); // 3..8
+      statusNumberEl.textContent = val;
+    }
+
+    function wireLucideSvgs(){
+      if(window.lucide && typeof lucide.replace === "function"){
+        lucide.replace();
+        document.querySelectorAll("svg.lucide-circle").forEach(svg => svg.classList.add("online-svg"));
+        document.querySelectorAll("svg.lucide-pin").forEach(svg => svg.classList.add("pin-svg"));
+      }
+    }
+
+    function init(){
+      renderPinned();
+      renderMembers();
+      renderMessages();
+      updateStatusNumber();
+      wireLucideSvgs();
+      setInterval(updateStatusNumber, 5000 + Math.floor(Math.random()*7000));
+    }
+
+    init();
+  </script>
 </body>
 </html>
