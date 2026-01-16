@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Group: Private Digital Asset Discussion (Iran)</title>
+  <title>Private Digital Asset (Iran)</title>
 
   <!-- Tailwind for layout only -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -180,18 +180,41 @@
       100% { transform: translate(-50%,-50%) scale(1); opacity:1; }
     }
 
+    /* Stat boxes for header right area (members + status) */
+    .meta-stats { display:flex; gap:12px; align-items:center; }
+    .stat-box {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.01);
+      min-width:110px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.01) inset;
+    }
+    .stat-icon { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; flex-shrink:0; }
+    .stat-text { display:flex; flex-direction:column; line-height:1; text-align:left; }
+    .stat-text .muted { font-size:12px; color:var(--muted); }
+    .stat-text .count { font-weight:700; color:var(--text); font-size:15px; }
+
+    /* small users svg adjustments */
+    svg.lucide-users { width:18px; height:18px; vertical-align:middle; display:inline-block; }
+    svg.lucide-users path, svg.lucide-users circle { stroke: var(--muted); stroke-width:1.6; fill:none; }
+
     /* responsiveness tweaks */
     @media (max-width:900px){
       .header-row { gap:12px; }
       .header-logo { width:44px; height:44px; }
+      .stat-box { padding:6px 10px; min-width:90px; }
     }
     @media (max-width:640px){
       .header-logo { width:40px; height:40px; }
       .right-meta { gap:10px; }
+      .meta-stats { gap:8px; }
     }
     @media (max-width:420px){
       .header-row { flex-direction:column; align-items:stretch; gap:10px; }
       .right-meta { justify-content:space-between; }
+      .meta-stats { width:100%; justify-content:space-between; }
     }
   </style>
 </head>
@@ -201,46 +224,39 @@
       <div class="header-row">
         <!-- LEFT: title + meta -->
         <div class="left-meta">
-          <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Group: Private Digital Asset Discussion (Iran)</h1>
+          <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Private Digital Asset (Iran)</h1>
           <div class="text-sm" style="color:var(--muted);">
-            <!-- longer, more realistic period -->
-            <strong id="member-approx">Members (visible): ~140</strong> — <span id="date-range">Period: 1 January 2025 — 15 January 2026</span>
+            <!-- longer, more realistic period (visible tag removed) -->
+            <span id="date-range">Period: 1 January 2023 — 15 January 2026</span>
           </div>
         </div>
 
-        <!-- RIGHT: logo, quick members, status -->
+        <!-- RIGHT: replaces logo with members + status nicely balanced -->
         <div class="right-meta" aria-hidden="false">
-          <!-- LOGO: loads from assets/logo.png; has explicit width/height to avoid layout shift.
-               If the asset fails to load, onerror hides the <img> and shows a compact fallback -->
-          <a href="/" class="header-logo-wrap" aria-label="Private Digital Asset Discussion">
-            <img
-              id="site-logo"
-              src="assets/logo.png"
-              alt="Private Digital Asset Discussion logo"
-              width="48" height="48"
-              decoding="async"
-              loading="eager"
-              class="header-logo"
-              onerror="(function(el){ el.style.display='none'; var f = document.createElement('div'); f.className='header-logo-fallback'; f.textContent='PDA'; el.parentNode && el.parentNode.appendChild(f); })(this);"
-            />
-          </a>
-
-          <!-- Members quick summary (aligned right for balance) -->
-          <div style="text-align:right; min-width:86px;">
-            <div style="font-size:12px; color:var(--muted); line-height:1;">Members</div>
-            <div style="font-weight:700; color:var(--text); font-size:16px; line-height:1;">~140</div>
-          </div>
-
-          <!-- Status block (improved 'real' online indicator) -->
-          <div style="min-width:170px; text-align:right;">
-            <div class="text-sm font-medium" style="color:var(--muted)">Status</div>
-            <div class="status-icon-wrap" role="status" aria-live="polite" aria-atomic="true" style="justify-content:flex-end; align-items:center;">
-              <!-- custom small indicator for a more realistic look -->
-              <div class="online-indicator" aria-hidden="true" title="Online">
-                <div class="ring"></div>
-                <div class="dot"></div>
+          <div class="meta-stats" role="group" aria-label="Group quick stats">
+            <!-- MEMBERS: users icon (lucide) + count -->
+            <div class="stat-box" id="members-box" aria-hidden="false">
+              <div class="stat-icon" aria-hidden="true">
+                <i data-lucide="users" aria-hidden="true"></i>
               </div>
-              <div id="status-text" class="text-sm" style="color:var(--text)">Active now: <span id="status-number" class="status-number">6</span></div>
+              <div class="stat-text" style="min-width:70px;">
+                <div class="muted">Members</div>
+                <div id="header-member-count" class="count">~140</div>
+              </div>
+            </div>
+
+            <!-- STATUS block (kept behavior & ids intact) -->
+            <div class="stat-box" id="status-box" aria-hidden="false" style="min-width:150px; justify-content:flex-end;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div class="online-indicator" aria-hidden="true" title="Online">
+                  <div class="ring"></div>
+                  <div class="dot"></div>
+                </div>
+                <div style="text-align:left;">
+                  <div class="muted" style="font-size:12px;">Status</div>
+                  <div id="status-text" class="text-sm" style="color:var(--text); font-weight:600;">Active now: <span id="status-number" class="status-number">6</span></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -309,9 +325,9 @@
     /************************************************************************
      * Full script preserved.
      * I did NOT remove or alter your logic or seeded data.
-     * Non-functional cleanups:
-     *  - fixed small class typo (p:4 -> p-4)
-     *  - ensured header grouping and alignment (kept content & logic intact)
+     * Small, safe additions:
+     *  - dynamic header member count update
+     *  - extra lucide wiring retries on load
      *
      * Everything else (arrays, seeded messages, all functions) left unchanged.
      ************************************************************************/
@@ -482,6 +498,16 @@
     const statusNumberEl = document.getElementById('status-number');
 
     /* ---------------------------
+       Header helper: update dynamic member count
+       --------------------------- */
+    function updateHeaderMemberCount(){
+      const el = document.getElementById('header-member-count');
+      if (!el) return;
+      // use memberProfiles length so it's accurate even if admins are separated
+      el.textContent = '~' + (memberProfiles.length || members.length || 0);
+    }
+
+    /* ---------------------------
        Render functions
        --------------------------- */
     function renderPinned(){
@@ -632,6 +658,8 @@
         row.appendChild(nameDiv);
         adminListEl.appendChild(row);
       });
+      // keep member count accurate
+      updateHeaderMemberCount();
     }
 
     function renderMembers(){
@@ -656,6 +684,8 @@
 
         membersListEl.appendChild(row);
       });
+      // update count each time members are re-rendered
+      updateHeaderMemberCount();
     }
 
     function renderMessages(){
@@ -1012,7 +1042,7 @@
        Lucide wiring (icon replacement)
        --------------------------- */
     function wireLucideSvgs(retries = 0){
-      const MAX_RETRIES = 8;
+      const MAX_RETRIES = 10;
       if (window.lucide && typeof lucide.replace === 'function') {
         try { lucide.replace(); } catch(e){}
         // keep adding classes but visual indicator is our custom .online-indicator,
@@ -1036,8 +1066,21 @@
             svg.setAttribute('aria-hidden', 'true');
           } catch(e){}
         });
+        // style users icon to match header weight
+        document.querySelectorAll('svg.lucide-users').forEach(svg => {
+          svg.classList.add('users-svg');
+          try {
+            svg.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#BFBFBF');
+            svg.setAttribute('stroke-width', '1.6');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.style.display = 'inline-block';
+            svg.style.width = '18px';
+            svg.style.height = '18px';
+          } catch(e){}
+        });
       } else if (retries < MAX_RETRIES) {
-        setTimeout(()=> wireLucideSvgs(retries+1), 250);
+        setTimeout(()=> wireLucideSvgs(retries+1), 200);
       }
     }
 
@@ -1055,6 +1098,8 @@
         });
         p.isAdmin = !!found;
       });
+      // keep member count accurate after admins detection
+      updateHeaderMemberCount();
     }
 
     /* ---------------------------
@@ -1085,6 +1130,9 @@
 
       renderAdminCard(); renderMembers(); renderMessages();
       wireLucideSvgs();
+
+      // Also call wireLucideSvgs on window load to be extra reliable
+      window.addEventListener('load', () => { setTimeout(()=> wireLucideSvgs(0), 120); });
 
       // fetch and assign avatars aggressively to reach ~100% real portraits
       fetchIranAvatars();
