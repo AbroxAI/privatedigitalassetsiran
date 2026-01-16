@@ -16,13 +16,13 @@
        - Subtle inner/outer shadows, soft radiuses, smooth transitions
        ------------------------- */
     :root{
-      --bg: #232323;         /* background */
-      --panel: #282828;      /* panel surface (slightly lifted) */
-      --text: #DADADA;       /* primary body text */
-      --muted: #BFBFBF;      /* secondary text / muted */
-      --divider: rgba(255,255,255,0.03);    /* soft separators */
-      --accent: #43A047;     /* muted green accent */
-      --accent-dark: #3d923f;/* darker accent */
+      --bg: #232323;
+      --panel: #282828;
+      --text: #DADADA;
+      --muted: #BFBFBF;
+      --divider: rgba(255,255,255,0.03);
+      --accent: #43A047;
+      --accent-dark: #3d923f;
       --soft-shadow-dark: rgba(0,0,0,0.65);
       --soft-shadow-light: rgba(255,255,255,0.02);
       --soft-elev: 10px 10px 24px rgba(0,0,0,0.55);
@@ -38,8 +38,6 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       margin:0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Soft UI panels */
@@ -70,7 +68,6 @@
       font-size: 13px;
     }
     .soft-btn:hover { transform: translateY(-2px); opacity:0.98; }
-    /* Accent buttons keep brand color but soft */
     .accent-btn {
       background: var(--accent);
       color: #fff;
@@ -106,12 +103,12 @@
       animation: blinkPulse 1.6s infinite ease-in-out;
     }
 
-    /* STATUS small animations */
     @keyframes blinkPulse {
       0% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.45; transform: scale(1.08); }
       100% { opacity: 1; transform: scale(1); }
     }
+
     .online-svg { width: 14px; height: 14px; color: var(--accent); animation: blinkPulse 1.6s infinite ease-in-out; }
 
     .status-number { animation: numberPulse 2200ms infinite ease-in-out; color: var(--accent-dark); font-weight:700; }
@@ -119,6 +116,7 @@
 
     /* Messages - slightly softened cards */
     .msg-admin { background: rgba(255,255,255,0.01); border-left:4px solid rgba(74,144,226,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
+    .msg-mod { background: rgba(255,255,255,0.01); border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
     .msg-regular { background: rgba(255,255,255,0.01); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
     .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
 
@@ -130,43 +128,45 @@
       100% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
     }
 
-    /* subtle admin badge */
+    /* subtle admin badge (realistic pill) */
     .admin-badge {
-      display:inline-block;
-      font-size:11px;
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.03);
-      padding:2px 6px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      color:var(--text);
+      padding:4px 8px;
       border-radius:999px;
-      margin-left:8px;
-      line-height:1;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      background: linear-gradient(180deg, rgba(67,160,71,0.12), rgba(67,160,71,0.06));
+      border: 1px solid rgba(67,160,71,0.14);
+      box-shadow: 0 4px 12px rgba(67,160,71,0.06);
+      font-weight:700;
     }
+    .admin-badge .dot { width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 4px 8px rgba(67,160,71,0.12); }
 
-    /* Header layout & logo tweaks with soft feel */
+    /* Header layout tweaks so logo sits top-right and bold */
     .header-row { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; }
     .left-meta { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
     .right-meta { display:flex; align-items:center; gap:12px; justify-content:flex-end; flex-shrink:0; }
 
     .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; align-self:flex-start; margin-left:12px; }
     .header-logo {
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
       background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-      width:56px; height:56px;
+      width:64px; height:64px;
       box-shadow: 8px 10px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.02);
-      object-fit:cover;
+      object-fit:contain;
     }
     .header-logo-fallback {
-      width:56px; height:56px; display:inline-flex; align-items:center; justify-content:center;
-      border-radius:14px; background:#1b1b1b; color:#fff; font-weight:700; font-size:14px;
-      border:1px solid rgba(255,255,255,0.02);
+      width:64px; height:64px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:12px; background:#111; color:#fff; font-weight:800; font-size:16px;
+      border:1px solid rgba(255,255,255,0.04);
       box-shadow: 8px 10px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.02);
     }
 
     /* Online indicator */
-    .online-indicator { width: 16px; height:16px; display:inline-block; position:relative; flex-shrink:0; margin-right:6px; }
+    .online-indicator { width: 18px; height:18px; display:inline-block; position:relative; flex-shrink:0; margin-right:6px; }
     .online-indicator .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 6px 16px rgba(67,160,71,0.16); position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
     .online-indicator .ring { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; border:1px solid rgba(67,160,71,0.12); box-sizing:border-box; animation: onlinePulse 1600ms infinite ease-in-out; }
     @keyframes onlinePulse { 0% { transform: translate(-50%,-50%) scale(1); opacity:1; } 50% { transform: translate(-50%,-50%) scale(1.12); opacity:0.45; } 100% { transform: translate(-50%,-50%) scale(1); opacity:1; } }
@@ -210,20 +210,16 @@
     }
     textarea:focus, input:focus { outline: none; box-shadow: 0 14px 40px rgba(0,0,0,0.6); transform: translateY(-1px); }
 
-    /* subtle link hover */
-    a { color: inherit; text-decoration: none; }
-    a:hover { text-decoration: none; opacity:0.95; }
-
     /* responsiveness */
     @media (max-width:900px){
-      .header-logo { width:48px; height:48px; }
-      .header-logo-fallback { width:48px; height:48px; font-size:13px; }
+      .header-logo { width:56px; height:56px; }
+      .header-logo-fallback { width:56px; height:56px; font-size:14px; }
       .users-badge { width:30px; height:30px; }
       .stat-box { padding:8px 10px; min-width:100px; }
     }
     @media (max-width:640px){
-      .header-logo { width:44px; height:44px; }
-      .header-logo-fallback { width:44px; height:44px; font-size:12px; }
+      .header-logo { width:48px; height:48px; }
+      .header-logo-fallback { width:48px; height:48px; font-size:13px; }
       .right-meta { gap:10px; }
       .meta-stats { gap:8px; }
     }
@@ -248,10 +244,9 @@
           </div>
         </div>
 
-        <!-- RIGHT: members + status -->
+        <!-- RIGHT: members + status + logo -->
         <div class="right-meta" aria-hidden="false">
           <div class="meta-stats" role="group" aria-label="Group quick stats">
-            <!-- MEMBERS: users icon (lucide) + count; users icon placed inside a small users-badge for realism -->
             <div class="stat-box" id="members-box" aria-hidden="false">
               <div class="users-badge stat-icon" aria-hidden="true">
                 <i data-lucide="users" aria-hidden="true"></i>
@@ -262,7 +257,6 @@
               </div>
             </div>
 
-            <!-- STATUS block (kept behavior & ids intact) -->
             <div class="stat-box" id="status-box" aria-hidden="false" style="min-width:150px; justify-content:flex-end;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div class="online-indicator" aria-hidden="true" title="Online">
@@ -277,13 +271,13 @@
             </div>
           </div>
 
-          <!-- SITE LOGO placed to the far right as requested; has onerror fallback -->
+          <!-- SITE LOGO placed to the far right; bold and scaled -->
           <a href="/" class="header-logo-wrap" aria-label="Private Digital Asset logo" title="Private Digital Asset">
             <img
               id="site-logo"
               src="assets/logo.png"
               alt="Private Digital Asset logo"
-              width="56" height="56"
+              width="64" height="64"
               decoding="async"
               loading="eager"
               class="header-logo"
@@ -349,14 +343,12 @@
       <pre style="white-space:pre-wrap; color:var(--muted)">(Overview & instructor notes stored in the script)</pre>
     </div>
 
-    
   </div>
 
   <script>
     /************************************************************************
      * Full script preserved.
-     * I did NOT remove or alter your logic or seeded data.
-     * Visual-only changes were applied (soft UI). JS/arrays/functions are untouched.
+     * Visual-only changes applied (soft UI). JS/arrays/functions are intact.
      * Date/display updated to 8 January 2026 — 15 May 2026.
      ************************************************************************/
 
@@ -531,7 +523,6 @@
     function updateHeaderMemberCount(){
       const el = document.getElementById('header-member-count');
       if (!el) return;
-      // use memberProfiles length so it's accurate even if admins are separated
       el.textContent = '~' + (memberProfiles.length || members.length || 0);
     }
 
@@ -559,12 +550,10 @@
     }
 
     function createFallbackElement(name){
-      // Use a seeded placeholder face (pravatar) to make fallback avatars feel mixed and realistic.
-      // If the remote image fails, fall back to the initials badge.
       function seedFromName(n){
         let h = 0; if(!n) return 1;
         for(let i=0;i<n.length;i++){ h = ((h<<5) - h) + n.charCodeAt(i); h |= 0; }
-        return (Math.abs(h) % 70) + 1; // pravatar supports up to ~70 images
+        return (Math.abs(h) % 70) + 1;
       }
 
       const seed = seedFromName(name || 'member');
@@ -578,7 +567,6 @@
       img.style.objectFit = 'cover';
       img.onerror = function(){
         try { img.remove(); } catch(e){}
-        // fallback to initials badge
         const fallback = document.createElement('div');
         fallback.className = 'avatar-fallback';
         fallback.style.width = '40px';
@@ -589,11 +577,9 @@
         const parts = (name || '').split(' ').filter(Boolean);
         const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase();
         fallback.textContent = initials;
-        // attach to parent if possible
         try { this.parentNode && this.parentNode.appendChild(fallback); } catch(e){}
       };
 
-      // Return a wrapper with the image; callers will append it to the DOM.
       const wrapper = document.createElement('div');
       wrapper.className = 'avatar-wrap';
       wrapper.style.width = '40px';
@@ -673,6 +659,7 @@
         nameDiv.style.fontSize = '14px';
         nameDiv.style.display = 'flex';
         nameDiv.style.alignItems = 'center';
+        nameDiv.style.gap = '8px';
 
         const nameText = document.createElement('span');
         nameText.textContent = a.name;
@@ -680,19 +667,17 @@
 
         const badge = document.createElement('span');
         badge.className = 'admin-badge';
-        badge.textContent = 'ADMIN';
+        badge.innerHTML = '<span class=\"dot\"></span><span style=\"opacity:0.9; margin-left:4px; font-weight:700;\">ADMIN</span>';
         nameDiv.appendChild(badge);
 
         row.appendChild(nameDiv);
         adminListEl.appendChild(row);
       });
-      // keep member count accurate
       updateHeaderMemberCount();
     }
 
     function renderMembers(){
       membersListEl.innerHTML = '';
-      // render non-admin members only (admins are shown in admin card)
       const others = memberProfiles.filter(p => !p.isAdmin);
       others.forEach(m => {
         const row = document.createElement('div');
@@ -712,7 +697,6 @@
 
         membersListEl.appendChild(row);
       });
-      // update count each time members are re-rendered
       updateHeaderMemberCount();
     }
 
@@ -777,12 +761,11 @@
         }
         messagesList.appendChild(article);
       });
-      // keep scroll pinned to bottom
       try { chatWindow.scrollTop = chatWindow.scrollHeight; } catch(e){}
     }
 
     /* ---------------------------
-       UI interactions (unchanged)
+       UI interactions
        --------------------------- */
     document.getElementById('copy-pinned').addEventListener('click', async () => {
       try {
@@ -790,7 +773,6 @@
           await navigator.clipboard.writeText(pinned.join('\n'));
           alert('Pinned rules copied to clipboard');
         } else {
-          // fallback
           const ta = document.createElement('textarea');
           ta.value = pinned.join('\n');
           document.body.appendChild(ta);
@@ -824,7 +806,6 @@
       seededMessages.push({ time: timeStr, member: 'You', text: txt, role: 'member' });
       document.getElementById('composer-text').value = '';
       renderMessages();
-      // after new message appears, update online set deterministically and persist
       const val = parseInt(statusNumberEl.textContent, 10) || 6;
       const list = computeDeterministicOnlineList(val);
       applyOnlineList(list);
@@ -837,7 +818,7 @@
     });
 
     /* ---------------------------
-       Deterministic "online" selection helpers (unchanged)
+       Deterministic "online" selection helpers
        --------------------------- */
     function extractAdminNamesFromSeed() {
       const set = new Set();
@@ -911,11 +892,12 @@
     }
 
     /* ---------------------------
-       Status & pulses (unchanged)
+       Status number fluctuation & join pulse
        --------------------------- */
     function updateStatusNumber(){
-      const val = 3 + Math.floor(Math.random() * 6); // 3..8 (display only)
-      statusNumberEl.textContent = val;
+      const val = 3 + Math.floor(Math.random() * 6); // 3..8
+      const statEl = document.getElementById('status-number');
+      if (statEl) statEl.textContent = val;
       const saved = loadOnlineList();
       if (Array.isArray(saved) && saved.length > 0) {
         applyOnlineList(saved);
@@ -943,14 +925,13 @@
     }
 
     /* ---------------------------
-       Avatar fetching (unchanged)
+       Avatar fetching (tries randomuser.me, falls back to pravatar)
        --------------------------- */
     async function fetchIranAvatars(){
       try {
         const avatarMap = loadAvatarMap();
         const femaleCount = memberProfiles.filter(p => p.gender === 'female').length;
         const maleCount = memberProfiles.length - femaleCount;
-        const totalNeeded = memberProfiles.length;
 
         const targetFemaleFetch = Math.min(600, Math.ceil(femaleCount * 1.6) + 60);
         const targetMaleFetch = Math.min(600, Math.ceil(maleCount * 1.6) + 60);
@@ -1045,7 +1026,7 @@
     }
 
     /* ---------------------------
-       Lucide wiring (unchanged behaviour)
+       Lucide wiring (icon replacement)
        --------------------------- */
     function wireLucideSvgs(retries = 0){
       const MAX_RETRIES = 12;
@@ -1064,7 +1045,7 @@
         document.querySelectorAll('svg.lucide-pin').forEach(svg => {
           svg.classList.add('pin-svg');
           try {
-            svg.setAttribute('stroke', 'var(--muted)');
+            svg.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#BFBFBF');
             svg.setAttribute('stroke-width', '1.6');
             svg.setAttribute('fill', 'none');
             svg.setAttribute('aria-hidden', 'true');
@@ -1088,7 +1069,7 @@
     }
 
     /* ---------------------------
-       Admin detection & ordering (unchanged)
+       Admin detection & ordering
        --------------------------- */
     function detectAndMarkAdmins(){
       const rawAdmins = extractAdminNamesFromSeed();
@@ -1105,10 +1086,11 @@
     }
 
     /* ---------------------------
-       Init (unchanged)
+       Init
        --------------------------- */
     function init(){
       renderPinned();
+
       detectAndMarkAdmins();
 
       const avatarMap = loadAvatarMap();
@@ -1128,12 +1110,29 @@
 
       renderAdminCard(); renderMembers(); renderMessages();
       wireLucideSvgs();
+
       window.addEventListener('load', () => { setTimeout(()=> wireLucideSvgs(0), 120); });
+
+      // Aggressive avatar assignment attempt (best-effort)
       fetchIranAvatars();
+
+      // periodic subtle status updates (display only)
       setInterval(updateStatusNumber, 5000 + Math.floor(Math.random()*7000));
     }
 
     init();
+  </script>
+
+  <script>
+    // ensure lucide icons are created ASAP for the header/stats/icons
+    (function ensureLucide(){
+      if (window.lucide && typeof lucide.replace === 'function') {
+        try { lucide.replace(); } catch(e){ /* ignore */ }
+      } else {
+        // try again shortly
+        setTimeout(ensureLucide, 160);
+      }
+    })();
   </script>
 </body>
 </html>
