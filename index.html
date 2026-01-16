@@ -95,7 +95,7 @@
 
     /* Messages - flat fills, no gradients */
     .msg-admin { background: #2b2b2b; border-left:4px solid rgba(74,144,226,0.08); padding:12px; border-radius:10px; }
-    .msg-mod { background: #262626; border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:10px; }
+    .msg-mkod { background: #262626; border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:10px; }
     .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
     .msg-regular { background: #262626; padding:12px; border-radius:10px; }
 
@@ -212,7 +212,7 @@
       <pre style="white-space:pre-wrap; color:var(--muted)">(Overview & instructor notes stored in the script)</pre>
     </div>
 
-    <footer style="margin-top:12px; color:var(--muted); font-size:12px;">To host on GitHub Pages, save this file as <code>index.html</code> in your repo root (or /docs). Demo content is fictional.</footer>
+    
   </div>
 
   <script>
@@ -423,17 +423,50 @@
     }
 
     function createFallbackElement(name){
-      const fallback = document.createElement('div');
-      fallback.className = 'avatar-fallback';
-      fallback.style.width = '40px';
-      fallback.style.height = '40px';
-      fallback.style.borderRadius = '9999px';
-      fallback.style.fontSize = '12px';
-      fallback.style.flexShrink = '0';
-      const parts = (name || '').split(' ').filter(Boolean);
-      const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase();
-      fallback.textContent = initials;
-      return fallback;
+      // Use a seeded placeholder face (pravatar) to make fallback avatars feel mixed and realistic.
+      // If the remote image fails, fall back to the initials badge.
+      function seedFromName(n){
+        let h = 0; if(!n) return 1;
+        for(let i=0;i<n.length;i++){ h = ((h<<5) - h) + n.charCodeAt(i); h |= 0; }
+        return (Math.abs(h) % 70) + 1; // pravatar supports up to ~70 images
+      }
+
+      const seed = seedFromName(name || 'member');
+
+      const img = document.createElement('img');
+      img.src = `https://i.pravatar.cc/40?img=${seed}`;
+      img.alt = name || 'Member';
+      img.style.width = '40px';
+      img.style.height = '40px';
+      img.style.borderRadius = '9999px';
+      img.style.objectFit = 'cover';
+      img.onerror = function(){
+        try { img.remove(); } catch(e){}
+        // fallback to initials badge
+        const fallback = document.createElement('div');
+        fallback.className = 'avatar-fallback';
+        fallback.style.width = '40px';
+        fallback.style.height = '40px';
+        fallback.style.borderRadius = '9999px';
+        fallback.style.fontSize = '12px';
+        fallback.style.flexShrink = '0';
+        const parts = (name || '').split(' ').filter(Boolean);
+        const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase();
+        fallback.textContent = initials;
+        // attach to parent if possible
+        try { this.parentNode && this.parentNode.appendChild(fallback); } catch(e){}
+      };
+
+      // Return a wrapper with the image; callers will append it to the DOM.
+      const wrapper = document.createElement('div');
+      wrapper.className = 'avatar-wrap';
+      wrapper.style.width = '40px';
+      wrapper.style.height = '40px';
+      wrapper.style.borderRadius = '9999px';
+      wrapper.style.display = 'inline-block';
+      wrapper.style.flexShrink = '0';
+      wrapper.appendChild(img);
+      return wrapper;
     }
 
     function createAvatarNodeForProfile(profileOrName){
