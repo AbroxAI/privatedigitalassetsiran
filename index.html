@@ -128,11 +128,28 @@
     /* subtle divider */
     .divider { border-top: 1px solid var(--divider); margin: 12px 0; }
 
+    /* -------------------------
+       Header logo fine-tuning (inserted)
+       ------------------------- */
+    .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .header-logo {
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.45), 0 0 8px rgba(67,160,71,0.04);
+      background: transparent;
+      display: block;
+      object-fit: contain; /* preserve full badge circle */
+      vertical-align: middle;
+    }
+
     /* responsiveness tweaks */
     @media (max-width:640px){
       .online-svg{ width:12px; height:12px; }
       .pin-svg{ width:14px; height:14px; margin-right:4px; }
       .online-dot { width:10px; height:10px; right: -1px; bottom: -1px; }
+    }
+    @media (max-width:360px) {
+      .header-logo { width:40px !important; height:40px !important; }
     }
   </style>
 </head>
@@ -147,6 +164,18 @@
       </div>
 
       <div class="flex items-center gap-4">
+        <!-- LOGO: inserted here (keeps layout and logic intact) -->
+        <a href="/" class="header-logo-wrap mr-3 md:mr-4" aria-label="Private Digital Asset Discussion">
+          <img
+            src="assets/logo.png"
+            alt="Private Digital Asset Discussion logo"
+            width="44" height="44"
+            decoding="async"
+            srcset="assets/logo.png 1x, assets/logo@2x.png 2x"
+            class="header-logo w-11 h-11 md:w-12 md:h-12"
+          />
+        </a>
+
         <div class="text-right">
           <div class="text-sm font-medium" style="color:var(--muted)">Status</div>
           <div class="status-icon-wrap" role="status" aria-live="polite" aria-atomic="true">
