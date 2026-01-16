@@ -11,10 +11,6 @@
   <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
 
   <style>
-    /* -------------------------
-       Theme: Quiet Institutional Dark Mode + Soft UI (neumorphism)
-       - Subtle inner/outer shadows, soft radiuses, smooth transitions
-       ------------------------- */
     :root{
       --bg: #232323;
       --panel: #282828;
@@ -29,7 +25,6 @@
       --soft-elev-sm: 6px 6px 18px rgba(0,0,0,0.48);
       --transition: 220ms cubic-bezier(.2,.9,.2,1);
     }
-
     html,body,#app{height:100%}
     body{
       background: var(--bg);
@@ -39,8 +34,6 @@
       -moz-osx-font-smoothing:grayscale;
       margin:0;
     }
-
-    /* Soft UI panels */
     .panel {
       background: var(--panel);
       border-radius: 14px;
@@ -52,8 +45,6 @@
       transition: box-shadow var(--transition), transform var(--transition);
     }
     .panel:active { transform: translateY(1px); }
-
-    /* Buttons: soft */
     .soft-btn, button {
       border-radius: 10px;
       padding: 8px 12px;
@@ -77,16 +68,12 @@
         inset 0 1px 0 rgba(255,255,255,0.04);
     }
     .accent-btn:hover { filter:brightness(1.02); transform: translateY(-2px); }
-
-    /* Avatar fallback - soft */
     .avatar-fallback {
       background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
       display:flex; align-items:center; justify-content:center;
       color:var(--text); font-weight:600; text-transform:uppercase;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 4px 6px 12px rgba(0,0,0,0.48);
     }
-
-    /* Avatar wrapper + online dot */
     .avatar-wrap { position: relative; width:40px; height:40px; flex-shrink:0; display:inline-block; border-radius:12px; overflow:hidden; }
     .avatar-wrap img, .avatar-wrap .avatar-fallback { width:40px; height:40px; border-radius:10px; object-fit:cover; display:block; }
     .online-dot {
@@ -102,24 +89,18 @@
       transform-origin: 50% 50%;
       animation: blinkPulse 1.6s infinite ease-in-out;
     }
-
     @keyframes blinkPulse {
       0% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.45; transform: scale(1.08); }
       100% { opacity: 1; transform: scale(1); }
     }
-
-    .online-svg { width: 14px; height: 14px; color: var(--accent); animation: blinkPulse 1.6s infinite ease-in-out; }
-
-    .status-number { animation: numberPulse 2200ms infinite ease-in-out; color: var(--accent-dark); font-weight:700; }
-    @keyframes numberPulse { 0% { transform: translateY(0); } 50% { transform: translateY(-1px) scale(1.02); } 100% { transform: translateY(0); } }
-
-    /* Messages - slightly softened cards */
+    .status-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; vertical-align:middle; box-shadow: 0 4px 10px rgba(0,0,0,0.45); }
+    .status-dot.online { background: var(--accent); box-shadow: 0 6px 14px rgba(67,160,71,0.14); }
+    .status-dot.offline { background: #6b7280; opacity:0.75; }
     .msg-admin { background: rgba(255,255,255,0.01); border-left:4px solid rgba(74,144,226,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
     .msg-mod { background: rgba(255,255,255,0.01); border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
     .msg-regular { background: rgba(255,255,255,0.01); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
     .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
-
     .highlight-new { animation: newJoinHighlight 2000ms ease-in-out forwards; border-radius: 12px; }
     @keyframes newJoinHighlight {
       0% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
@@ -127,152 +108,62 @@
       60% { box-shadow: 0 20px 40px rgba(67,160,71,0.07); transform: scale(1.01); }
       100% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
     }
-
-    /* subtle admin badge (realistic pill) */
-    .admin-badge {
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-size:12px;
-      color:var(--text);
-      padding:4px 8px;
-      border-radius:999px;
-      background: linear-gradient(180deg, rgba(67,160,71,0.12), rgba(67,160,71,0.06));
-      border: 1px solid rgba(67,160,71,0.14);
-      box-shadow: 0 4px 12px rgba(67,160,71,0.06);
-      font-weight:700;
-    }
+    .admin-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text); padding:4px 8px; border-radius:999px; background: linear-gradient(180deg, rgba(67,160,71,0.12), rgba(67,160,71,0.06)); border: 1px solid rgba(67,160,71,0.14); box-shadow: 0 4px 12px rgba(67,160,71,0.06); font-weight:700; }
     .admin-badge .dot { width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 4px 8px rgba(67,160,71,0.12); }
-
-    /* moderator badge - neutral tone */
-    .mod-badge {
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-size:12px;
-      color:var(--text);
-      padding:4px 8px;
-      border-radius:999px;
-      background: linear-gradient(180deg, rgba(120,120,120,0.08), rgba(0,0,0,0.04));
-      border: 1px solid rgba(255,255,255,0.02);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.45);
-      font-weight:700;
-      opacity:0.95;
-    }
+    .mod-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text); padding:4px 8px; border-radius:999px; background: linear-gradient(180deg, rgba(120,120,120,0.08), rgba(0,0,0,0.04)); border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 10px rgba(0,0,0,0.45); font-weight:700; opacity:0.95; }
     .mod-badge .dot { width:8px; height:8px; border-radius:999px; background:#9CA3AF; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
-
-    /* Header layout tweaks so logo sits top-right and bold */
-    .header-row { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; }
+    .header-row { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; width:100%; position:relative; }
     .left-meta { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
     .right-meta { display:flex; align-items:center; gap:12px; justify-content:flex-end; flex-shrink:0; }
-
-    /* TWEAKED: make logo bigger and more prominent/readable */
-    .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; align-self:flex-start; margin-left:0; margin-right:12px; }
+    .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:0; margin-right:0; }
     .header-logo {
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      width:110px; height:110px;
-      box-shadow: 16px 18px 44px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
-      object-fit:contain;
-      padding:10px;
+      width:120px; height:120px;
+      box-shadow: 18px 22px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
+      object-fit:cover;
+      padding:8px;
       transition: transform var(--transition), box-shadow var(--transition);
     }
-    .header-logo:hover { transform: translateY(-3px) scale(1.02); box-shadow: 18px 22px 48px rgba(0,0,0,0.75); }
-
+    .header-logo:hover { transform: translateY(-3px) scale(1.02); box-shadow: 20px 26px 56px rgba(0,0,0,0.8); }
     .header-logo-fallback {
-      width:110px; height:110px; display:inline-flex; align-items:center; justify-content:center;
-      border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:20px;
+      width:120px; height:120px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:22px;
       border:1px solid rgba(255,255,255,0.06);
-      box-shadow: 16px 18px 44px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
+      box-shadow: 18px 22px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
     }
-
-    /* Online indicator */
     .online-indicator { width: 18px; height:18px; display:inline-block; position:relative; flex-shrink:0; margin-right:6px; }
     .online-indicator .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 6px 16px rgba(67,160,71,0.16); position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
     .online-indicator .ring { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; border:1px solid rgba(67,160,71,0.12); box-sizing:border-box; animation: onlinePulse 1600ms infinite ease-in-out; }
     @keyframes onlinePulse { 0% { transform: translate(-50%,-50%) scale(1); opacity:1; } 50% { transform: translate(-50%,-50%) scale(1.12); opacity:0.45; } 100% { transform: translate(-50%,-50%) scale(1); opacity:1; } }
-
-    /* Stat boxes with soft depth */
     .meta-stats { display:flex; gap:12px; align-items:center; }
-    .stat-box {
-      display:flex; align-items:center; gap:10px;
-      padding:10px 14px;
-      border-radius:12px;
-      border: 1px solid rgba(255,255,255,0.02);
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-      min-width:120px;
-      box-shadow: var(--soft-elev-sm);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
+    .stat-box { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; border: 1px solid rgba(255,255,255,0.02); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03)); min-width:120px; box-shadow: var(--soft-elev-sm); transition: transform var(--transition), box-shadow var(--transition); }
     .stat-box:hover { transform: translateY(-3px); box-shadow: var(--soft-elev); }
     .stat-icon { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; flex-shrink:0; border-radius:8px; background:rgba(0,0,0,0.04); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
     .stat-text { display:flex; flex-direction:column; line-height:1; text-align:left; }
     .stat-text .muted { font-size:12px; color:var(--muted); }
     .stat-text .count { font-weight:700; color:var(--text); font-size:15px; }
-
-    .users-badge {
-      width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center;
-      border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-      border: 1px solid rgba(255,255,255,0.02);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 6px 8px 18px rgba(0,0,0,0.45);
-      flex-shrink:0;
-    }
-
-    /* Fallback users SVG visible by default; hidden once lucide injects its svg */
+    .users-badge { width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04)); border: 1px solid rgba(255,255,255,0.02); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 6px 8px 18px rgba(0,0,0,0.45); flex-shrink:0; }
     .users-fallback-svg { width:20px; height:20px; display:inline-block; stroke:var(--muted); stroke-width:1.6; fill:none; }
-    /* if lucide produced an svg inside the badge, hide fallback */
-    .users-badge svg.lucide-users + .users-fallback-svg { display:none; }
-    /* if lucide produced an svg and it replaced the <i>, then the svg will be the first child; hide fallback when any svg is present */
-    .users-badge svg + .users-fallback-svg { display:none; }
-
-    /* Textareas and inputs: soft inner shadow */
-    textarea, input[type="text"], input[type="search"] {
-      background: var(--panel);
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.02);
-      padding: 10px;
-      box-shadow: inset 4px 6px 16px rgba(0,0,0,0.55), inset -2px -2px 8px rgba(255,255,255,0.01);
-      color: var(--text);
-      transition: box-shadow var(--transition), transform var(--transition);
-      resize: vertical;
-    }
+    textarea, input[type="text"], input[type="search"] { background: var(--panel); border-radius: 12px; border: 1px solid rgba(255,255,255,0.02); padding: 10px; box-shadow: inset 4px 6px 16px rgba(0,0,0,0.55), inset -2px -2px 8px rgba(255,255,255,0.01); color: var(--text); transition: box-shadow var(--transition), transform var(--transition); resize: vertical; }
     textarea:focus, input:focus { outline: none; box-shadow: 0 14px 40px rgba(0,0,0,0.6); transform: translateY(-1px); }
-
-    /* responsiveness */
-    @media (max-width:900px){
-      .header-logo { width:88px; height:88px; padding:8px; }
-      .header-logo-fallback { width:88px; height:88px; font-size:18px; }
-      .users-badge { width:30px; height:30px; }
-      .stat-box { padding:8px 10px; min-width:100px; }
-    }
-    @media (max-width:640px){
-      .header-logo { width:76px; height:76px; padding:8px; }
-      .header-logo-fallback { width:76px; height:76px; font-size:16px; }
-      .right-meta { gap:10px; }
-      .meta-stats { gap:8px; }
-    }
-    @media (max-width:420px){
-      .header-row { flex-direction:column; align-items:stretch; gap:10px; }
-      .right-meta { justify-content:space-between; }
-      .meta-stats { width:100%; justify-content:space-between; }
-      .header-logo-wrap { align-self:flex-end; margin-left:0; }
-    }
+    @media (max-width:900px){ .header-logo { width:100px; height:100px; padding:8px; } .header-logo-fallback { width:100px; height:100px; font-size:18px; } .users-badge { width:32px; height:32px; } .stat-box { padding:8px 10px; min-width:100px; } }
+    @media (max-width:640px){ .header-logo { width:80px; height:80px; padding:8px; } .header-logo-fallback { width:80px; height:80px; font-size:16px; } .right-meta { gap:10px; } .meta-stats { gap:8px; } }
+    @media (max-width:420px){ .header-row { flex-direction:column; align-items:stretch; gap:10px; } .right-meta { justify-content:space-between; } .meta-stats { width:100%; justify-content:space-between; } .header-logo-wrap { align-self:flex-end; margin-left:0; } }
   </style>
 </head>
 <body>
   <div id="app" class="min-h-screen p-4 md:p-8">
     <header class="mb-4" role="banner">
       <div class="header-row">
-        <!-- LEFT: title + meta -->
         <div class="left-meta">
-          <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Private Digital Asset (Iran)</h1>
+          <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Group: Private Digital Asset Discussion (Iran)</h1>
           <div class="text-sm" style="color:var(--muted);">
             <span id="date-range">Period: 8 January 2026 — 15 January 2026</span>
           </div>
         </div>
 
-        <!-- RIGHT: members + status + logo -->
         <div class="right-meta" aria-hidden="false">
           <div class="meta-stats" role="group" aria-label="Group quick stats">
             <div class="stat-box" id="members-box" aria-hidden="false">
@@ -303,13 +194,12 @@
             </div>
           </div>
 
-          <!-- SITE LOGO placed to the far right; bold and scaled -->
           <a href="/" class="header-logo-wrap" aria-label="Private Digital Asset logo" title="Private Digital Asset">
             <img
               id="site-logo"
               src="assets/logo.png"
               alt="Private Digital Asset logo"
-              width="110" height="110"
+              width="120" height="120"
               decoding="async"
               loading="eager"
               class="header-logo"
@@ -360,13 +250,12 @@
           <span style="color:var(--muted); font-size:12px;">Realistic view</span>
         </div>
 
-        <!-- Admin card pinned to top -->
         <div id="admin-card" class="admin-card" style="display:none;">
-          <div class="admin-title">ADMINS</div>
+          <div class="admin-title" style="color:var(--muted); font-size:12px; margin-bottom:8px;">ADMINS</div>
           <div id="admin-list" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
 
-        <div id="members-list" style="display:flex; flex-direction:column; gap:10px; color:var(--muted);"></div>
+        <div id="members-list" style="display:flex; flex-direction:column; gap:10px; color:var(--muted); max-height:56vh; overflow:auto;"></div>
       </aside>
     </main>
 
@@ -378,19 +267,7 @@
   </div>
 
   <script>
-    /************************************************************************
-     * Full script preserved + Flow simulation.
-     * Visual-only, non-destructive additions:
-     * - show admin/mod badges in chat and member list
-     * - set moderator names in simulated timeline so badges & avatars resolve
-     * - remove DAY 2 SUMMARY suffix message and header tweak
-     * - larger logo placement
-     * Everything else (arrays, logic, online computation, avatar persistence, BC, etc.) left intact.
-     ************************************************************************/
-
-    /* ---------------------------
-       Pinned content
-       --------------------------- */
+    /* Pinned content */
     const pinned = [
       "Privacy rules (Iran-focused)",
       "Verification required to participate in sensitive discussions",
@@ -399,16 +276,14 @@
       "Sensitive questions → DM the admin"
     ];
 
-    /* ---------------------------
-       Members (140) - unchanged names list
-       --------------------------- */
+    /* Members list (140) */
     const members = [
       "Ariamen Niknam","Zhinos Farmani","Misaq Dashti","Pardis Sohrabi","Pouyan Tarabnia","Zhaleh Pourbakhtiar","Derina Kermani","Sohrab Mehrayin","Sepand Yaghmaei","Bakhtiar Kohandel",
       "Taraneh Rozbehani","Saman Tihu","Padideh Naderi","Niko Foroughi","Hamoon Zagros","Naysabeh Tahmasbi","Diana Siavoshi","Bahman Azarpi","Negin Koneshlu","Rosta Mehrayin",
-      "Saman-yar Ahoui","Yara Zhilavand","Parsa Shayeg","Mahraz Golestani","Siamak Hoorami","Helia Mahinpour","Nima Taban","Parvosh Ramyar","Hooshang Bahari","Naghmeh Soroush",
+      "Saman-yar Ahoui","Yara Zhilavand","Parsa Shayeg","Mahraz Golestani","Siamak Hoorami","Helia Mahinpour","Nima Taban","Parvosh Ramyar","Hooshang Bahari","Ahura Bahrami",
       "Kourosh Nikmanesh","Kian Rudbar","Narges Delaram","Sudeh Kianpour","Amin Shayegan","Niloufar Behrbakhsh","Soha Armaghani","Dara Firoozi","Zhila Mehraban","Samyar Rudgar",
       "Mahrokh Khodadadi","Nava Sayad","Parmida Sahli","Parham Soleimani-Nejad","Sepideh Nikandish","Pegah Derakhshan","Toranj Keyvani","Shahin Pejmanfar","Sheyda Alavi","Hoshmand Kateb",
-      "Mojgan Forouhar","Ahura Bahrami","Azadeh Nistani","Farshid Yousefi","Yeganeh Semnani","Siros Padidar","Ainaz Goodarzi","Mani Arashid","Roonak Ghaffari","Radin Sepehri",
+      "Mojgan Forouhar","Azadeh Nistani","Farshid Yousefi","Yeganeh Semnani","Siros Padidar","Ainaz Goodarzi","Mani Arashid","Roonak Ghaffari","Radin Sepehri",
       "Mahshad Barghaei","Keyvan Rostami","Nazanin Dehghani","Homa Nadali","Nira Eghbali","Pouyan Kohanzad","Matiah Khoramdel","Baran Jamshidi","Kiarash Mardani","Zaria Farhang",
       "Dihim Nazari","Behnam Alghasi","Golareh Malkani","Koroshian Tarkan","Raha Beheshti","Soheil Nikkhah","Zhaki Zhalehpoor","Rambod Hejri","Shaparak Fallahi","Kamyar Homayounfar",
       "Tarlan Daryabigi","Kimia Khojasteh","Pouya Nasrollahi","Mahyar Farahani","Ladan Soleimani","Niusha Mehraban","Sina Khaleghi","Golsa Shayegan","Abtin Kamali","Farnaz Bahrampour",
@@ -419,67 +294,35 @@
       "Farshad Kamkar","Pegah Naderian","Arzu Farozand","Delara Niri","Niko Golrokh","Sepehr Nikrosh","Samaneh Arvand","Yousef Rouzbeh","Mahtab Nobahar","Pedram Shakiba"
     ];
 
-    /* ---------------------------
-       Seeded messages (kept as variable — simulateFlows will replace only if no saved messages)
-       --------------------------- */
+    /* Starter seeded messages */
     let seededMessages = [
       { time: "08:57", member: "System", text: "You joined the group.", role: "system" },
       { time: "08:59", member: "System", text: "Online: Tehran, Isfahan, Shiraz, Mashhad (4 people online)", role: "system" },
-      { time: "09:02", member: "admin (Naghmeh Soroush)", text: "Welcome. Please read the pinned rules.", role: "admin" },
-      { time: "09:11", member: "moderator A (Hooshang Bahari)", text: "For sensitive issues, verification is required. DM the admin.", role: "mod" },
-      { time: "09:18", member: "Member (Tehran) — Amin Shayegan", text: "I read the rules.", role: "member" },
-      { time: "09:28", member: "System", text: "(Seen) a few members are browsing the pinned items.", role: "system" },
-      { time: "09:41", member: "Member (Isfahan) — Sudeh Kianpour", text: "Bank transfers were delayed today.", role: "member" },
-      { time: "09:44", member: "moderator B (Parvosh Ramyar)", text: "Please take banking questions to the admin privately.", role: "mod" }
+      { time: "09:02", member: "Hooshang Bahari (admin)", text: "Welcome. Please read the pinned rules before participating.", role: "admin" },
+      { time: "09:11", member: "Parvosh Ramyar (moderator)", text: "Verification required before any sensitive discussion. Please DM admin.", role: "mod" },
+      { time: "09:18", member: "Amin Shayegan (Tehran)", text: "Thanks — read the rules.", role: "member" },
+      { time: "09:41", member: "Sudeh Kianpour (Isfahan)", text: "Bank transfers delayed again today.", role: "member" },
+      { time: "09:44", member: "Parvosh Ramyar (Moderator)", text: "Please keep banking questions private with admin.", role: "mod" }
     ];
 
-    /* ---------------------------
-       Avatar heuristics & helpers (unchanged)
-       --------------------------- */
-    const femaleTokens = [
-      "zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges",
-      "sudeh","niloufar","pegah","shaparak","mina","roonak","zaria","mojgan","azadeh","yasaman",
-      "delara","bahareh","mehrnoush","zarrin","mahtab","niusha","golsa","yekta","nazanin","homa",
-      "farah","parida","parisa","soheila","zahra","fatemeh","marjan","sara","roxana","rosta"
-    ];
+    const femaleTokens = ["zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges","sudeh","niloufar","pegah","shaparak","mina","roonak","zaria","mojgan","azadeh","yasaman","delara","bahareh","mehrnoush","zarrin","mahtab","niusha","golsa","yekta","nazanin","homa","farah","parida","parisa","soheila","zahra","fatemeh","marjan","sara","roxana","rosta"];
     function looksFemale(name){ if(!name) return false; const lower=name.toLowerCase(); return femaleTokens.some(t=>lower.includes(t)); }
-    function randInt(max){ return Math.floor(Math.random()*max); }
 
-    // memberProfiles now include gender and online props; isAdmin & isMod set later
     let memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male', online: false, isAdmin: false, isMod: false }));
 
-    /* ---------------------------
-       localStorage helpers for avatar persistence and online list
-       --------------------------- */
-    const AVATAR_MAP_KEY = 'group_avatar_map_v1';
-    const ONLINE_LIST_KEY = 'group_online_list_v1';
-    const MESSAGES_KEY = 'group_messages_v1';
+    const AVATAR_MAP_KEY = 'group_avatar_map_v2';
+    const ONLINE_LIST_KEY = 'group_online_list_v2';
+    const MESSAGES_KEY = 'group_messages_v2';
 
-    function loadAvatarMap(){
-      try { const raw = localStorage.getItem(AVATAR_MAP_KEY); return raw ? JSON.parse(raw) : {}; } catch(e){ return {}; }
-    }
-    function saveAvatarMap(map){
-      try { localStorage.setItem(AVATAR_MAP_KEY, JSON.stringify(map)); } catch(e){}
-    }
+    function loadAvatarMap(){ try { const raw = localStorage.getItem(AVATAR_MAP_KEY); return raw ? JSON.parse(raw) : {}; } catch(e){ return {}; } }
+    function saveAvatarMap(map){ try { localStorage.setItem(AVATAR_MAP_KEY, JSON.stringify(map)); } catch(e){} }
+    function loadOnlineList(){ try { const raw = localStorage.getItem(ONLINE_LIST_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
+    function saveOnlineList(list){ try { localStorage.setItem(ONLINE_LIST_KEY, JSON.stringify(list)); } catch(e){} }
+    function loadMessages(){ try { const raw = localStorage.getItem(MESSAGES_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
+    function saveMessages(arr){ try { localStorage.setItem(MESSAGES_KEY, JSON.stringify(arr)); } catch(e){} }
 
-    function loadOnlineList(){
-      try { const raw = localStorage.getItem(ONLINE_LIST_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
-    }
-    function saveOnlineList(list){
-      try { localStorage.setItem(ONLINE_LIST_KEY, JSON.stringify(list)); } catch(e){}
-    }
-
-    function loadMessages(){
-      try { const raw = localStorage.getItem(MESSAGES_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
-    }
-    function saveMessages(arr){
-      try { localStorage.setItem(MESSAGES_KEY, JSON.stringify(arr)); } catch(e){}
-    }
-
-    /* ---------------------------
-       BroadcastChannel for local-real-time (tabs) sync (unchanged)
-       --------------------------- */
-    const CHANNEL_NAME = 'abrox-group-chat';
+    /* BroadcastChannel for local tab sync */
+    const CHANNEL_NAME = 'abrox-group-chat-v2';
     let bc = null;
     try {
       if ('BroadcastChannel' in window) {
@@ -499,20 +342,13 @@
                 renderMessages();
                 renderMembers();
               }
-            } else if (data.type === 'replace-messages' && Array.isArray(data.payload)) {
-              seededMessages = data.payload.slice();
-              saveMessages(seededMessages);
-              renderMessages();
-              renderMembers();
             }
           } catch (e) { console.warn('bc message handler err', e); }
         });
       }
     } catch (e) { console.warn('BroadcastChannel init failed', e); bc = null; }
 
-    /* ---------------------------
-       DOM refs
-       --------------------------- */
+    /* DOM refs */
     const pinnedList = document.getElementById('pinned-list');
     const membersListEl = document.getElementById('members-list');
     const adminCardEl = document.getElementById('admin-card');
@@ -521,47 +357,13 @@
     const chatWindow = document.getElementById('chat-window');
     const statusNumberEl = document.getElementById('status-number');
 
-    /* ---------------------------
-       Header helper: update dynamic member count
-       --------------------------- */
-    function updateHeaderMemberCount(){
-      const el = document.getElementById('header-member-count');
-      if (!el) return;
-      el.textContent = '~' + (memberProfiles.length || members.length || 0);
-    }
+    function updateHeaderMemberCount(){ const el = document.getElementById('header-member-count'); if (!el) return; el.textContent = '~' + (memberProfiles.length || members.length || 0); }
 
-    /* ---------------------------
-       Render functions (unchanged, with badge rendering additions)
-       --------------------------- */
-    function renderPinned(){
-      pinnedList.innerHTML = '';
-      pinned.forEach(p => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.gap = '8px';
-        li.style.marginBottom = '6px';
-        const icon = document.createElement('i');
-        icon.setAttribute('data-lucide','pin');
-        icon.setAttribute('aria-hidden','true');
-        li.appendChild(icon);
-        const span = document.createElement('span');
-        span.textContent = p;
-        span.style.color = 'var(--muted)';
-        li.appendChild(span);
-        pinnedList.appendChild(li);
-      });
-    }
+    function renderPinned(){ pinnedList.innerHTML = ''; pinned.forEach(p => { const li = document.createElement('li'); li.style.display = 'flex'; li.style.alignItems = 'center'; li.style.gap = '8px'; li.style.marginBottom = '6px'; const icon = document.createElement('i'); icon.setAttribute('data-lucide','pin'); icon.setAttribute('aria-hidden','true'); li.appendChild(icon); const span = document.createElement('span'); span.textContent = p; span.style.color = 'var(--muted)'; li.appendChild(span); pinnedList.appendChild(li); }); }
 
     function createFallbackElement(name){
-      function seedFromName(n){
-        let h = 0; if(!n) return 1;
-        for(let i=0;i<n.length;i++){ h = ((h<<5) - h) + n.charCodeAt(i); h |= 0; }
-        return (Math.abs(h) % 70) + 1;
-      }
-
+      function seedFromName(n){ let h = 0; if(!n) return 1; for(let i=0;i<n.length;i++){ h = ((h<<5) - h) + n.charCodeAt(i); h |= 0; } return (Math.abs(h) % 70) + 1; }
       const seed = seedFromName(name || 'member');
-
       const img = document.createElement('img');
       img.src = `https://i.pravatar.cc/40?img=${seed}`;
       img.alt = name || 'Member';
@@ -569,21 +371,7 @@
       img.style.height = '40px';
       img.style.borderRadius = '10px';
       img.style.objectFit = 'cover';
-      img.onerror = function(){
-        try { img.remove(); } catch(e){}
-        const fallback = document.createElement('div');
-        fallback.className = 'avatar-fallback';
-        fallback.style.width = '40px';
-        fallback.style.height = '40px';
-        fallback.style.borderRadius = '10px';
-        fallback.style.fontSize = '12px';
-        fallback.style.flexShrink = '0';
-        const parts = (name || '').split(' ').filter(Boolean);
-        const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase();
-        fallback.textContent = initials;
-        try { this.parentNode && this.parentNode.appendChild(fallback); } catch(e){}
-      };
-
+      img.onerror = function(){ try { img.remove(); } catch(e){}; const fallback = document.createElement('div'); fallback.className = 'avatar-fallback'; fallback.style.width = '40px'; fallback.style.height = '40px'; fallback.style.borderRadius = '10px'; fallback.style.fontSize = '12px'; fallback.style.flexShrink = '0'; const parts = (name || '').split(' ').filter(Boolean); const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase(); fallback.textContent = initials; try { this.parentNode && this.parentNode.appendChild(fallback); } catch(e){} };
       const wrapper = document.createElement('div');
       wrapper.className = 'avatar-wrap';
       wrapper.style.width = '40px';
@@ -624,10 +412,7 @@
         img.style.height = '40px';
         img.style.borderRadius = '10px';
         img.style.objectFit = 'cover';
-        img.onerror = () => {
-          try { img.remove(); } catch(e){}
-          wrap.appendChild(createFallbackElement(profile.name || 'Member'));
-        };
+        img.onerror = () => { try { img.remove(); } catch(e){}; wrap.appendChild(createFallbackElement(profile.name || 'Member')); };
         wrap.appendChild(img);
       } else {
         wrap.appendChild(createFallbackElement(profile.name || 'Member'));
@@ -653,27 +438,22 @@
         row.style.display = 'flex';
         row.style.alignItems = 'center';
         row.style.gap = '10px';
-
         const left = document.createElement('div');
         left.appendChild(createAvatarNodeForProfile(a));
         row.appendChild(left);
-
         const nameDiv = document.createElement('div');
         nameDiv.style.color = 'var(--muted)';
         nameDiv.style.fontSize = '14px';
         nameDiv.style.display = 'flex';
         nameDiv.style.alignItems = 'center';
         nameDiv.style.gap = '8px';
-
         const nameText = document.createElement('span');
         nameText.textContent = a.name;
         nameDiv.appendChild(nameText);
-
         const badge = document.createElement('span');
         badge.className = 'admin-badge';
         badge.innerHTML = '<span class="dot"></span><span style="opacity:0.9; margin-left:4px; font-weight:700;">ADMIN</span>';
         nameDiv.appendChild(badge);
-
         row.appendChild(nameDiv);
         adminListEl.appendChild(row);
       });
@@ -682,35 +462,49 @@
 
     function renderMembers(){
       membersListEl.innerHTML = '';
-      const others = memberProfiles.filter(p => !p.isAdmin);
+      const others = memberProfiles.slice().sort((a,b)=>{
+        if (a.online === b.online) return a.name.localeCompare(b.name);
+        return (a.online ? -1 : 1);
+      });
       others.forEach(m => {
         const row = document.createElement('div');
         row.style.display = 'flex';
         row.style.alignItems = 'center';
         row.style.gap = '10px';
-
-        const left = document.createElement('div');
-        left.appendChild(createAvatarNodeForProfile(m));
-        row.appendChild(left);
-
+        row.style.justifyContent = 'space-between';
+        const leftGroup = document.createElement('div');
+        leftGroup.style.display = 'flex';
+        leftGroup.style.alignItems = 'center';
+        leftGroup.style.gap = '10px';
+        const avatar = document.createElement('div');
+        avatar.appendChild(createAvatarNodeForProfile(m));
+        leftGroup.appendChild(avatar);
         const nameDiv = document.createElement('div');
         nameDiv.style.color = 'var(--muted)';
         nameDiv.style.fontSize = '14px';
         nameDiv.style.display = 'flex';
         nameDiv.style.alignItems = 'center';
         nameDiv.style.gap = '8px';
-        nameDiv.textContent = m.name;
-
-        // append moderator badge if applicable
+        const statusDot = document.createElement('span');
+        statusDot.className = 'status-dot ' + (m.online ? 'online' : 'offline');
+        statusDot.setAttribute('aria-hidden', 'true');
+        nameDiv.appendChild(statusDot);
+        const nameText = document.createElement('span');
+        nameText.textContent = m.name;
+        nameDiv.appendChild(nameText);
         if (m.isMod) {
           const badge = document.createElement('span');
           badge.className = 'mod-badge';
           badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:4px; font-weight:700;">MOD</span>';
           nameDiv.appendChild(badge);
         }
-
-        row.appendChild(nameDiv);
-
+        leftGroup.appendChild(nameDiv);
+        row.appendChild(leftGroup);
+        const right = document.createElement('div');
+        right.style.color = 'var(--muted)';
+        right.style.fontSize = '12px';
+        right.textContent = m.online ? 'online' : 'offline';
+        row.appendChild(right);
         membersListEl.appendChild(row);
       });
       updateHeaderMemberCount();
@@ -732,28 +526,20 @@
           header.style.display = 'flex';
           header.style.justifyContent = 'space-between';
           header.style.alignItems = 'center';
-
           const left = document.createElement('div');
           left.style.display = 'flex';
           left.style.alignItems = 'center';
           left.style.gap = '10px';
-
           const profile = memberProfiles.find(p => m.member && p.name && m.member.toLowerCase().includes(p.name.toLowerCase()));
-          if (profile) {
-            left.appendChild(createAvatarNodeForProfile(profile));
-          } else {
-            left.appendChild(createAvatarNodeForProfile(m.member));
-          }
-
+          if (profile) left.appendChild(createAvatarNodeForProfile(profile));
+          else left.appendChild(createAvatarNodeForProfile(m.member));
           const nameDiv = document.createElement('div');
-          nameDiv.style.fontWeight = '600';
+          nameDiv.style.fontWeight = '700';
           nameDiv.style.color = 'var(--text)';
           nameDiv.style.display = 'flex';
           nameDiv.style.alignItems = 'center';
           nameDiv.style.gap = '8px';
           nameDiv.textContent = m.member || 'Member';
-
-          // Append badges for explicit role or profile flags (UI only)
           if (m.role === 'admin') {
             const badge = document.createElement('span');
             badge.className = 'admin-badge';
@@ -767,7 +553,6 @@
             badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">MOD</span>';
             nameDiv.appendChild(badge);
           } else if (profile) {
-            // show profile-level badges (in case a named admin/mod was matched)
             if (profile.isAdmin) {
               const badge = document.createElement('span');
               badge.className = 'admin-badge';
@@ -782,27 +567,21 @@
               nameDiv.appendChild(badge);
             }
           }
-
           left.appendChild(nameDiv);
-
           header.appendChild(left);
-
           const time = document.createElement('div');
           time.style.color = 'var(--muted)';
           time.style.fontSize = '12px';
           time.textContent = m.time;
           header.appendChild(time);
-
           const p = document.createElement('p');
           p.style.marginTop = '8px';
           p.style.color = 'var(--text)';
           p.style.fontSize = '14px';
           p.textContent = m.text;
-
           article.appendChild(header);
           article.appendChild(p);
-
-          const isNewMember = (m.role === 'new') || (m.role === 'system' && m.text && m.text.toLowerCase().includes('new member'));
+          const isNewMember = (m.role === 'new');
           if (isNewMember) {
             article.classList.add('highlight-new');
             triggerStatusJoinPulse();
@@ -814,9 +593,7 @@
       try { chatWindow.scrollTop = chatWindow.scrollHeight; } catch(e){}
     }
 
-    /* ---------------------------
-       UI interactions (unchanged)
-       --------------------------- */
+    /* Interactions */
     document.getElementById('copy-pinned').addEventListener('click', async () => {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -831,8 +608,7 @@
           ta.remove();
           alert('Pinned rules copied to clipboard');
         }
-      }
-      catch (err) { console.warn('copy failed', err); alert('Unable to copy'); }
+      } catch (err) { console.warn('copy failed', err); alert('Unable to copy'); }
     });
 
     document.getElementById('toggle-notes').addEventListener('click', () => {
@@ -854,22 +630,13 @@
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const newMsg = { time: timeStr, member: 'You', text: txt, role: 'member' };
-
-      // preserve original behavior: push, re-render
       seededMessages.push(newMsg);
-
-      // save messages locally so they persist across reloads
       saveMessages(seededMessages);
-
-      // broadcast to other tabs (if available)
       if (bc) {
         try { bc.postMessage({ type: 'new-message', payload: newMsg }); } catch(e){ console.warn('bc post err', e); }
       }
-
       document.getElementById('composer-text').value = '';
       renderMessages();
-
-      // recompute online list & persist (keeps original logic path intact)
       const val = parseInt(statusNumberEl.textContent, 10) || 6;
       const list = computeDeterministicOnlineList(val);
       applyOnlineList(list);
@@ -881,55 +648,64 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('send-btn').click(); }
     });
 
-    /* ---------------------------
-       Deterministic "online" selection helpers (unchanged)
-       --------------------------- */
-    function extractAdminNamesFromSeed() {
+    /* Robust name extraction for admin/mod detection */
+    function extractAdminNamesFromSeed(){
       const set = new Set();
       seededMessages.forEach(m => {
         if (!m.member || typeof m.member !== 'string') return;
-        const low = m.member.toLowerCase();
-        if (low.includes('admin')) {
-          const paren = m.member.match(/\(([^)]+)\)/);
-          if (paren && paren[1]) set.add(paren[1].trim());
-          else set.add('admin');
+        const member = m.member.trim();
+        // prefer name before parentheses, e.g., "Hooshang Bahari (admin)"
+        const beforeParen = member.match(/^(.+?)\s*\(/);
+        if (beforeParen && beforeParen[1]) {
+          set.add(beforeParen[1].trim());
+          return;
         }
-      });
-      if (set.has('admin')) {
-        seededMessages.forEach(m => {
-          if (m.role === 'admin' && m.member && m.member.includes('(')) {
-            const par = m.member.match(/\(([^)]+)\)/);
-            if (par && par[1]) set.add(par[1].trim());
-          }
-        });
-      }
-      return Array.from(set).filter(Boolean);
-    }
-
-    function extractModeratorNamesFromSeed() {
-      const set = new Set();
-      seededMessages.forEach(m => {
-        if (!m.member || typeof m.member !== 'string') return;
-        const low = m.member.toLowerCase();
-        if (low.includes('moderator') || low.includes('mod')) {
-          const paren = m.member.match(/\(([^)]+)\)/);
-          if (paren && paren[1]) set.add(paren[1].trim());
-          else set.add('moderator');
+        // if "admin" appears, try to take preceding words (best-effort)
+        if (/admin/i.test(member)) {
+          const parts = member.split(/\s+/).filter(Boolean);
+          // pick up to first two words that are not 'admin'
+          const filtered = parts.filter(p => !/admin/i.test(p)).slice(0,2);
+          if (filtered.length) set.add(filtered.join(' ').trim());
         }
       });
       return Array.from(set).filter(Boolean);
     }
 
+    function extractModeratorNamesFromSeed(){
+      const set = new Set();
+      seededMessages.forEach(m => {
+        if (!m.member || typeof m.member !== 'string') return;
+        const member = m.member.trim();
+        const beforeParen = member.match(/^(.+?)\s*\(/);
+        if (beforeParen && beforeParen[1]) {
+          // add only if role text includes mod/moderator somewhere
+          if (/moderator|mod/i.test(member)) set.add(beforeParen[1].trim());
+          return;
+        }
+        if (/moderator|moder|mod/i.test(member)) {
+          const parts = member.split(/\s+/).filter(Boolean);
+          const filtered = parts.filter(p => !/moderator|moder|mod/i.test(p)).slice(0,2);
+          if (filtered.length) set.add(filtered.join(' ').trim());
+        }
+      });
+      return Array.from(set).filter(Boolean);
+    }
+
+    /* Deterministic online selection */
     function computeDeterministicOnlineList(count){
       const admins = extractAdminNamesFromSeed();
       const onlineSet = new Set();
+      // make sure explicit admin-marked profiles are included
+      memberProfiles.forEach(p => { if (p.isAdmin) onlineSet.add(p.name); });
 
-      const adminProfiles = [];
+      // also add admin names extracted from messages
       admins.forEach(adminName => {
-        const prof = memberProfiles.find(p => p.name === adminName || adminName.includes(p.name) || p.name.includes(adminName));
-        if (prof) adminProfiles.push(prof.name);
+        const prof = memberProfiles.find(p => {
+          const pn = (p.name||'').toLowerCase();
+          return pn === adminName.toLowerCase() || pn.includes(adminName.toLowerCase()) || adminName.toLowerCase().includes(pn);
+        });
+        if (prof) onlineSet.add(prof.name);
       });
-      adminProfiles.forEach(n => onlineSet.add(n));
 
       const authors = [];
       for (let i = seededMessages.length - 1; i >= 0 && authors.length < count; i--) {
@@ -969,9 +745,6 @@
       });
     }
 
-    /* ---------------------------
-       Status number fluctuation & join pulse (unchanged)
-       --------------------------- */
     function updateStatusNumber(){
       const val = 3 + Math.floor(Math.random() * 6); // 3..8
       const statEl = document.getElementById('status-number');
@@ -1002,17 +775,14 @@
       }
     }
 
-    /* ---------------------------
-       Avatar fetching (unchanged)
-       --------------------------- */
+    /* Avatar fetching (best-effort; fallback safe) */
     async function fetchIranAvatars(){
       try {
         const avatarMap = loadAvatarMap();
         const femaleCount = memberProfiles.filter(p => p.gender === 'female').length;
         const maleCount = memberProfiles.length - femaleCount;
-
-        const targetFemaleFetch = Math.min(600, Math.ceil(femaleCount * 1.6) + 60);
-        const targetMaleFetch = Math.min(600, Math.ceil(maleCount * 1.6) + 60);
+        const targetFemaleFetch = Math.min(150, Math.ceil(femaleCount * 1.2) + 10);
+        const targetMaleFetch = Math.min(150, Math.ceil(maleCount * 1.2) + 10);
 
         async function fetchPool(gender, results, nat){
           if (results <= 0) return [];
@@ -1042,10 +812,10 @@
             fetchPool('male', targetMaleFetch, 'ir')
           ]);
         } catch (errNat) {
-          console.warn('nat=ir fetch failed, falling back to general fetch', errNat);
+          console.warn('nat=ir fetch may not be supported, falling back', errNat);
           [femalePool, malePool] = await Promise.all([
-            fetchPool('female', Math.min(200, targetFemaleFetch), ''),
-            fetchPool('male', Math.min(200, targetMaleFetch), '')
+            fetchPool('female', Math.min(100, targetFemaleFetch), ''),
+            fetchPool('male', Math.min(100, targetMaleFetch), '')
           ]);
         }
 
@@ -1071,7 +841,7 @@
         const remaining = memberProfiles.filter(p => !p.avatar).length;
         if (remaining > 0) {
           try {
-            const pool = await fetchPool('', Math.min(800, remaining * 3 + 80), '');
+            const pool = await fetchPool('', Math.min(200, remaining * 2 + 20), '');
             const pics = pool.map(x => x.pic);
             shuffle(pics);
             let idx = 0;
@@ -1103,172 +873,102 @@
       }
     }
 
-    /* ---------------------------
-       Lucide wiring (unchanged)
-       --------------------------- */
     function wireLucideSvgs(retries = 0){
       const MAX_RETRIES = 12;
       if (window.lucide && typeof lucide.replace === 'function') {
         try { lucide.replace(); } catch(e){}
-        document.querySelectorAll('svg.lucide-circle').forEach(svg => {
-          svg.classList.add('online-svg');
-          try {
-            svg.setAttribute('stroke', '#43A047');
-            svg.setAttribute('stroke-width', '2.2');
-            svg.setAttribute('fill', 'none');
-            svg.setAttribute('aria-hidden', 'true');
-            svg.style.display = 'inline-block';
-          } catch(e){}
-        });
-        document.querySelectorAll('svg.lucide-pin').forEach(svg => {
-          svg.classList.add('pin-svg');
-          try {
-            svg.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#BFBFBF');
-            svg.setAttribute('stroke-width', '1.6');
-            svg.setAttribute('fill', 'none');
-            svg.setAttribute('aria-hidden', 'true');
-          } catch(e){}
-        });
-        document.querySelectorAll('svg.lucide-users').forEach(svg => {
-          svg.classList.add('users-svg');
-          try {
-            svg.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#BFBFBF');
-            svg.setAttribute('stroke-width', '1.6');
-            svg.setAttribute('fill', 'none');
-            svg.setAttribute('aria-hidden', 'true');
-            svg.style.display = 'inline-block';
-            svg.style.width = '20px';
-            svg.style.height = '20px';
-          } catch(e){}
-        });
       } else if (retries < MAX_RETRIES) {
         setTimeout(()=> wireLucideSvgs(retries+1), 180);
       }
     }
 
-    /* ---------------------------
-       Admin/mod detection & ordering (unchanged detection, combined)
-       --------------------------- */
+    /* detect and mark roles: combine explicit heuristics and extracted names */
     function detectAndMarkRoles(){
-      const rawAdmins = extractAdminNamesFromSeed();
-      const rawMods = extractModeratorNamesFromSeed();
+      // explicit male admin defaults chosen by you
+      const explicitAdmins = ['Hooshang Bahari','Hooshmand Kateb','Ahura Bahrami'];
+      const explicitMods = ['Parvosh Ramyar','Hoshmand Kateb','Hooshang Bahari'];
+
+      // extract names from seeded messages too
+      const extractedAdmins = extractAdminNamesFromSeed();
+      const extractedMods = extractModeratorNamesFromSeed();
 
       memberProfiles.forEach(p => {
-        const lowerP = p.name.toLowerCase();
-        p.isAdmin = rawAdmins.some(a => {
-          if (!a) return false;
-          const lowerA = a.toLowerCase();
-          return lowerA === lowerP || lowerA.includes(lowerP) || lowerP.includes(lowerA);
-        });
-
-        p.isMod = rawMods.some(a => {
-          if (!a) return false;
-          const lowerA = a.toLowerCase();
-          return lowerA === lowerP || lowerA.includes(lowerP) || lowerP.includes(lowerA);
-        });
+        const pname = p.name.toLowerCase();
+        p.isAdmin = explicitAdmins.some(n => n.toLowerCase() === pname) || extractedAdmins.some(n => n.toLowerCase() === pname);
+        p.isMod = explicitMods.some(n => n.toLowerCase() === pname) || extractedMods.some(n => n.toLowerCase() === pname);
       });
-
       updateHeaderMemberCount();
     }
 
-    /* ---------------------------
-       Flow simulation (non-destructive):
-       - Only runs when there are NO saved messages (so it doesn't overwrite actual sessions)
-       - Builds a Day 1 / Day 2 / Day 4 / Day 7 timeline closely matching your spec
-       - USDT is shown once as casual mention (no explanation)
-       - Adds backlog entries (older dates) visible as older-date messages
-       - Uses explicit admin/mod names so badges & avatars render
-       --------------------------- */
-    function simulateFlows(){
-      // Build simulated timeline (note: times are illustrative)
-      const timeline = [];
+    /* Simulated timeline, streamed if no saved messages (keeps realistic flow) */
+    function simulateFlowsRealistic(){
+      const timeline = [
+        { time: "09:02", member: "Hooshang Bahari (admin)", text: "Welcome. Please read the pinned rules before participating.", role: "admin" },
+        { time: "09:11", member: "Parvosh Ramyar (moderator)", text: "Verification required before any sensitive discussion. DM admin.", role: "mod" },
+        { time: "09:18", member: "Amin Shayegan (Tehran)", text: "Thanks, read the rules.", role: "member" },
+        { time: "09:41", member: "Sudeh Kianpour (Isfahan)", text: "Bank transfers delayed again today.", role: "member" },
+        { time: "09:44", member: "Parvosh Ramyar (moderator)", text: "Please take banking questions to the admin privately.", role: "mod" },
 
-      // DAY 1 — Join Event snapshot
-      timeline.push({ time: "DAY 1", member: "System", text: "Snapshot — Day 1: Join event", role: "system" });
-      timeline.push({ time: "09:02", member: "admin (Naghmeh Soroush)", text: "Welcome. Please read pinned rules before participating.", role: "admin" });
-      timeline.push({ time: "09:11", member: "moderator A (Hooshang Bahari)", text: "Verification is required before any sensitive discussion. DM admin.", role: "mod" });
-      timeline.push({ time: "09:18", member: "Member (Tehran) — Amin Shayegan", text: "Thanks, read the rules.", role: "member" });
-      timeline.push({ time: "09:41", member: "Member (Isfahan) — Sudeh Kianpour", text: "Bank transfers delayed again today.", role: "member" });
-      timeline.push({ time: "09:44", member: "moderator B (Parvosh Ramyar)", text: "Please keep banking questions private with admin.", role: "mod" });
-      // show calm chat state (system)
-      timeline.push({ time: "09:50", member: "System", text: "Chat is calm — not busy", role: "system" });
+        { time: "Jan 3", member: "Saman Tihu", text: "Inflation has been high this month and it's getting tougher.", role: "member" },
+        { time: "Jan 5", member: "Kourosh Nikmanesh", text: "Same here. Hard to keep value.", role: "member" },
+        { time: "Jan 8", member: "Parvosh Ramyar (moderator)", text: "Reminder: this group is for protection, not speculation.", role: "mod" },
+        { time: "14:12", member: "Radin Sepehri", text: "Waiting for verification.", role: "member" },
+        { time: "16:40", member: "Parvosh Ramyar (moderator)", text: "Please be patient. Admin reviews in batches.", role: "mod" },
+        { time: "18:05", member: "Niloufar Behrbakhsh (Shiraz)", text: "USDT helped me avoid last drop.", role: "member" },
 
-      // DAY 2 — Passive observation
-      timeline.push({ time: "DAY 2", member: "System", text: "Snapshot — Day 2: Passive observation & backlog", role: "system" });
-      // older messages (backlog), older dates shown as dates
-      timeline.push({ time: "Jan 3", member: "Member", text: "Rial lost more this week.", role: "member" });
-      timeline.push({ time: "Jan 5", member: "Member", text: "Same here. Hard to keep value.", role: "member" });
-      timeline.push({ time: "Jan 8", member: "moderator A (Hooshang Bahari)", text: "Reminder: this group is for protection, not speculation.", role: "mod" });
-      timeline.push({ time: "14:12", member: "Member", text: "Waiting for verification.", role: "member" });
-      timeline.push({ time: "16:40", member: "moderator B (Parvosh Ramyar)", text: "Please be patient. Admin reviews in batches.", role: "mod" });
-      // USDT casual mention (once, no explanation)
-      timeline.push({ time: "18:05", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "USDT helped me avoid last drop.", role: "member" });
+        { time: "11:00", member: "Hooshang Bahari (admin)", text: "Verification queue is nearly full today. Next review window tomorrow.", role: "admin" },
+        { time: "10:22", member: "Narges Delaram", text: "Got approved yesterday.", role: "member" },
+        { time: "10:24", member: "Amin Shayegan", text: "Same here. Took a few days.", role: "member" },
 
-      // Admin announcement about verification queue (explicit admin name)
-      timeline.push({ time: "11:00", member: "admin (Naghmeh Soroush)", text: "Verification queue is almost full today. Next review window tomorrow.", role: "admin" });
+        { time: "09:31", member: "Narges Delaram (Karaj)", text: "Confirmed — verification complete.", role: "member" },
+        { time: "09:34", member: "Amin Shayegan", text: "Same here.", role: "member" },
+        { time: "14:06", member: "Hooshang Bahari (admin)", text: "Limited verification window today. Please wait your turn.", role: "admin" },
+        { time: "16:21", member: "Rosta Mehrayin (Isfahan)", text: "Any starting tips for newcomers?", role: "member" },
+        { time: "16:24", member: "Parvosh Ramyar (moderator)", text: "Please DM admin for details.", role: "mod" },
 
-      // small confirmations
-      timeline.push({ time: "10:22", member: "Member", text: "Got approved yesterday.", role: "member" });
-      timeline.push({ time: "10:24", member: "Member", text: "Same here. Took a few days.", role: "member" });
-      timeline.push({ time: "15:10", member: "Member", text: "Still waiting.", role: "member" });
-      timeline.push({ time: "15:11", member: "moderator A (Hooshang Bahari)", text: "Please DM admin directly.", role: "mod" });
+        { time: "10:12", member: "Niloufar Behrbakhsh", text: "Tehran traffic was better today.", role: "member" },
+        { time: "13:40", member: "Kourosh Nikmanesh", text: "Still waiting for approval.", role: "member" },
+        { time: "17:02", member: "Parvosh Ramyar (moderator)", text: "Reminder: do not post private contact info in public.", role: "mod" },
 
-      // Day 2 backlog (older)
-      timeline.push({ time: "3 weeks ago", member: "Member", text: "Comment about inflation.", role: "member" });
-      timeline.push({ time: "2 weeks ago", member: "moderator A (Hooshang Bahari)", text: "Rule clarification.", role: "mod" });
-      timeline.push({ time: "10 days ago", member: "Member", text: "Casual local remark.", role: "member" });
-      timeline.push({ time: "8 days ago", member: "admin (Naghmeh Soroush)", text: "Procedural announcement — no action required.", role: "admin" });
-      timeline.push({ time: "11:18", member: "Member", text: "Waiting / confirmation-type message.", role: "member" });
-      timeline.push({ time: "12:42", member: "moderator B (Parvosh Ramyar)", text: "Patience / process reminder.", role: "mod" });
-      timeline.push({ time: "15:09", member: "Member", text: "Indirect mention of USDT as protection.", role: "member" });
+        { time: "11:00", member: "Hooshang Bahari (admin)", text: "If you applied within the last 72 hours, check your DMs.", role: "admin" },
+        { time: "14:30", member: "Kourosh Nikmanesh", text: "Still waiting. Testing my patience.", role: "member" },
+        { time: "18:30", member: "Narges Delaram", text: "A few confirmations, nothing dramatic — quiet.", role: "member" }
+      ];
 
-      // DAY 4 — light social proof
-      timeline.push({ time: "DAY 4", member: "System", text: "Snapshot — Day 4: Light social proof", role: "system" });
-      timeline.push({ time: "09:31", member: "Member (Karaj) — Narges Delaram", text: "Approved / completed step reference.", role: "member" });
-      timeline.push({ time: "09:34", member: "Member (Tehran) — Amin Shayegan", text: "Similar neutral confirmation.", role: "member" });
-      timeline.push({ time: "14:06", member: "admin (Naghmeh Soroush)", text: "Procedural notice about limited verification window.", role: "admin" });
-      timeline.push({ time: "16:21", member: "New member (Isfahan) — Rosta Mehrayin", text: "General question — non-technical.", role: "new" });
-      timeline.push({ time: "16:24", member: "moderator A (Hooshang Bahari)", text: "Redirect to admin DM.", role: "mod" });
-
-      // DAY 7 — reminders & casual comments
-      timeline.push({ time: "DAY 7", member: "System", text: "Snapshot — Day 7: Light reminders", role: "system" });
-      timeline.push({ time: "10:12", member: "Member", text: "Casual Iran-specific comment.", role: "member" });
-      timeline.push({ time: "13:40", member: "Member", text: "Waiting / acknowledgment.", role: "member" });
-      timeline.push({ time: "17:02", member: "moderator B (Parvosh Ramyar)", text: "Reminder about privacy", role: "mod" });
-
-      // Insert timeline into seededMessages
-      seededMessages = [];
-      timeline.forEach(m => seededMessages.push(m));
-
-      // Save to localStorage so this simulated flow remains
+      const initialCount = 4;
+      seededMessages = seededMessages.slice(0,2).concat(timeline.slice(0, initialCount));
       saveMessages(seededMessages);
+      renderMessages();
+
+      let idx = initialCount;
+      const streamInterval = 900 + Math.floor(Math.random()*1200);
+      const stream = setInterval(() => {
+        if (idx >= timeline.length) { clearInterval(stream); saveMessages(seededMessages); renderMessages(); return; }
+        seededMessages.push(timeline[idx]);
+        saveMessages(seededMessages);
+        const val = parseInt(statusNumberEl.textContent, 10) || 5;
+        const list = computeDeterministicOnlineList(val);
+        applyOnlineList(list);
+        renderMessages();
+        renderMembers();
+        idx++;
+      }, streamInterval);
     }
 
-    /* ---------------------------
-       On init: if no saved messages, simulate flows; otherwise keep saved messages (non-destructive)
-       --------------------------- */
+    /* Init */
     function init(){
       renderPinned();
-
-      // Load persisted messages if present
       const savedMsgs = loadMessages();
       if (Array.isArray(savedMsgs) && savedMsgs.length > 0) {
         seededMessages = savedMsgs.slice();
       } else {
-        // No saved messages: seed the simulation timeline you requested
-        simulateFlows();
+        simulateFlowsRealistic();
       }
-
-      // Mark admins/mods based on seededMessages (keeps original detection logic, only adds mod detection)
       detectAndMarkRoles();
-
-      // Avatar map restore
       const avatarMap = loadAvatarMap();
       if (Object.keys(avatarMap).length > 0) {
         memberProfiles.forEach(p => { if (avatarMap[p.name]) p.avatar = avatarMap[p.name]; });
       }
-
-      // Online list restore / compute
       const savedOnline = loadOnlineList();
       if (Array.isArray(savedOnline) && savedOnline.length > 0) {
         applyOnlineList(savedOnline);
@@ -1278,29 +978,20 @@
         applyOnlineList(list);
         saveOnlineList(list);
       }
-
       renderAdminCard(); renderMembers(); renderMessages();
       wireLucideSvgs();
-
-      window.addEventListener('load', () => { setTimeout(()=> wireLucideSvgs(0), 120); });
-
-      // Aggressive avatar assignment attempt (best-effort)
       fetchIranAvatars();
-
-      // periodic subtle status updates (display only)
-      setInterval(updateStatusNumber, 5000 + Math.floor(Math.random()*7000));
+      setInterval(updateStatusNumber, 6000 + Math.floor(Math.random()*9000));
     }
 
     init();
   </script>
 
   <script>
-    // ensure lucide icons are created ASAP for the header/stats/icons
     (function ensureLucide(){
       if (window.lucide && typeof lucide.replace === 'function') {
         try { lucide.replace(); } catch(e){ /* ignore */ }
       } else {
-        // try again shortly
         setTimeout(ensureLucide, 160);
       }
     })();
