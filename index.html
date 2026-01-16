@@ -144,6 +144,23 @@
     }
     .admin-badge .dot { width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 4px 8px rgba(67,160,71,0.12); }
 
+    /* moderator badge - neutral tone */
+    .mod-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      color:var(--text);
+      padding:4px 8px;
+      border-radius:999px;
+      background: linear-gradient(180deg, rgba(120,120,120,0.08), rgba(0,0,0,0.04));
+      border: 1px solid rgba(255,255,255,0.02);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+      font-weight:700;
+      opacity:0.95;
+    }
+    .mod-badge .dot { width:8px; height:8px; border-radius:999px; background:#9CA3AF; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
+
     /* Header layout tweaks so logo sits top-right and bold */
     .header-row { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; }
     .left-meta { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
@@ -153,21 +170,21 @@
     .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; align-self:flex-start; margin-left:0; margin-right:12px; }
     .header-logo {
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-      width:88px; height:88px;
-      box-shadow: 12px 14px 36px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      width:110px; height:110px;
+      box-shadow: 16px 18px 44px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
       object-fit:contain;
-      padding:8px;
+      padding:10px;
       transition: transform var(--transition), box-shadow var(--transition);
     }
-    .header-logo:hover { transform: translateY(-3px) scale(1.02); box-shadow: 14px 18px 42px rgba(0,0,0,0.7); }
+    .header-logo:hover { transform: translateY(-3px) scale(1.02); box-shadow: 18px 22px 48px rgba(0,0,0,0.75); }
 
     .header-logo-fallback {
-      width:88px; height:88px; display:inline-flex; align-items:center; justify-content:center;
-      border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:18px;
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow: 12px 14px 36px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      width:110px; height:110px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:20px;
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow: 16px 18px 44px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
     }
 
     /* Online indicator */
@@ -224,14 +241,14 @@
 
     /* responsiveness */
     @media (max-width:900px){
-      .header-logo { width:72px; height:72px; padding:6px; }
-      .header-logo-fallback { width:72px; height:72px; font-size:15px; }
+      .header-logo { width:88px; height:88px; padding:8px; }
+      .header-logo-fallback { width:88px; height:88px; font-size:18px; }
       .users-badge { width:30px; height:30px; }
       .stat-box { padding:8px 10px; min-width:100px; }
     }
     @media (max-width:640px){
-      .header-logo { width:64px; height:64px; padding:6px; }
-      .header-logo-fallback { width:64px; height:64px; font-size:14px; }
+      .header-logo { width:76px; height:76px; padding:8px; }
+      .header-logo-fallback { width:76px; height:76px; font-size:16px; }
       .right-meta { gap:10px; }
       .meta-stats { gap:8px; }
     }
@@ -251,8 +268,7 @@
         <div class="left-meta">
           <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Private Digital Asset (Iran)</h1>
           <div class="text-sm" style="color:var(--muted);">
-            <!-- updated period to 8 January 2026 — 15 May 2026 -->
-            <span id="date-range">Period: 8 January 2026 — 15 May 2026</span>
+            <span id="date-range">Period: 8 January 2026 — 15 January 2026</span>
           </div>
         </div>
 
@@ -261,12 +277,8 @@
           <div class="meta-stats" role="group" aria-label="Group quick stats">
             <div class="stat-box" id="members-box" aria-hidden="false">
               <div class="users-badge stat-icon" aria-hidden="true">
-                <!-- keep the lucide hook so lucide.replace() can swap it with an svg -->
                 <i data-lucide="users" aria-hidden="true"></i>
-
-                <!-- fallback inline svg: visible if lucide hasn't injected an icon yet -->
                 <svg class="users-fallback-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" role="img">
-                  <!-- simple two-person icon -->
                   <path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM8 11c1.657 0 3-1.343 3-3S9.657 5 8 5 5 6.343 5 8s1.343 3 3 3z" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M2 20c0-2.21 3.134-4 7-4s7 1.79 7 4M18 20v-1c0-1.657-2.686-3-6-3M8 20v-1c0-1.657 2.686-3 6-3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -297,7 +309,7 @@
               id="site-logo"
               src="assets/logo.png"
               alt="Private Digital Asset logo"
-              width="88" height="88"
+              width="110" height="110"
               decoding="async"
               loading="eager"
               class="header-logo"
@@ -369,8 +381,11 @@
     /************************************************************************
      * Full script preserved + Flow simulation.
      * Visual-only, non-destructive additions:
-     * - simulateFlows() to set Day 1/Day 2/Day4/Day7 timeline when no persisted messages.
-     * - Everything else left intact (avatars, lucide, BroadcastChannel, persistence).
+     * - show admin/mod badges in chat and member list
+     * - set moderator names in simulated timeline so badges & avatars resolve
+     * - remove DAY 2 SUMMARY suffix message and header tweak
+     * - larger logo placement
+     * Everything else (arrays, logic, online computation, avatar persistence, BC, etc.) left intact.
      ************************************************************************/
 
     /* ---------------------------
@@ -430,8 +445,8 @@
     function looksFemale(name){ if(!name) return false; const lower=name.toLowerCase(); return femaleTokens.some(t=>lower.includes(t)); }
     function randInt(max){ return Math.floor(Math.random()*max); }
 
-    // memberProfiles now include gender and online props; isAdmin set later
-    let memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male', online: false, isAdmin: false }));
+    // memberProfiles now include gender and online props; isAdmin & isMod set later
+    let memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male', online: false, isAdmin: false, isMod: false }));
 
     /* ---------------------------
        localStorage helpers for avatar persistence and online list
@@ -516,7 +531,7 @@
     }
 
     /* ---------------------------
-       Render functions (unchanged)
+       Render functions (unchanged, with badge rendering additions)
        --------------------------- */
     function renderPinned(){
       pinnedList.innerHTML = '';
@@ -656,7 +671,7 @@
 
         const badge = document.createElement('span');
         badge.className = 'admin-badge';
-        badge.innerHTML = '<span class=\"dot\"></span><span style=\"opacity:0.9; margin-left:4px; font-weight:700;\">ADMIN</span>';
+        badge.innerHTML = '<span class="dot"></span><span style="opacity:0.9; margin-left:4px; font-weight:700;">ADMIN</span>';
         nameDiv.appendChild(badge);
 
         row.appendChild(nameDiv);
@@ -681,7 +696,19 @@
         const nameDiv = document.createElement('div');
         nameDiv.style.color = 'var(--muted)';
         nameDiv.style.fontSize = '14px';
+        nameDiv.style.display = 'flex';
+        nameDiv.style.alignItems = 'center';
+        nameDiv.style.gap = '8px';
         nameDiv.textContent = m.name;
+
+        // append moderator badge if applicable
+        if (m.isMod) {
+          const badge = document.createElement('span');
+          badge.className = 'mod-badge';
+          badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:4px; font-weight:700;">MOD</span>';
+          nameDiv.appendChild(badge);
+        }
+
         row.appendChild(nameDiv);
 
         membersListEl.appendChild(row);
@@ -721,7 +748,41 @@
           const nameDiv = document.createElement('div');
           nameDiv.style.fontWeight = '600';
           nameDiv.style.color = 'var(--text)';
+          nameDiv.style.display = 'flex';
+          nameDiv.style.alignItems = 'center';
+          nameDiv.style.gap = '8px';
           nameDiv.textContent = m.member || 'Member';
+
+          // Append badges for explicit role or profile flags (UI only)
+          if (m.role === 'admin') {
+            const badge = document.createElement('span');
+            badge.className = 'admin-badge';
+            badge.style.fontSize = '11px';
+            badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">ADMIN</span>';
+            nameDiv.appendChild(badge);
+          } else if (m.role === 'mod') {
+            const badge = document.createElement('span');
+            badge.className = 'mod-badge';
+            badge.style.fontSize = '11px';
+            badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">MOD</span>';
+            nameDiv.appendChild(badge);
+          } else if (profile) {
+            // show profile-level badges (in case a named admin/mod was matched)
+            if (profile.isAdmin) {
+              const badge = document.createElement('span');
+              badge.className = 'admin-badge';
+              badge.style.fontSize = '11px';
+              badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">ADMIN</span>';
+              nameDiv.appendChild(badge);
+            } else if (profile.isMod) {
+              const badge = document.createElement('span');
+              badge.className = 'mod-badge';
+              badge.style.fontSize = '11px';
+              badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">MOD</span>';
+              nameDiv.appendChild(badge);
+            }
+          }
+
           left.appendChild(nameDiv);
 
           header.appendChild(left);
@@ -842,6 +903,20 @@
           }
         });
       }
+      return Array.from(set).filter(Boolean);
+    }
+
+    function extractModeratorNamesFromSeed() {
+      const set = new Set();
+      seededMessages.forEach(m => {
+        if (!m.member || typeof m.member !== 'string') return;
+        const low = m.member.toLowerCase();
+        if (low.includes('moderator') || low.includes('mod')) {
+          const paren = m.member.match(/\(([^)]+)\)/);
+          if (paren && paren[1]) set.add(paren[1].trim());
+          else set.add('moderator');
+        }
+      });
       return Array.from(set).filter(Boolean);
     }
 
@@ -1072,19 +1147,27 @@
     }
 
     /* ---------------------------
-       Admin detection & ordering (unchanged)
+       Admin/mod detection & ordering (unchanged detection, combined)
        --------------------------- */
-    function detectAndMarkAdmins(){
+    function detectAndMarkRoles(){
       const rawAdmins = extractAdminNamesFromSeed();
+      const rawMods = extractModeratorNamesFromSeed();
+
       memberProfiles.forEach(p => {
-        const found = rawAdmins.some(a => {
+        const lowerP = p.name.toLowerCase();
+        p.isAdmin = rawAdmins.some(a => {
           if (!a) return false;
           const lowerA = a.toLowerCase();
-          const lowerP = p.name.toLowerCase();
           return lowerA === lowerP || lowerA.includes(lowerP) || lowerP.includes(lowerA);
         });
-        p.isAdmin = !!found;
+
+        p.isMod = rawMods.some(a => {
+          if (!a) return false;
+          const lowerA = a.toLowerCase();
+          return lowerA === lowerP || lowerA.includes(lowerP) || lowerP.includes(lowerA);
+        });
       });
+
       updateHeaderMemberCount();
     }
 
@@ -1094,7 +1177,7 @@
        - Builds a Day 1 / Day 2 / Day 4 / Day 7 timeline closely matching your spec
        - USDT is shown once as casual mention (no explanation)
        - Adds backlog entries (older dates) visible as older-date messages
-       - Adds system/day markers to make timeline readable
+       - Uses explicit admin/mod names so badges & avatars render
        --------------------------- */
     function simulateFlows(){
       // Build simulated timeline (note: times are illustrative)
@@ -1102,11 +1185,11 @@
 
       // DAY 1 — Join Event snapshot
       timeline.push({ time: "DAY 1", member: "System", text: "Snapshot — Day 1: Join event", role: "system" });
-      timeline.push({ time: "09:02", member: "Admin", text: "Welcome. Please read pinned rules before participating.", role: "admin" });
-      timeline.push({ time: "09:11", member: "Moderator", text: "Verification is required before any sensitive discussion. DM admin.", role: "mod" });
-      timeline.push({ time: "09:18", member: "Member (Tehran)", text: "Thanks, read the rules.", role: "member" });
-      timeline.push({ time: "09:41", member: "Member (Isfahan)", text: "Bank transfers delayed again today.", role: "member" });
-      timeline.push({ time: "09:44", member: "Moderator", text: "Please keep banking questions private with admin.", role: "mod" });
+      timeline.push({ time: "09:02", member: "admin (Naghmeh Soroush)", text: "Welcome. Please read pinned rules before participating.", role: "admin" });
+      timeline.push({ time: "09:11", member: "moderator A (Hooshang Bahari)", text: "Verification is required before any sensitive discussion. DM admin.", role: "mod" });
+      timeline.push({ time: "09:18", member: "Member (Tehran) — Amin Shayegan", text: "Thanks, read the rules.", role: "member" });
+      timeline.push({ time: "09:41", member: "Member (Isfahan) — Sudeh Kianpour", text: "Bank transfers delayed again today.", role: "member" });
+      timeline.push({ time: "09:44", member: "moderator B (Parvosh Ramyar)", text: "Please keep banking questions private with admin.", role: "mod" });
       // show calm chat state (system)
       timeline.push({ time: "09:50", member: "System", text: "Chat is calm — not busy", role: "system" });
 
@@ -1115,46 +1198,43 @@
       // older messages (backlog), older dates shown as dates
       timeline.push({ time: "Jan 3", member: "Member", text: "Rial lost more this week.", role: "member" });
       timeline.push({ time: "Jan 5", member: "Member", text: "Same here. Hard to keep value.", role: "member" });
-      timeline.push({ time: "Jan 8", member: "Moderator", text: "Reminder: this group is for protection, not speculation.", role: "mod" });
+      timeline.push({ time: "Jan 8", member: "moderator A (Hooshang Bahari)", text: "Reminder: this group is for protection, not speculation.", role: "mod" });
       timeline.push({ time: "14:12", member: "Member", text: "Waiting for verification.", role: "member" });
-      timeline.push({ time: "16:40", member: "Moderator", text: "Please be patient. Admin reviews in batches.", role: "mod" });
+      timeline.push({ time: "16:40", member: "moderator B (Parvosh Ramyar)", text: "Please be patient. Admin reviews in batches.", role: "mod" });
       // USDT casual mention (once, no explanation)
-      timeline.push({ time: "18:05", member: "Member", text: "USDT helped me avoid last drop.", role: "member" });
+      timeline.push({ time: "18:05", member: "Member (Shiraz) — Niloufar Behrbakhsh", text: "USDT helped me avoid last drop.", role: "member" });
 
-      // Admin announcement about verification queue
-      timeline.push({ time: "11:00", member: "Admin", text: "Verification queue is almost full today. Next review window tomorrow.", role: "admin" });
+      // Admin announcement about verification queue (explicit admin name)
+      timeline.push({ time: "11:00", member: "admin (Naghmeh Soroush)", text: "Verification queue is almost full today. Next review window tomorrow.", role: "admin" });
 
       // small confirmations
       timeline.push({ time: "10:22", member: "Member", text: "Got approved yesterday.", role: "member" });
       timeline.push({ time: "10:24", member: "Member", text: "Same here. Took a few days.", role: "member" });
       timeline.push({ time: "15:10", member: "Member", text: "Still waiting.", role: "member" });
-      timeline.push({ time: "15:11", member: "Moderator", text: "Please DM admin directly.", role: "mod" });
-
-      // Day 2 snapshot system note: smaller number visual (display-only)
-      timeline.push({ time: "DAY 2 SUMMARY", member: "System", text: "Total members: ~130 — Online now: 4–7 (fluctuates). Language: Mostly Persian (formal).", role: "system" });
+      timeline.push({ time: "15:11", member: "moderator A (Hooshang Bahari)", text: "Please DM admin directly.", role: "mod" });
 
       // Day 2 backlog (older)
       timeline.push({ time: "3 weeks ago", member: "Member", text: "Comment about inflation.", role: "member" });
-      timeline.push({ time: "2 weeks ago", member: "Moderator", text: "Rule clarification.", role: "mod" });
+      timeline.push({ time: "2 weeks ago", member: "moderator A (Hooshang Bahari)", text: "Rule clarification.", role: "mod" });
       timeline.push({ time: "10 days ago", member: "Member", text: "Casual local remark.", role: "member" });
-      timeline.push({ time: "8 days ago", member: "Admin", text: "Procedural announcement — no action required.", role: "admin" });
+      timeline.push({ time: "8 days ago", member: "admin (Naghmeh Soroush)", text: "Procedural announcement — no action required.", role: "admin" });
       timeline.push({ time: "11:18", member: "Member", text: "Waiting / confirmation-type message.", role: "member" });
-      timeline.push({ time: "12:42", member: "Moderator", text: "Patience / process reminder.", role: "mod" });
+      timeline.push({ time: "12:42", member: "moderator B (Parvosh Ramyar)", text: "Patience / process reminder.", role: "mod" });
       timeline.push({ time: "15:09", member: "Member", text: "Indirect mention of USDT as protection.", role: "member" });
 
       // DAY 4 — light social proof
       timeline.push({ time: "DAY 4", member: "System", text: "Snapshot — Day 4: Light social proof", role: "system" });
-      timeline.push({ time: "09:31", member: "Member", text: "Approved / completed step reference.", role: "member" });
-      timeline.push({ time: "09:34", member: "Member", text: "Similar neutral confirmation.", role: "member" });
-      timeline.push({ time: "14:06", member: "Admin", text: "Procedural notice about limited verification window.", role: "admin" });
-      timeline.push({ time: "16:21", member: "New member", text: "General question — non-technical.", role: "new" });
-      timeline.push({ time: "16:24", member: "Moderator", text: "Redirect to admin DM.", role: "mod" });
+      timeline.push({ time: "09:31", member: "Member (Karaj) — Narges Delaram", text: "Approved / completed step reference.", role: "member" });
+      timeline.push({ time: "09:34", member: "Member (Tehran) — Amin Shayegan", text: "Similar neutral confirmation.", role: "member" });
+      timeline.push({ time: "14:06", member: "admin (Naghmeh Soroush)", text: "Procedural notice about limited verification window.", role: "admin" });
+      timeline.push({ time: "16:21", member: "New member (Isfahan) — Rosta Mehrayin", text: "General question — non-technical.", role: "new" });
+      timeline.push({ time: "16:24", member: "moderator A (Hooshang Bahari)", text: "Redirect to admin DM.", role: "mod" });
 
       // DAY 7 — reminders & casual comments
       timeline.push({ time: "DAY 7", member: "System", text: "Snapshot — Day 7: Light reminders", role: "system" });
       timeline.push({ time: "10:12", member: "Member", text: "Casual Iran-specific comment.", role: "member" });
       timeline.push({ time: "13:40", member: "Member", text: "Waiting / acknowledgment.", role: "member" });
-      timeline.push({ time: "17:02", member: "Moderator", text: "Reminder about privacy", role: "mod" });
+      timeline.push({ time: "17:02", member: "moderator B (Parvosh Ramyar)", text: "Reminder about privacy", role: "mod" });
 
       // Insert timeline into seededMessages
       seededMessages = [];
@@ -1162,9 +1242,6 @@
 
       // Save to localStorage so this simulated flow remains
       saveMessages(seededMessages);
-
-      // Visual-only: show "~130" in header for DAY 2 snapshot moment by adding a system note that will update display
-      // We won't mutate memberProfiles — only adjust displayed header text when rendering messages if DAY 2 SUMMARY appears.
     }
 
     /* ---------------------------
@@ -1182,8 +1259,8 @@
         simulateFlows();
       }
 
-      // Mark admins based on seededMessages (keeps original detection)
-      detectAndMarkAdmins();
+      // Mark admins/mods based on seededMessages (keeps original detection logic, only adds mod detection)
+      detectAndMarkRoles();
 
       // Avatar map restore
       const avatarMap = loadAvatarMap();
@@ -1200,21 +1277,6 @@
         const list = computeDeterministicOnlineList(initialVal);
         applyOnlineList(list);
         saveOnlineList(list);
-      }
-
-      // If Day 2 SUMMARY system note exists, update visual header-member-count to ~130 (display-only)
-      const day2Summary = seededMessages.find(m => m.time === 'DAY 2 SUMMARY' && m.role === 'system');
-      if (day2Summary) {
-        // store original displayed text so we can still use logic with memberProfiles available
-        const headerEl = document.getElementById('header-member-count');
-        if (headerEl) {
-          // visual change: show ~130 in the header (keeps memberProfiles unchanged)
-          headerEl.textContent = '~130';
-          // after a short delay (simulate snapshot), restore to real count (keeps logic intact)
-          setTimeout(() => { updateHeaderMemberCount(); }, 8000);
-        }
-      } else {
-        updateHeaderMemberCount();
       }
 
       renderAdminCard(); renderMembers(); renderMessages();
