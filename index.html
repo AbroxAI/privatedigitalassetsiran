@@ -12,17 +12,19 @@
 
   <style>
     /* -------------------------
-       Theme: Quiet Institutional Dark Mode
+       Theme: Quiet Institutional Dark Mode (strict palette)
+       - No gradients, muted accent, subtle dividers
        ------------------------- */
     :root{
-      --bg: #232323;         /* primary dark gray */
-      --panel: #262626;      /* panel slightly lighter */
-      --text: #DADADA;       /* off-white for body text */
-      --muted: #BFBFBF;      /* secondary text */
-      --divider: #333333;    /* subtle dividers */
-      --accent: #43A047;     /* muted green accent */
-      --accent-dark: #3d923f;
+      --bg: #232323;         /* background (chosen from provided range) */
+      --panel: #262626;      /* panel surface */
+      --text: #DADADA;       /* primary body text */
+      --muted: #BFBFBF;      /* secondary text / muted */
+      --divider: #333333;    /* separators */
+      --accent: #43A047;     /* muted green accent (allowed) */
+      --accent-dark: #3d923f;/* slightly darker accent */
     }
+
     html,body,#app{height:100%}
     body{
       background: var(--bg);
@@ -30,89 +32,107 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      margin:0;
     }
 
-    /* containers */
+    /* Containers */
     .panel {
       background: var(--panel);
       border: 1px solid var(--divider);
       border-radius: 12px;
     }
 
+    /* Avatar fallback - flat color, no gradient */
     .avatar-fallback {
-      background: linear-gradient(135deg,#2e2e2e,#383838);
+      background: #2e2e2e;
       display:flex; align-items:center; justify-content:center;
       color:var(--text); font-weight:600; text-transform:uppercase;
+    }
+
+    /* Avatar wrapper + online dot */
+    .avatar-wrap { position: relative; width:40px; height:40px; flex-shrink:0; display:inline-block; }
+    .avatar-wrap img, .avatar-wrap .avatar-fallback { width:40px; height:40px; border-radius:9999px; object-fit:cover; display:block; }
+    .online-dot {
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+      width:12px;
+      height:12px;
+      border-radius:9999px;
+      background: var(--accent);
+      border: 2px solid var(--panel);
+      box-shadow: 0 0 8px rgba(67,160,71,0.12);
+      transform-origin: 50% 50%;
+      animation: blinkPulse 1.6s infinite ease-in-out;
     }
 
     /* STATUS */
     .status-icon-wrap { display:inline-flex; align-items:center; gap:8px; }
     @keyframes blinkPulse {
-      0% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
-      50% { opacity: 0.45; transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(67,160,71,0.12)); }
-      100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.08); }
+      100% { opacity: 1; transform: scale(1); }
     }
-    /* faster/louder pulse when new join arrives */
     @keyframes joinPulse {
-      0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(67,160,71,0)); opacity:1; }
-      40% { transform: scale(1.18); filter: drop-shadow(0 0 14px rgba(67,160,71,0.18)); opacity:1; }
-      100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(67,160,71,0)); opacity:1; }
+      0% { transform: scale(1); opacity:1; }
+      40% { transform: scale(1.12); opacity:1; }
+      100% { transform: scale(1); opacity:1; }
     }
 
     .online-svg {
       width: 14px; height: 14px; display:inline-block; vertical-align:middle;
-      color: var(--accent); /* stroke uses currentColor */
+      color: var(--accent);
       animation: blinkPulse 1.6s infinite ease-in-out;
       transform-origin: 50% 50%;
     }
 
-    /* when we highlight a new join */
-    .new-join-pulse {
-      animation: joinPulse 900ms ease-in-out;
-    }
+    .new-join-pulse { animation: joinPulse 900ms ease-in-out; }
 
-    /* numeric subtle pulse */
-    @keyframes numberPulse {
-      0% { transform: translateY(0); opacity: 1; }
-      50% { transform: translateY(-1px) scale(1.02); opacity: 0.98; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
     .status-number { animation: numberPulse 2200ms infinite ease-in-out; color: var(--accent-dark); font-weight:700; }
+    @keyframes numberPulse { 0% { transform: translateY(0); } 50% { transform: translateY(-1px) scale(1.02); } 100% { transform: translateY(0); } }
 
-    /* pinned icon styling (we add .pin-svg to lucide pin) */
-    .pin-svg {
-      width: 16px; height: 16px; vertical-align: -2px; margin-right: 6px;
-      color: #BFBFBF; /* subtle */
-      display:inline-block;
-    }
+    .pin-svg { width:16px; height:16px; vertical-align:-2px; margin-right:6px; color:var(--muted); display:inline-block; }
 
-    /* messages */
-    .msg-admin { background: linear-gradient(180deg,#2b2b2b,#272727); border-left:4px solid rgba(74,144,226,0.12); padding:12px; border-radius:10px; }
-    .msg-mod { background: linear-gradient(180deg,#262626,#232323); border-left:4px solid rgba(120,120,120,0.08); padding:12px; border-radius:10px; }
+    /* Messages - flat fills, no gradients */
+    .msg-admin { background: #2b2b2b; border-left:4px solid rgba(74,144,226,0.08); padding:12px; border-radius:10px; }
+    .msg-mod { background: #262626; border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:10px; }
     .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
-    .msg-regular { background: linear-gradient(180deg,#262626,#242424); padding:12px; border-radius:10px; }
+    .msg-regular { background: #262626; padding:12px; border-radius:10px; }
 
     /* highlight when new member joins */
     @keyframes newJoinHighlight {
-      0% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: rgba(255,255,255,0); }
-      10% { background-color: rgba(67,160,71,0.06); transform: scale(1.015); }
-      60% { box-shadow: 0 8px 28px rgba(67,160,71,0.12); transform: scale(1.02); }
+      0% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
+      10% { background-color: rgba(67,160,71,0.05); transform: scale(1.012); }
+      60% { box-shadow: 0 8px 18px rgba(67,160,71,0.10); transform: scale(1.01); }
       100% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
     }
-    .highlight-new {
-      animation: newJoinHighlight 3200ms ease-in-out forwards;
-      border-radius: 10px;
+    .highlight-new { animation: newJoinHighlight 2400ms ease-in-out forwards; border-radius: 10px; }
+
+    /* subtle admin badge */
+    .admin-badge {
+      display:inline-block;
+      font-size:11px;
+      color:var(--muted);
+      border:1px solid var(--accent);
+      padding:2px 6px;
+      border-radius:999px;
+      margin-left:8px;
+      line-height:1;
+      background: transparent;
     }
 
-    img.round-avatar { width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0; }
+    /* Admin card */
+    .admin-card { padding:10px; margin-bottom:10px; border:1px solid var(--divider); border-radius:10px; background: #2a2a2a; }
+    .admin-title { color: var(--muted); font-size:12px; margin-bottom:8px; }
 
     /* subtle divider */
-    .divider { border-top: 1px solid #333333; margin: 12px 0; }
+    .divider { border-top: 1px solid var(--divider); margin: 12px 0; }
 
-    /* responsiveness */
+    /* responsiveness tweaks */
     @media (max-width:640px){
       .online-svg{ width:12px; height:12px; }
       .pin-svg{ width:14px; height:14px; margin-right:4px; }
+      .online-dot { width:10px; height:10px; right: -1px; bottom: -1px; }
     }
   </style>
 </head>
@@ -158,14 +178,14 @@
           <div id="composer-locked" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
             <div style="color:var(--muted)">Posting is locked until verification. Please request verification to post.</div>
             <div>
-              <button id="verify-btn" class="px-3 py-1 rounded bg-[var(--accent)]" style="background:var(--accent); color:#fff;">Request verification</button>
+              <button id="verify-btn" class="px-3 py-1 rounded" style="background:var(--accent); color:#fff;">Request verification</button>
             </div>
           </div>
 
           <div id="composer" class="hidden" style="display:flex; gap:12px; margin-top:8px; align-items:flex-start;">
-            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1" style="padding:12px; border-radius:10px; border:1px solid var(--divider); background:#262626; color:var(--text); min-height:64px;"></textarea>
+            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1" style="padding:12px; border-radius:10px; border:1px solid var(--divider); background:var(--panel); color:var(--text); min-height:64px;"></textarea>
             <div>
-              <button id="send-btn" style="padding:8px 12px; border-radius:8px; background:#2E7D32; color:#fff;">Send</button>
+              <button id="send-btn" style="padding:8px 12px; border-radius:8px; background:var(--accent); color:#fff;">Send</button>
             </div>
           </div>
         </div>
@@ -176,6 +196,13 @@
           <h2 style="font-weight:600; color:var(--text); font-size:14px;">MEMBERS (names)</h2>
           <span style="color:var(--muted); font-size:12px;">Realistic view</span>
         </div>
+
+        <!-- Admin card pinned to top -->
+        <div id="admin-card" class="admin-card" style="display:none;">
+          <div class="admin-title">ADMINS</div>
+          <div id="admin-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+
         <div id="members-list" style="display:flex; flex-direction:column; gap:10px; color:var(--muted);"></div>
       </aside>
     </main>
@@ -190,14 +217,21 @@
 
   <script>
     /************************************************************************
-     * Full logic preserved:
-     * - pinned array
-     * - members array (140)
-     * - seededMessages array (Day1..Day7 + backlog)
-     * - avatar heuristics with randomuser.me?nat=ir fetch
-     * - lucide wiring & stroke coloring
-     * - verification composer gating
-     * - new-member stronger animation (message highlight + status pulse)
+     * Full script preserved.
+     * Final requested changes implemented (kept logic intact):
+     * - Persist the deterministic online list to localStorage so same users remain online across reloads
+     * - Admins visually pinned to top as a separate admin card
+     * - Force 100% real portraits (attempts to assign every member a real portrait; will fall back safely if network fails)
+     * - Avatars persisted to localStorage
+     * - Deterministic online selection updated and persisted when messages are sent
+     * - All original logic (pinned, seededMessages, composer gating, lucide wiring) preserved
+     *
+     * Fixes and hardening applied (non-functional changes):
+     * - safer, case-insensitive name matching when mapping string->profile
+     * - robust initials generation for avatar fallback
+     * - applyOnlineList now matches by fuzzy/case-insensitive comparisons so persisted lists still apply
+     * - wireLucideSvgs has a safety retry cap
+     * - fetchIranAvatars will attempt a graceful fallback if a country-specific fetch fails
      ************************************************************************/
 
     /* ---------------------------
@@ -212,7 +246,7 @@
     ];
 
     /* ---------------------------
-       Members (140) - same as your list
+       Members (140) - unchanged names list
        --------------------------- */
     const members = [
       "Ariamen Niknam","Zhinos Farmani","Misaq Dashti","Pardis Sohrabi","Pouyan Tarabnia","Zhaleh Pourbakhtiar","Derina Kermani","Sohrab Mehrayin","Sepand Yaghmaei","Bakhtiar Kohandel",
@@ -232,8 +266,7 @@
     ];
 
     /* ---------------------------
-       Seeded messages (Day1..Day7 + backlog)
-       (copied exactly from your provided transcript)
+       Seeded messages (exactly as provided)
        --------------------------- */
     const seededMessages = [
       { time: "08:57", member: "System", text: "You joined the group.", role: "system" },
@@ -321,7 +354,7 @@
     ];
 
     /* ---------------------------
-       Avatar heuristics
+       Avatar heuristics & helpers
        --------------------------- */
     const femaleTokens = [
       "zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges",
@@ -332,14 +365,36 @@
     function looksFemale(name){ if(!name) return false; const lower=name.toLowerCase(); return femaleTokens.some(t=>lower.includes(t)); }
     function randInt(max){ return Math.floor(Math.random()*max); }
 
-    // initial profiles with null avatars; we'll fetch nat=ir portraits next
-    const memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male' }));
+    // memberProfiles now include gender and online props; isAdmin set later
+    let memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male', online: false, isAdmin: false }));
+
+    /* ---------------------------
+       localStorage helpers for avatar persistence and online list
+       --------------------------- */
+    const AVATAR_MAP_KEY = 'group_avatar_map_v1';
+    const ONLINE_LIST_KEY = 'group_online_list_v1';
+
+    function loadAvatarMap(){
+      try { const raw = localStorage.getItem(AVATAR_MAP_KEY); return raw ? JSON.parse(raw) : {}; } catch(e){ return {}; }
+    }
+    function saveAvatarMap(map){
+      try { localStorage.setItem(AVATAR_MAP_KEY, JSON.stringify(map)); } catch(e){}
+    }
+
+    function loadOnlineList(){
+      try { const raw = localStorage.getItem(ONLINE_LIST_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
+    }
+    function saveOnlineList(list){
+      try { localStorage.setItem(ONLINE_LIST_KEY, JSON.stringify(list)); } catch(e){}
+    }
 
     /* ---------------------------
        DOM refs
        --------------------------- */
     const pinnedList = document.getElementById('pinned-list');
     const membersListEl = document.getElementById('members-list');
+    const adminCardEl = document.getElementById('admin-card');
+    const adminListEl = document.getElementById('admin-list');
     const messagesList = document.getElementById('messages-list');
     const chatWindow = document.getElementById('chat-window');
     const statusNumberEl = document.getElementById('status-number');
@@ -355,7 +410,6 @@
         li.style.alignItems = 'center';
         li.style.gap = '8px';
         li.style.marginBottom = '6px';
-        // placeholder icon
         const icon = document.createElement('i');
         icon.setAttribute('data-lucide','pin');
         icon.setAttribute('aria-hidden','true');
@@ -366,7 +420,6 @@
         li.appendChild(span);
         pinnedList.appendChild(li);
       });
-      // lucide will be wired later
     }
 
     function createFallbackElement(name){
@@ -377,40 +430,115 @@
       fallback.style.borderRadius = '9999px';
       fallback.style.fontSize = '12px';
       fallback.style.flexShrink = '0';
-      const initials = (name || '').split(' ').map(s => s[0]).slice(0,2).join('') || 'M';
+      const parts = (name || '').split(' ').filter(Boolean);
+      const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase();
       fallback.textContent = initials;
       return fallback;
     }
 
-    function renderMembers(){
-      membersListEl.innerHTML = '';
-      memberProfiles.forEach(m => {
+    function createAvatarNodeForProfile(profileOrName){
+      let profile = null;
+      if (typeof profileOrName === 'string') {
+        const s = profileOrName.toLowerCase();
+        profile = memberProfiles.find(p => {
+          const pn = (p.name || '').toLowerCase();
+          return s.includes(pn) || pn.includes(s) || s === pn;
+        }) || { name: profileOrName, avatar: null, online: false };
+      } else {
+        profile = profileOrName;
+      }
+
+      const wrap = document.createElement('div');
+      wrap.className = 'avatar-wrap';
+      wrap.style.width = '40px';
+      wrap.style.height = '40px';
+      wrap.style.borderRadius = '9999px';
+      wrap.style.display = 'inline-block';
+      wrap.style.flexShrink = '0';
+
+      if (profile && profile.avatar) {
+        const img = document.createElement('img');
+        img.src = profile.avatar;
+        img.alt = profile.name || '';
+        img.className = 'round-avatar';
+        img.style.width = '40px';
+        img.style.height = '40px';
+        img.style.borderRadius = '9999px';
+        img.style.objectFit = 'cover';
+        img.onerror = () => {
+          try { img.remove(); } catch(e){}
+          wrap.appendChild(createFallbackElement(profile.name || 'Member'));
+        };
+        wrap.appendChild(img);
+      } else {
+        wrap.appendChild(createFallbackElement(profile.name || 'Member'));
+      }
+
+      if (profile && profile.online) {
+        const dot = document.createElement('span');
+        dot.className = 'online-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        wrap.appendChild(dot);
+      }
+
+      return wrap;
+    }
+
+    function renderAdminCard(){
+      const admins = memberProfiles.filter(p => p.isAdmin);
+      if (admins.length === 0) { adminCardEl.style.display = 'none'; return; }
+      adminCardEl.style.display = 'block';
+      adminListEl.innerHTML = '';
+      admins.forEach(a => {
         const row = document.createElement('div');
         row.style.display = 'flex';
         row.style.alignItems = 'center';
         row.style.gap = '10px';
+
         const left = document.createElement('div');
-        if(m.avatar){
-          const img = document.createElement('img');
-          img.src = m.avatar;
-          img.alt = m.name;
-          img.className = 'round-avatar';
-          img.style.width = '40px';
-          img.style.height = '40px';
-          img.style.borderRadius = '9999px';
-          img.style.objectFit = 'cover';
-          img.style.flexShrink = '0';
-          img.onerror = () => { img.remove(); left.appendChild(createFallbackElement(m.name)); };
-          left.appendChild(img);
-        } else {
-          left.appendChild(createFallbackElement(m.name));
-        }
+        left.appendChild(createAvatarNodeForProfile(a));
         row.appendChild(left);
+
+        const nameDiv = document.createElement('div');
+        nameDiv.style.color = 'var(--muted)';
+        nameDiv.style.fontSize = '14px';
+        nameDiv.style.display = 'flex';
+        nameDiv.style.alignItems = 'center';
+
+        const nameText = document.createElement('span');
+        nameText.textContent = a.name;
+        nameDiv.appendChild(nameText);
+
+        const badge = document.createElement('span');
+        badge.className = 'admin-badge';
+        badge.textContent = 'ADMIN';
+        nameDiv.appendChild(badge);
+
+        row.appendChild(nameDiv);
+        adminListEl.appendChild(row);
+      });
+    }
+
+    function renderMembers(){
+      membersListEl.innerHTML = '';
+      // render non-admin members only (admins are shown in admin card)
+      const others = memberProfiles.filter(p => !p.isAdmin);
+      others.forEach(m => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.gap = '10px';
+
+        const left = document.createElement('div');
+        left.appendChild(createAvatarNodeForProfile(m));
+        row.appendChild(left);
+
         const nameDiv = document.createElement('div');
         nameDiv.style.color = 'var(--muted)';
         nameDiv.style.fontSize = '14px';
         nameDiv.textContent = m.name;
         row.appendChild(nameDiv);
+
         membersListEl.appendChild(row);
       });
     }
@@ -437,20 +565,11 @@
           left.style.alignItems = 'center';
           left.style.gap = '10px';
 
-          const profile = memberProfiles.find(p => m.member && p.name && m.member.includes(p.name));
-          if(profile && profile.avatar){
-            const img = document.createElement('img');
-            img.src = profile.avatar;
-            img.alt = profile.name;
-            img.className = 'round-avatar';
-            img.style.width = '40px';
-            img.style.height = '40px';
-            img.style.borderRadius = '9999px';
-            img.style.objectFit = 'cover';
-            img.onerror = () => { img.remove(); left.insertBefore(createFallbackElement(profile.name), left.firstChild || null); };
-            left.appendChild(img);
+          const profile = memberProfiles.find(p => m.member && p.name && m.member.toLowerCase().includes(p.name.toLowerCase()));
+          if (profile) {
+            left.appendChild(createAvatarNodeForProfile(profile));
           } else {
-            left.appendChild(createFallbackElement(m.member));
+            left.appendChild(createAvatarNodeForProfile(m.member));
           }
 
           const nameDiv = document.createElement('div');
@@ -476,27 +595,38 @@
           article.appendChild(header);
           article.appendChild(p);
 
-          // If this is a "new member" event, add highlight and trigger status pulse
           const isNewMember = (m.role === 'new') || (m.role === 'system' && m.text && m.text.toLowerCase().includes('new member'));
           if (isNewMember) {
-            // apply highlight; remove after animation duration
             article.classList.add('highlight-new');
-            // also apply a stronger pulse to status icon/number
             triggerStatusJoinPulse();
-            // remove highlight after 3.2s
-            setTimeout(() => { article.classList.remove('highlight-new'); }, 3200);
+            setTimeout(() => { article.classList.remove('highlight-new'); }, 2400);
           }
         }
         messagesList.appendChild(article);
       });
-      chatWindow.scrollTop = chatWindow.scrollHeight;
+      // keep scroll pinned to bottom
+      try { chatWindow.scrollTop = chatWindow.scrollHeight; } catch(e){}
     }
 
     /* ---------------------------
-       Copy pinned, toggle notes, composer logic (unchanged)
+       UI interactions (unchanged)
        --------------------------- */
     document.getElementById('copy-pinned').addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(pinned.join('\n')); alert('Pinned rules copied to clipboard'); }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(pinned.join('\n'));
+          alert('Pinned rules copied to clipboard');
+        } else {
+          // fallback
+          const ta = document.createElement('textarea');
+          ta.value = pinned.join('\n');
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          alert('Pinned rules copied to clipboard');
+        }
+      }
       catch (err) { console.warn('copy failed', err); alert('Unable to copy'); }
     });
 
@@ -521,6 +651,12 @@
       seededMessages.push({ time: timeStr, member: 'You', text: txt, role: 'member' });
       document.getElementById('composer-text').value = '';
       renderMessages();
+      // after new message appears, update online set deterministically and persist
+      const val = parseInt(statusNumberEl.textContent, 10) || 6;
+      const list = computeDeterministicOnlineList(val);
+      applyOnlineList(list);
+      saveOnlineList(list);
+      renderMembers();
     });
 
     document.getElementById('composer-text').addEventListener('keydown', (e) => {
@@ -528,15 +664,106 @@
     });
 
     /* ---------------------------
-       Status number fluctuation & join pulse
+       Deterministic "online" selection helpers
+       - computeDeterministicOnlineList(count) returns array of profile names
+       - applyOnlineList(list) sets .online flags on memberProfiles
+       --------------------------- */
+    function extractAdminNamesFromSeed() {
+      const set = new Set();
+      seededMessages.forEach(m => {
+        if (!m.member || typeof m.member !== 'string') return;
+        const low = m.member.toLowerCase();
+        if (low.includes('admin')) {
+          const paren = m.member.match(/\(([^)]+)\)/);
+          if (paren && paren[1]) set.add(paren[1].trim());
+          else set.add('admin');
+        }
+      });
+      // best effort to replace generic 'admin' with known admin names from messages
+      if (set.has('admin')) {
+        seededMessages.forEach(m => {
+          if (m.role === 'admin' && m.member && m.member.includes('(')) {
+            const par = m.member.match(/\(([^)]+)\)/);
+            if (par && par[1]) set.add(par[1].trim());
+          }
+        });
+      }
+      return Array.from(set).filter(Boolean);
+    }
+
+    function computeDeterministicOnlineList(count){
+      const admins = extractAdminNamesFromSeed();
+      const onlineSet = new Set();
+
+      // Map admin names to actual profile names where possible
+      const adminProfiles = [];
+      admins.forEach(adminName => {
+        const prof = memberProfiles.find(p => p.name === adminName || adminName.includes(p.name) || p.name.includes(adminName));
+        if (prof) adminProfiles.push(prof.name);
+      });
+      adminProfiles.forEach(n => onlineSet.add(n));
+
+      // Collect last unique message authors (most recent first), skip 'System'
+      const authors = [];
+      for (let i = seededMessages.length - 1; i >= 0 && authors.length < count; i--) {
+        const m = seededMessages[i];
+        if (!m.member || typeof m.member !== 'string') continue;
+        const low = m.member.toLowerCase();
+        if (low.includes('system')) continue;
+        const prof = memberProfiles.find(p => m.member.toLowerCase().includes(p.name.toLowerCase()));
+        const nameToAdd = prof ? prof.name : m.member.trim();
+        if (!authors.some(a => a.toLowerCase() === nameToAdd.toLowerCase()) && ![...onlineSet].some(s => s.toLowerCase() === nameToAdd.toLowerCase())) {
+          authors.push(nameToAdd);
+        }
+      }
+
+      authors.forEach(a => onlineSet.add(a));
+
+      // If still not enough, fill deterministically from start of non-admin members
+      if (onlineSet.size < count) {
+        for (let i = 0; i < memberProfiles.length && onlineSet.size < count; i++) {
+          const p = memberProfiles[i];
+          if (!onlineSet.has(p.name)) onlineSet.add(p.name);
+        }
+      }
+
+      return Array.from(onlineSet);
+    }
+
+    function applyOnlineList(list){
+      memberProfiles.forEach(p => p.online = false);
+      list.forEach(item => {
+        if (!item) return;
+        const it = (item || '').toString().toLowerCase();
+        const prof = memberProfiles.find(p => {
+          const pn = (p.name || '').toLowerCase();
+          return pn === it || pn.includes(it) || it.includes(pn);
+        });
+        if (prof) prof.online = true;
+      });
+    }
+
+    /* ---------------------------
+       Status number fluctuation & join pulse (keeps visual subtleness)
+       - uses deterministic selection but stores list to localStorage
        --------------------------- */
     function updateStatusNumber(){
-      const val = 3 + Math.floor(Math.random() * 6); // 3..8
+      const val = 3 + Math.floor(Math.random() * 6); // 3..8 (display only)
       statusNumberEl.textContent = val;
+      // try to load persisted online list first
+      const saved = loadOnlineList();
+      if (Array.isArray(saved) && saved.length > 0) {
+        applyOnlineList(saved);
+      } else {
+        const list = computeDeterministicOnlineList(val);
+        applyOnlineList(list);
+        saveOnlineList(list);
+      }
+      renderMembers();
+      renderMessages();
     }
 
     function triggerStatusJoinPulse(){
-      // find the lucide circle svg (we add .online-svg on wire)
       const svg = document.querySelector('svg.online-svg');
       const num = document.getElementById('status-number');
       if (svg) {
@@ -551,45 +778,128 @@
     }
 
     /* ---------------------------
-       Fetch Iranian portraits (randomuser.me?nat=ir)
-       Assign to ~60% of members randomly; fallbacks remain
+       Avatar fetching (randomuser.me?nat=ir), dedupe + gender matching
+       - Force 100% assignment where possible (tries multiple fetches)
+       - Persist avatar assignments in localStorage for realism
+       - Graceful fallback when country-specific fetch fails
        --------------------------- */
-    async function fetchIranAvatars(count = 80){
+    async function fetchIranAvatars(){
       try {
-        const res = await fetch(`https://randomuser.me/api/?nat=ir&results=${count}`);
-        if (!res.ok) throw new Error('randomuser fetch failed');
-        const json = await res.json();
-        const portraits = (json.results || []).map(u => (u.picture && u.picture.large) ? u.picture.large : null).filter(Boolean);
-        // Shuffle portraits for distribution
-        for (let i = portraits.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [portraits[i], portraits[j]] = [portraits[j], portraits[i]];
+        const avatarMap = loadAvatarMap();
+        const femaleCount = memberProfiles.filter(p => p.gender === 'female').length;
+        const maleCount = memberProfiles.length - femaleCount;
+        const totalNeeded = memberProfiles.length;
+
+        // plan fetch sizes per gender (aggressive but bounded)
+        const targetFemaleFetch = Math.min(600, Math.ceil(femaleCount * 1.6) + 60);
+        const targetMaleFetch = Math.min(600, Math.ceil(maleCount * 1.6) + 60);
+
+        async function fetchPool(gender, results, nat){
+          if (results <= 0) return [];
+          // build URL; nat param optional
+          const natParam = nat ? `&nat=${nat}` : '';
+          const url = `https://randomuser.me/api/?gender=${gender}&results=${results}${natParam}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('randomuser fetch failed');
+          const json = await res.json();
+          const seen = new Set();
+          const unique = [];
+          (json.results || []).forEach(u => {
+            const id = (u.login && u.login.uuid) || u.email || (u.picture && u.picture.large) || null;
+            const pic = (u.picture && (u.picture.large || u.picture.medium || u.picture.thumbnail)) || null;
+            if (!pic) return;
+            if (id && seen.has(id)) return;
+            if (pic && Array.from(seen).some(s => s === pic)) return;
+            seen.add(id || pic);
+            unique.push({ id, pic });
+          });
+          return unique;
         }
-        let pIdx = 0;
+
+        // attempt to fetch with nat=ir first; if it fails, fallback to a general fetch
+        let femalePool = [], malePool = [];
+        try {
+          [femalePool, malePool] = await Promise.all([
+            fetchPool('female', targetFemaleFetch, 'ir'),
+            fetchPool('male', targetMaleFetch, 'ir')
+          ]);
+        } catch (errNat) {
+          console.warn('nat=ir fetch failed, falling back to general fetch', errNat);
+          [femalePool, malePool] = await Promise.all([
+            fetchPool('female', Math.min(200, targetFemaleFetch), ''),
+            fetchPool('male', Math.min(200, targetMaleFetch), '')
+          ]);
+        }
+
+        let femalePics = femalePool.map(x => x.pic);
+        let malePics = malePool.map(x => x.pic);
+
+        // shuffle
+        function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } }
+        shuffle(femalePics); shuffle(malePics);
+
+        // Assign persisted avatars first
+        memberProfiles.forEach(p => { if (avatarMap[p.name]) p.avatar = avatarMap[p.name]; else p.avatar = null; });
+
+        // fill remaining slots preferring gender pools
+        let fIdx = 0, mIdx = 0;
         for (let i = 0; i < memberProfiles.length; i++) {
-          if (Math.random() < 0.6 && pIdx < portraits.length) {
-            memberProfiles[i].avatar = portraits[pIdx++];
-          } else {
-            memberProfiles[i].avatar = null;
+          const p = memberProfiles[i];
+          if (p.avatar) continue; // already persisted
+          if (p.gender === 'female' && fIdx < femalePics.length) { p.avatar = femalePics[fIdx++]; continue; }
+          if (p.gender === 'male' && mIdx < malePics.length) { p.avatar = malePics[mIdx++]; continue; }
+          // fallback cross-gender
+          if (fIdx < femalePics.length) { p.avatar = femalePics[fIdx++]; continue; }
+          if (mIdx < malePics.length) { p.avatar = malePics[mIdx++]; continue; }
+          p.avatar = null;
+        }
+
+        // If still some nulls, attempt an additional general fetch to fill remaining
+        const remaining = memberProfiles.filter(p => !p.avatar).length;
+        if (remaining > 0) {
+          try {
+            const pool = await fetchPool('', Math.min(800, remaining * 3 + 80), '');
+            const pics = pool.map(x => x.pic);
+            shuffle(pics);
+            let idx = 0;
+            for (let i = 0; i < memberProfiles.length && idx < pics.length; i++) {
+              const p = memberProfiles[i];
+              if (!p.avatar) { p.avatar = pics[idx++]; }
+            }
+          } catch (err) {
+            console.warn('fallback pool fetch failed', err);
           }
         }
-        // rerender members & messages (so matched names show avatars)
-        renderMembers();
-        renderMessages();
+
+        // Final safeguard: if some still null (network issues), leave fallback initials but do not crash
+        // Remove duplicate URLs across profiles
+        const used = new Set();
+        for (let i = 0; i < memberProfiles.length; i++) {
+          const p = memberProfiles[i];
+          if (p.avatar) {
+            if (used.has(p.avatar)) { p.avatar = null; } else { used.add(p.avatar); }
+          }
+        }
+
+        // Persist assigned avatars to localStorage
+        const newMap = loadAvatarMap();
+        memberProfiles.forEach(p => { if (p.avatar) newMap[p.name] = p.avatar; });
+        saveAvatarMap(newMap);
+
+        renderAdminCard(); renderMembers(); renderMessages();
       } catch (err) {
         console.warn('Could not fetch iran avatars:', err);
-        renderMembers();
-        renderMessages();
+        renderAdminCard(); renderMembers(); renderMessages();
       }
     }
 
     /* ---------------------------
-       Lucide wiring - replace & style svgs
+       Lucide wiring (icon replacement)
        --------------------------- */
-    function wireLucideSvgs(){
+    function wireLucideSvgs(retries = 0){
+      const MAX_RETRIES = 8;
       if (window.lucide && typeof lucide.replace === 'function') {
-        lucide.replace();
-        // add classes and set stroke attributes for visibility on dark background
+        try { lucide.replace(); } catch(e){}
         document.querySelectorAll('svg.lucide-circle').forEach(svg => {
           svg.classList.add('online-svg');
           try {
@@ -603,16 +913,31 @@
         document.querySelectorAll('svg.lucide-pin').forEach(svg => {
           svg.classList.add('pin-svg');
           try {
-            svg.setAttribute('stroke', '#BFBFBF');
+            svg.setAttribute('stroke', 'var(--muted)');
             svg.setAttribute('stroke-width', '1.6');
             svg.setAttribute('fill', 'none');
             svg.setAttribute('aria-hidden', 'true');
           } catch(e){}
         });
-      } else {
-        // retry if lucide not loaded yet
-        setTimeout(wireLucideSvgs, 250);
+      } else if (retries < MAX_RETRIES) {
+        setTimeout(()=> wireLucideSvgs(retries+1), 250);
       }
+    }
+
+    /* ---------------------------
+       Admin detection & ordering (admins moved to admin card)
+       --------------------------- */
+    function detectAndMarkAdmins(){
+      const rawAdmins = extractAdminNamesFromSeed();
+      memberProfiles.forEach(p => {
+        const found = rawAdmins.some(a => {
+          if (!a) return false;
+          const lowerA = a.toLowerCase();
+          const lowerP = p.name.toLowerCase();
+          return lowerA === lowerP || lowerA.includes(lowerP) || lowerP.includes(lowerA);
+        });
+        p.isAdmin = !!found;
+      });
     }
 
     /* ---------------------------
@@ -620,12 +945,34 @@
        --------------------------- */
     function init(){
       renderPinned();
-      renderMembers(); // initials may show until avatars fetched
-      renderMessages();
-      updateStatusNumber();
+
+      // detect admins and mark them
+      detectAndMarkAdmins();
+
+      // Attempt to load persisted avatars and online list
+      const avatarMap = loadAvatarMap();
+      if (Object.keys(avatarMap).length > 0) {
+        memberProfiles.forEach(p => { if (avatarMap[p.name]) p.avatar = avatarMap[p.name]; });
+      }
+
+      // Load online list if present and valid
+      const savedOnline = loadOnlineList();
+      if (Array.isArray(savedOnline) && savedOnline.length > 0) {
+        applyOnlineList(savedOnline);
+      } else {
+        const initialVal = parseInt(statusNumberEl.textContent, 10) || 6;
+        const list = computeDeterministicOnlineList(initialVal);
+        applyOnlineList(list);
+        saveOnlineList(list);
+      }
+
+      renderAdminCard(); renderMembers(); renderMessages();
       wireLucideSvgs();
-      fetchIranAvatars(80);
-      // periodic subtle status updates
+
+      // fetch and assign avatars aggressively to reach ~100% real portraits
+      fetchIranAvatars();
+
+      // periodic subtle status updates (display only) — selection uses persisted list when available
       setInterval(updateStatusNumber, 5000 + Math.floor(Math.random()*7000));
     }
 
