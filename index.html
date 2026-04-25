@@ -1,1000 +1,295 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Private Digital Asset (Iran)</title>
-
-  <!-- Tailwind for layout only -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTRONBOT.MAX Replica</title>
   <style>
-    :root{
-      --bg: #232323;
-      --panel: #282828;
-      --text: #DADADA;
-      --muted: #BFBFBF;
-      --divider: rgba(255,255,255,0.03);
-      --accent: #43A047;
-      --accent-dark: #3d923f;
-      --soft-shadow-dark: rgba(0,0,0,0.65);
-      --soft-shadow-light: rgba(255,255,255,0.02);
-      --soft-elev: 10px 10px 24px rgba(0,0,0,0.55);
-      --soft-elev-sm: 6px 6px 18px rgba(0,0,0,0.48);
-      --transition: 220ms cubic-bezier(.2,.9,.2,1);
-    }
-    html,body,#app{height:100%}
-    body{
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      margin:0;
-    }
-    .panel {
-      background: var(--panel);
-      border-radius: 14px;
-      border: 1px solid var(--divider);
-      box-shadow:
-        8px 8px 20px var(--soft-shadow-dark),
-        -6px -6px 16px var(--soft-shadow-light),
-        inset 0 1px 0 rgba(255,255,255,0.02);
-      transition: box-shadow var(--transition), transform var(--transition);
-    }
-    .panel:active { transform: translateY(1px); }
-    .soft-btn, button {
-      border-radius: 10px;
-      padding: 8px 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-      border: 1px solid rgba(255,255,255,0.02);
-      box-shadow:
-        4px 6px 14px rgba(0,0,0,0.45),
-        inset 0 1px 0 rgba(255,255,255,0.02);
-      color: var(--text);
-      cursor: pointer;
-      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
-      font-size: 13px;
-    }
-    .soft-btn:hover { transform: translateY(-2px); opacity:0.98; }
-    .accent-btn {
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.45),
-        inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-    .accent-btn:hover { filter:brightness(1.02); transform: translateY(-2px); }
-    .avatar-fallback {
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      display:flex; align-items:center; justify-content:center;
-      color:var(--text); font-weight:600; text-transform:uppercase;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 4px 6px 12px rgba(0,0,0,0.48);
-    }
-    .avatar-wrap { position: relative; width:40px; height:40px; flex-shrink:0; display:inline-block; border-radius:12px; overflow:hidden; }
-    .avatar-wrap img, .avatar-wrap .avatar-fallback { width:40px; height:40px; border-radius:10px; object-fit:cover; display:block; }
-    .online-dot {
-      position: absolute;
-      right: -2px;
-      bottom: -2px;
-      width:14px;
-      height:14px;
-      border-radius:9999px;
-      background: var(--accent);
-      border: 3px solid var(--panel);
-      box-shadow: 0 6px 18px rgba(67,160,71,0.14);
-      transform-origin: 50% 50%;
-      animation: blinkPulse 1.6s infinite ease-in-out;
-    }
-    @keyframes blinkPulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(1.08); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    .status-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; vertical-align:middle; box-shadow: 0 4px 10px rgba(0,0,0,0.45); }
-    .status-dot.online { background: var(--accent); box-shadow: 0 6px 14px rgba(67,160,71,0.14); }
-    .status-dot.offline { background: #6b7280; opacity:0.75; }
-    .msg-admin { background: rgba(255,255,255,0.01); border-left:4px solid rgba(74,144,226,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
-    .msg-mod { background: rgba(255,255,255,0.01); border-left:4px solid rgba(120,120,120,0.06); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
-    .msg-regular { background: rgba(255,255,255,0.01); padding:12px; border-radius:12px; box-shadow: 4px 6px 18px rgba(0,0,0,0.45); }
-    .msg-system { font-style: italic; color: #9CA3AF; padding: 8px; }
-    .highlight-new { animation: newJoinHighlight 2000ms ease-in-out forwards; border-radius: 12px; }
-    @keyframes newJoinHighlight {
-      0% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
-      12% { background-color: rgba(67,160,71,0.03); transform: scale(1.006); }
-      60% { box-shadow: 0 20px 40px rgba(67,160,71,0.07); transform: scale(1.01); }
-      100% { box-shadow: 0 0 0 rgba(67,160,71,0); transform: scale(1); background-color: transparent; }
-    }
-    .admin-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text); padding:4px 8px; border-radius:999px; background: linear-gradient(180deg, rgba(67,160,71,0.12), rgba(67,160,71,0.06)); border: 1px solid rgba(67,160,71,0.14); box-shadow: 0 4px 12px rgba(67,160,71,0.06); font-weight:700; }
-    .admin-badge .dot { width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 4px 8px rgba(67,160,71,0.12); }
-    .mod-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text); padding:4px 8px; border-radius:999px; background: linear-gradient(180deg, rgba(120,120,120,0.08), rgba(0,0,0,0.04)); border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 10px rgba(0,0,0,0.45); font-weight:700; opacity:0.95; }
-    .mod-badge .dot { width:8px; height:8px; border-radius:999px; background:#9CA3AF; box-shadow:0 4px 8px rgba(0,0,0,0.12); }
-    .header-row { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; width:100%; position:relative; }
-    .left-meta { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
-    .right-meta { display:flex; align-items:center; gap:12px; justify-content:flex-end; flex-shrink:0; }
-    .header-logo-wrap { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:0; margin-right:0; }
-    .header-logo {
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      width:120px; height:120px;
-      box-shadow: 18px 22px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
-      object-fit:cover;
-      padding:8px;
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .header-logo:hover { transform: translateY(-3px) scale(1.02); box-shadow: 20px 26px 56px rgba(0,0,0,0.8); }
-    .header-logo-fallback {
-      width:120px; height:120px; display:inline-flex; align-items:center; justify-content:center;
-      border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:22px;
-      border:1px solid rgba(255,255,255,0.06);
-      box-shadow: 18px 22px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-    }
-    .online-indicator { width: 18px; height:18px; display:inline-block; position:relative; flex-shrink:0; margin-right:6px; }
-    .online-indicator .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 6px 16px rgba(67,160,71,0.16); position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
-    .online-indicator .ring { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; border:1px solid rgba(67,160,71,0.12); box-sizing:border-box; animation: onlinePulse 1600ms infinite ease-in-out; }
-    @keyframes onlinePulse { 0% { transform: translate(-50%,-50%) scale(1); opacity:1; } 50% { transform: translate(-50%,-50%) scale(1.12); opacity:0.45; } 100% { transform: translate(-50%,-50%) scale(1); opacity:1; } }
-    .meta-stats { display:flex; gap:12px; align-items:center; }
-    .stat-box { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; border: 1px solid rgba(255,255,255,0.02); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03)); min-width:120px; box-shadow: var(--soft-elev-sm); transition: transform var(--transition), box-shadow var(--transition); }
-    .stat-box:hover { transform: translateY(-3px); box-shadow: var(--soft-elev); }
-    .stat-icon { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; flex-shrink:0; border-radius:8px; background:rgba(0,0,0,0.04); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
-    .stat-text { display:flex; flex-direction:column; line-height:1; text-align:left; }
-    .stat-text .muted { font-size:12px; color:var(--muted); }
-    .stat-text .count { font-weight:700; color:var(--text); font-size:15px; }
-    .users-badge { width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04)); border: 1px solid rgba(255,255,255,0.02); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 6px 8px 18px rgba(0,0,0,0.45); flex-shrink:0; }
-    .users-fallback-svg { width:20px; height:20px; display:inline-block; stroke:var(--muted); stroke-width:1.6; fill:none; }
-    textarea, input[type="text"], input[type="search"] { background: var(--panel); border-radius: 12px; border: 1px solid rgba(255,255,255,0.02); padding: 10px; box-shadow: inset 4px 6px 16px rgba(0,0,0,0.55), inset -2px -2px 8px rgba(255,255,255,0.01); color: var(--text); transition: box-shadow var(--transition), transform var(--transition); resize: vertical; }
-    textarea:focus, input:focus { outline: none; box-shadow: 0 14px 40px rgba(0,0,0,0.6); transform: translateY(-1px); }
-    @media (max-width:900px){ .header-logo { width:100px; height:100px; padding:8px; } .header-logo-fallback { width:100px; height:100px; font-size:18px; } .users-badge { width:32px; height:32px; } .stat-box { padding:8px 10px; min-width:100px; } }
-    @media (max-width:640px){ .header-logo { width:80px; height:80px; padding:8px; } .header-logo-fallback { width:80px; height:80px; font-size:16px; } .right-meta { gap:10px; } .meta-stats { gap:8px; } }
-    @media (max-width:420px){ .header-row { flex-direction:column; align-items:stretch; gap:10px; } .right-meta { justify-content:space-between; } .meta-stats { width:100%; justify-content:space-between; } .header-logo-wrap { align-self:flex-end; margin-left:0; } }
+    :root {
+      --bg: #04070d;
+      --panel: #0d1732;
+      --panel-dark: #0a1021;
+      --text: #eef3ff;
+      --green: #22ff10;
+      --green2: #15c800;
+      --red: #ef0a0a;
+      --line: rgba(255,255,255,0.09);
+    }* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, #090b10 0%, #061020 40%, #04070d 100%);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  width: min(100vw, 925px);
+  height: min(100vh, 1540px);
+  aspect-ratio: 925 / 1540;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 11% 8%, rgba(255,255,255,0.22), transparent 14%),
+    radial-gradient(circle at 84% 23%, rgba(255,255,255,0.10), transparent 10%),
+    radial-gradient(circle at 52% 74%, rgba(0,255,60,0.18), transparent 8%),
+    radial-gradient(circle at 34% 86%, rgba(255,255,255,0.12), transparent 16%),
+    linear-gradient(180deg, #081223 0%, #0d2b5d 32%, #07101f 100%);
+  box-shadow: 0 36px 100px rgba(0,0,0,0.52);
+}
+
+/* blurred market chart vibe */
+.stage::before,
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.stage::before {
+  background:
+    radial-gradient(circle at 19% 74%, rgba(255,255,255,0.18), transparent 2.8%),
+    radial-gradient(circle at 17% 84%, rgba(255,255,255,0.10), transparent 2.5%),
+    radial-gradient(circle at 52% 83%, rgba(0,255,0,0.18), transparent 3%),
+    radial-gradient(circle at 50% 68%, rgba(0,255,0,0.10), transparent 2.6%),
+    radial-gradient(circle at 89% 17%, rgba(255,255,255,0.18), transparent 3%),
+    radial-gradient(circle at 89% 43%, rgba(255,255,255,0.11), transparent 3%),
+    radial-gradient(circle at 34% 27%, rgba(255,255,255,0.10), transparent 2.4%);
+  filter: blur(10px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}
+.stage::after {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.1));
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 38px;
+  right: 38px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  color: var(--green);
+  text-shadow: 0 0 14px rgba(25,255,25,0.35), 0 0 30px rgba(25,255,25,0.13);
+}
+
+.emblem {
+  width: 56px;
+  height: 56px;
+  position: relative;
+  flex: 0 0 auto;
+  transform: translateY(4px);
+  filter: drop-shadow(0 0 10px rgba(20,255,20,0.35));
+}
+.emblem::before {
+  content: "";
+  position: absolute;
+  inset: 4px 3px 4px 3px;
+  border: 6px solid var(--green);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  opacity: 0.95;
+}
+.emblem::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -14%) rotate(90deg);
+  border-left: 6px solid var(--green);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  clip-path: polygon(45% 0%, 100% 100%, 0% 100%);
+  opacity: 0.0;
+}
+
+.wordmark {
+  line-height: 0.88;
+  margin-bottom: 2px;
+}
+.wordmark .name {
+  margin: 0;
+  font-size: clamp(44px, 6.2vw, 92px);
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+.wordmark .tag {
+  margin-top: 8px;
+  font-size: clamp(12px, 1.9vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.58em;
+  text-indent: 0.58em;
+  color: var(--green);
+}
+
+.card {
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  top: 184px;
+  bottom: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(8,31,65,0.18), rgba(6,12,25,0.2)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 15%),
+    linear-gradient(180deg, #0a2148 0%, #143b7d 34%, #081124 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.controls {
+  position: absolute;
+  left: 29px;
+  right: 29px;
+  top: 19px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 4;
+}
+.ctrl {
+  min-height: 82px;
+  border-radius: 11px;
+  background: rgba(16, 25, 51, 0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  color: #f5f7ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 24px;
+  font-size: clamp(22px, 2.55vw, 40px);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ctrl.pair { width: min(55%, 414px); }
+.ctrl.time { width: min(23%, 165px); justify-content: center; padding-inline: 18px; }
+.chev { opacity: 0.85; transform: translateY(-1px); }
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.tri-stack {
+  width: min(57%, 382px);
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.tri {
+  width: 100%;
+  aspect-ratio: 1.6 / 1;
+  display: grid;
+  place-items: center;
+  font-size: clamp(38px, 4.5vw, 70px);
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.55);
+}
+.tri.up {
+  background: linear-gradient(180deg, #4dff1b 0%, #19c200 100%);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  position: relative;
+}
+.tri.down {
+  background: linear-gradient(180deg, #ff2516 0%, #e00000 100%);
+  clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+  position: relative;
+}
+.tri.up::after,
+.tri.down::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 104%;
+  height: 9px;
+  background: linear-gradient(180deg, rgba(142, 183, 255, 0.75), rgba(142, 183, 255, 0.18));
+  filter: blur(0.3px);
+}
+.tri.up::after { bottom: -5px; }
+.tri.down::after { top: -5px; }
+
+.actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 26px;
+  display: flex;
+  justify-content: center;
+  z-index: 4;
+}
+.start-btn {
+  min-width: 380px;
+  width: min(44%, 420px);
+  height: 78px;
+  border: 0;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #40ff1a 0%, #16c800 100%);
+  color: #f3fff3;
+  font-size: clamp(26px, 3.2vw, 44px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 12px 24px rgba(16,255,0,0.2), inset 0 1px 0 rgba(255,255,255,0.18);
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 700px) {
+  .stage { width: 100vw; height: 100vh; aspect-ratio: auto; }
+  .logo { top: 14px; left: 14px; right: 14px; gap: 10px; }
+  .emblem { width: 42px; height: 42px; }
+  .card { left: 14px; right: 14px; top: 120px; bottom: 14px; }
+  .controls { top: 12px; left: 12px; right: 12px; }
+  .ctrl { min-height: 58px; padding: 12px 14px; border-radius: 10px; font-size: 16px; }
+  .ctrl.pair { width: 66%; }
+  .ctrl.time { width: 30%; }
+  .tri-stack { width: 70%; margin-top: 88px; }
+  .start-btn { min-width: 260px; width: 62%; height: 62px; border-radius: 18px; font-size: 22px; }
+}
+
   </style>
 </head>
 <body>
-  <div id="app" class="min-h-screen p-4 md:p-8">
-    <header class="mb-4" role="banner">
-      <div class="header-row">
-        <div class="left-meta">
-          <h1 id="group-title" class="text-xl md:text-2xl font-semibold" style="color:var(--text); margin:0">Group: Private Digital Asset Discussion (Iran)</h1>
-          <div class="text-sm" style="color:var(--muted);">
-            <span id="date-range">Period: 8 January 2026 — 15 January 2026</span>
-          </div>
-        </div>
-
-        <div class="right-meta" aria-hidden="false">
-          <div class="meta-stats" role="group" aria-label="Group quick stats">
-            <div class="stat-box" id="members-box" aria-hidden="false">
-              <div class="users-badge stat-icon" aria-hidden="true">
-                <i data-lucide="users" aria-hidden="true"></i>
-                <svg class="users-fallback-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" role="img">
-                  <path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM8 11c1.657 0 3-1.343 3-3S9.657 5 8 5 5 6.343 5 8s1.343 3 3 3z" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M2 20c0-2.21 3.134-4 7-4s7 1.79 7 4M18 20v-1c0-1.657-2.686-3-6-3M8 20v-1c0-1.657 2.686-3 6-3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="stat-text" style="min-width:70px;">
-                <div class="muted">Members</div>
-                <div id="header-member-count" class="count">~140</div>
-              </div>
-            </div>
-
-            <div class="stat-box" id="status-box" aria-hidden="false" style="min-width:150px; justify-content:flex-end;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <div class="online-indicator" aria-hidden="true" title="Online">
-                  <div class="ring"></div>
-                  <div class="dot"></div>
-                </div>
-                <div style="text-align:left;">
-                  <div class="muted" style="font-size:12px;">Status</div>
-                  <div id="status-text" class="text-sm" style="color:var(--text); font-weight:600;">Active now: <span id="status-number" class="status-number">6</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <a href="/" class="header-logo-wrap" aria-label="Private Digital Asset logo" title="Private Digital Asset">
-            <img
-              id="site-logo"
-              src="assets/logo.png"
-              alt="Private Digital Asset logo"
-              width="120" height="120"
-              decoding="async"
-              loading="eager"
-              class="header-logo"
-              onerror="(function(el){ el.style.display='none'; try{ var f = document.createElement('div'); f.className='header-logo-fallback'; f.textContent='PDA'; el.parentNode && el.parentNode.appendChild(f);}catch(e){} })(this);"
-            />
-          </a>
-        </div>
+  <div class="stage" aria-label="Trading dashboard replica">
+    <div class="logo">
+      <div class="emblem" aria-hidden="true"></div>
+      <div class="wordmark">
+        <h1 class="name">ASTRONBOT.MAX</h1>
+        <div class="tag">TRADING I.A</div>
       </div>
-    </header>
-
-    <main class="flex flex-1 flex-col md:flex-row gap-4">
-      <section class="flex-1 flex flex-col panel overflow-hidden">
-        <div class="p-4 border-b" style="border-color:var(--divider); display:flex; justify-content:space-between; align-items:flex-start;">
-          <div>
-            <div class="text-sm font-medium" style="color:var(--text)">PINNED CONTENT (always visible)</div>
-            <ul id="pinned-list" class="mt-2 text-sm" style="color:var(--muted); list-style:none; padding-left:0; gap:6px;"></ul>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-            <button id="copy-pinned" class="soft-btn" style="background:transparent; border-color:var(--divider); color:var(--text); font-size:12px;">Copy</button>
-            <button id="toggle-notes" class="soft-btn" style="background:transparent; border-color:var(--divider); color:var(--text); font-size:12px;" aria-expanded="false">Notes</button>
-          </div>
-        </div>
-
-        <div id="chat-window" class="p-4 flex-1 overflow-auto" role="log" aria-live="polite">
-          <div id="messages-list" class="space-y-3"></div>
-        </div>
-
-        <div class="p-4 border-t" style="border-color:var(--divider); background:transparent;">
-          <div id="composer-locked" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-            <div style="color:var(--muted)">Posting is locked until verification. Please request verification to post.</div>
-            <div>
-              <button id="verify-btn" class="accent-btn" style="padding:8px 10px; border-radius:10px;">Request verification</button>
-            </div>
-          </div>
-
-          <div id="composer" class="hidden" style="display:flex; gap:12px; margin-top:8px; align-items:flex-start;">
-            <textarea id="composer-text" placeholder="Type a message — Enter to send" class="flex-1" style="padding:12px; border-radius:12px; border:1px solid var(--divider); background:var(--panel); color:var(--text); min-height:64px;"></textarea>
-            <div>
-              <button id="send-btn" class="accent-btn" style="padding:8px 12px; border-radius:10px;">Send</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <aside class="w-full md:w-72 flex-shrink-0 panel p-4">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-          <h2 style="font-weight:600; color:var(--text); font-size:14px;">MEMBERS (names)</h2>
-          <span style="color:var(--muted); font-size:12px;">Realistic view</span>
-        </div>
-
-        <div id="admin-card" class="admin-card" style="display:none;">
-          <div class="admin-title" style="color:var(--muted); font-size:12px; margin-bottom:8px;">ADMINS</div>
-          <div id="admin-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-
-        <div id="members-list" style="display:flex; flex-direction:column; gap:10px; color:var(--muted); max-height:56vh; overflow:auto;"></div>
-      </aside>
-    </main>
-
-    <div id="behavior-notes" class="panel" style="display:none; margin-top:16px; padding:12px; color:var(--muted);">
-      <h3 style="color:var(--text); font-weight:600;">REALISTIC CHAT PARTICIPATION (pattern & stats)</h3>
-      <pre style="white-space:pre-wrap; color:var(--muted)">(Overview & instructor notes stored in the script)</pre>
-    </div>
-
+    </div><div class="card">
+  <div class="controls">
+    <div class="ctrl pair">EUR/USD (OTC) <span class="chev">⌄</span></div>
+    <div class="ctrl time">15s <span class="chev">⌄</span></div>
   </div>
 
-  <script>
-    /* Pinned content */
-    const pinned = [
-      "Privacy rules (Iran-focused)",
-      "Verification required to participate in sensitive discussions",
-      "Group purpose: protect asset value, not investment advice",
-      "No screenshots or forwarding",
-      "Sensitive questions → DM the admin"
-    ];
+  <div class="center">
+    <div class="tri-stack">
+      <div class="tri up">56%</div>
+      <div class="tri down">44%</div>
+    </div>
+  </div>
 
-    /* Members list (140) */
-    const members = [
-      "Ariamen Niknam","Zhinos Farmani","Misaq Dashti","Pardis Sohrabi","Pouyan Tarabnia","Zhaleh Pourbakhtiar","Derina Kermani","Sohrab Mehrayin","Sepand Yaghmaei","Bakhtiar Kohandel",
-      "Taraneh Rozbehani","Saman Tihu","Padideh Naderi","Niko Foroughi","Hamoon Zagros","Naysabeh Tahmasbi","Diana Siavoshi","Bahman Azarpi","Negin Koneshlu","Rosta Mehrayin",
-      "Saman-yar Ahoui","Yara Zhilavand","Parsa Shayeg","Mahraz Golestani","Siamak Hoorami","Helia Mahinpour","Nima Taban","Parvosh Ramyar","Hooshang Bahari","Ahura Bahrami",
-      "Kourosh Nikmanesh","Kian Rudbar","Narges Delaram","Sudeh Kianpour","Amin Shayegan","Niloufar Behrbakhsh","Soha Armaghani","Dara Firoozi","Zhila Mehraban","Samyar Rudgar",
-      "Mahrokh Khodadadi","Nava Sayad","Parmida Sahli","Parham Soleimani-Nejad","Sepideh Nikandish","Pegah Derakhshan","Toranj Keyvani","Shahin Pejmanfar","Sheyda Alavi","Hoshmand Kateb",
-      "Mojgan Forouhar","Azadeh Nistani","Farshid Yousefi","Yeganeh Semnani","Siros Padidar","Ainaz Goodarzi","Mani Arashid","Roonak Ghaffari","Radin Sepehri",
-      "Mahshad Barghaei","Keyvan Rostami","Nazanin Dehghani","Homa Nadali","Nira Eghbali","Pouyan Kohanzad","Matiah Khoramdel","Baran Jamshidi","Kiarash Mardani","Zaria Farhang",
-      "Dihim Nazari","Behnam Alghasi","Golareh Malkani","Koroshian Tarkan","Raha Beheshti","Soheil Nikkhah","Zhaki Zhalehpoor","Rambod Hejri","Shaparak Fallahi","Kamyar Homayounfar",
-      "Tarlan Daryabigi","Kimia Khojasteh","Pouya Nasrollahi","Mahyar Farahani","Ladan Soleimani","Niusha Mehraban","Sina Khaleghi","Golsa Shayegan","Abtin Kamali","Farnaz Bahrampour",
-      "Mehrangiz Rabiei","Arshan Mahdavi","Yasaman Azarban","Shervin Ganji","Tarnam Mahasti","Arshin Boroumand","Nikzad Shahidi","Bahareh Sirafi","Kikavous Niknami","Mehrnoush Azargun",
-      "Parsa Delshad","Zhubin Razaqi","Tahmineh Nikkhah","Houtan Delpak","Roya Danaei","Niloufar Shahryar","Zhyar Kamyab","Mina Salimi","Shayan Mazinani","Diana Farahmand",
-      "Arian Mehranfar","Yekta Feyzi","Naderah Pasandideh","Kianoush Damghani","Azadeh Mehrgostar","Samdel Shahrokhi","Mahtab Forouzh","Shayan Nikpour","Koraogh Lilizad","Hamasin Kouhi",
-      "Pouyan Zanganeh","Ramin Yarmohammadi","Niloufar Arshidi","Gerard Golchin","Hooman Panjabi","Rana Keyvani","Shahrooz Mehrabi","Minoudokht Bahrami","Adrian Feyzabad","Zarrin Golmohammadi",
-      "Farshad Kamkar","Pegah Naderian","Arzu Farozand","Delara Niri","Niko Golrokh","Sepehr Nikrosh","Samaneh Arvand","Yousef Rouzbeh","Mahtab Nobahar","Pedram Shakiba"
-    ];
+  <div class="actions">
+    <button class="start-btn" type="button">START SIGNAL</button>
+  </div>
+</div>
 
-    /* Starter seeded messages */
-    let seededMessages = [
-      { time: "08:57", member: "System", text: "You joined the group.", role: "system" },
-      { time: "08:59", member: "System", text: "Online: Tehran, Isfahan, Shiraz, Mashhad (4 people online)", role: "system" },
-      { time: "09:02", member: "Hooshang Bahari (admin)", text: "Welcome. Please read the pinned rules before participating.", role: "admin" },
-      { time: "09:11", member: "Parvosh Ramyar (moderator)", text: "Verification required before any sensitive discussion. Please DM admin.", role: "mod" },
-      { time: "09:18", member: "Amin Shayegan (Tehran)", text: "Thanks — read the rules.", role: "member" },
-      { time: "09:41", member: "Sudeh Kianpour (Isfahan)", text: "Bank transfers delayed again today.", role: "member" },
-      { time: "09:44", member: "Parvosh Ramyar (Moderator)", text: "Please keep banking questions private with admin.", role: "mod" }
-    ];
-
-    const femaleTokens = ["zhaleh","derina","taraneh","padideh","niko","naysabeh","diana","negin","yara","narges","sudeh","niloufar","pegah","shaparak","mina","roonak","zaria","mojgan","azadeh","yasaman","delara","bahareh","mehrnoush","zarrin","mahtab","niusha","golsa","yekta","nazanin","homa","farah","parida","parisa","soheila","zahra","fatemeh","marjan","sara","roxana","rosta"];
-    function looksFemale(name){ if(!name) return false; const lower=name.toLowerCase(); return femaleTokens.some(t=>lower.includes(t)); }
-
-    let memberProfiles = members.map(name => ({ name, avatar: null, gender: looksFemale(name) ? 'female' : 'male', online: false, isAdmin: false, isMod: false }));
-
-    const AVATAR_MAP_KEY = 'group_avatar_map_v2';
-    const ONLINE_LIST_KEY = 'group_online_list_v2';
-    const MESSAGES_KEY = 'group_messages_v2';
-
-    function loadAvatarMap(){ try { const raw = localStorage.getItem(AVATAR_MAP_KEY); return raw ? JSON.parse(raw) : {}; } catch(e){ return {}; } }
-    function saveAvatarMap(map){ try { localStorage.setItem(AVATAR_MAP_KEY, JSON.stringify(map)); } catch(e){} }
-    function loadOnlineList(){ try { const raw = localStorage.getItem(ONLINE_LIST_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
-    function saveOnlineList(list){ try { localStorage.setItem(ONLINE_LIST_KEY, JSON.stringify(list)); } catch(e){} }
-    function loadMessages(){ try { const raw = localStorage.getItem(MESSAGES_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
-    function saveMessages(arr){ try { localStorage.setItem(MESSAGES_KEY, JSON.stringify(arr)); } catch(e){} }
-
-    /* BroadcastChannel for local tab sync */
-    const CHANNEL_NAME = 'abrox-group-chat-v2';
-    let bc = null;
-    try {
-      if ('BroadcastChannel' in window) {
-        bc = new BroadcastChannel(CHANNEL_NAME);
-        bc.addEventListener('message', (ev) => {
-          try {
-            const data = ev.data;
-            if (!data || !data.type) return;
-            if (data.type === 'new-message' && data.payload) {
-              const exists = seededMessages.some(m => m.time === data.payload.time && m.member === data.payload.member && m.text === data.payload.text);
-              if (!exists) {
-                seededMessages.push(data.payload);
-                saveMessages(seededMessages);
-                const val = parseInt(statusNumberEl.textContent, 10) || 6;
-                const list = computeDeterministicOnlineList(val);
-                applyOnlineList(list);
-                renderMessages();
-                renderMembers();
-              }
-            }
-          } catch (e) { console.warn('bc message handler err', e); }
-        });
-      }
-    } catch (e) { console.warn('BroadcastChannel init failed', e); bc = null; }
-
-    /* DOM refs */
-    const pinnedList = document.getElementById('pinned-list');
-    const membersListEl = document.getElementById('members-list');
-    const adminCardEl = document.getElementById('admin-card');
-    const adminListEl = document.getElementById('admin-list');
-    const messagesList = document.getElementById('messages-list');
-    const chatWindow = document.getElementById('chat-window');
-    const statusNumberEl = document.getElementById('status-number');
-
-    function updateHeaderMemberCount(){ const el = document.getElementById('header-member-count'); if (!el) return; el.textContent = '~' + (memberProfiles.length || members.length || 0); }
-
-    function renderPinned(){ pinnedList.innerHTML = ''; pinned.forEach(p => { const li = document.createElement('li'); li.style.display = 'flex'; li.style.alignItems = 'center'; li.style.gap = '8px'; li.style.marginBottom = '6px'; const icon = document.createElement('i'); icon.setAttribute('data-lucide','pin'); icon.setAttribute('aria-hidden','true'); li.appendChild(icon); const span = document.createElement('span'); span.textContent = p; span.style.color = 'var(--muted)'; li.appendChild(span); pinnedList.appendChild(li); }); }
-
-    function createFallbackElement(name){
-      function seedFromName(n){ let h = 0; if(!n) return 1; for(let i=0;i<n.length;i++){ h = ((h<<5) - h) + n.charCodeAt(i); h |= 0; } return (Math.abs(h) % 70) + 1; }
-      const seed = seedFromName(name || 'member');
-      const img = document.createElement('img');
-      img.src = `https://i.pravatar.cc/40?img=${seed}`;
-      img.alt = name || 'Member';
-      img.style.width = '40px';
-      img.style.height = '40px';
-      img.style.borderRadius = '10px';
-      img.style.objectFit = 'cover';
-      img.onerror = function(){ try { img.remove(); } catch(e){}; const fallback = document.createElement('div'); fallback.className = 'avatar-fallback'; fallback.style.width = '40px'; fallback.style.height = '40px'; fallback.style.borderRadius = '10px'; fallback.style.fontSize = '12px'; fallback.style.flexShrink = '0'; const parts = (name || '').split(' ').filter(Boolean); const initials = (parts.length === 0) ? 'M' : parts.map(s => s[0]).slice(0,2).join('').toUpperCase(); fallback.textContent = initials; try { this.parentNode && this.parentNode.appendChild(fallback); } catch(e){} };
-      const wrapper = document.createElement('div');
-      wrapper.className = 'avatar-wrap';
-      wrapper.style.width = '40px';
-      wrapper.style.height = '40px';
-      wrapper.style.borderRadius = '10px';
-      wrapper.style.display = 'inline-block';
-      wrapper.style.flexShrink = '0';
-      wrapper.appendChild(img);
-      return wrapper;
-    }
-
-    function createAvatarNodeForProfile(profileOrName){
-      let profile = null;
-      if (typeof profileOrName === 'string') {
-        const s = profileOrName.toLowerCase();
-        profile = memberProfiles.find(p => {
-          const pn = (p.name || '').toLowerCase();
-          return s.includes(pn) || pn.includes(s) || s === pn;
-        }) || { name: profileOrName, avatar: null, online: false };
-      } else {
-        profile = profileOrName;
-      }
-
-      const wrap = document.createElement('div');
-      wrap.className = 'avatar-wrap';
-      wrap.style.width = '40px';
-      wrap.style.height = '40px';
-      wrap.style.borderRadius = '10px';
-      wrap.style.display = 'inline-block';
-      wrap.style.flexShrink = '0';
-
-      if (profile && profile.avatar) {
-        const img = document.createElement('img');
-        img.src = profile.avatar;
-        img.alt = profile.name || '';
-        img.className = 'round-avatar';
-        img.style.width = '40px';
-        img.style.height = '40px';
-        img.style.borderRadius = '10px';
-        img.style.objectFit = 'cover';
-        img.onerror = () => { try { img.remove(); } catch(e){}; wrap.appendChild(createFallbackElement(profile.name || 'Member')); };
-        wrap.appendChild(img);
-      } else {
-        wrap.appendChild(createFallbackElement(profile.name || 'Member'));
-      }
-
-      if (profile && profile.online) {
-        const dot = document.createElement('span');
-        dot.className = 'online-dot';
-        dot.setAttribute('aria-hidden', 'true');
-        wrap.appendChild(dot);
-      }
-
-      return wrap;
-    }
-
-    function renderAdminCard(){
-      const admins = memberProfiles.filter(p => p.isAdmin);
-      if (admins.length === 0) { adminCardEl.style.display = 'none'; return; }
-      adminCardEl.style.display = 'block';
-      adminListEl.innerHTML = '';
-      admins.forEach(a => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.gap = '10px';
-        const left = document.createElement('div');
-        left.appendChild(createAvatarNodeForProfile(a));
-        row.appendChild(left);
-        const nameDiv = document.createElement('div');
-        nameDiv.style.color = 'var(--muted)';
-        nameDiv.style.fontSize = '14px';
-        nameDiv.style.display = 'flex';
-        nameDiv.style.alignItems = 'center';
-        nameDiv.style.gap = '8px';
-        const nameText = document.createElement('span');
-        nameText.textContent = a.name;
-        nameDiv.appendChild(nameText);
-        const badge = document.createElement('span');
-        badge.className = 'admin-badge';
-        badge.innerHTML = '<span class="dot"></span><span style="opacity:0.9; margin-left:4px; font-weight:700;">ADMIN</span>';
-        nameDiv.appendChild(badge);
-        row.appendChild(nameDiv);
-        adminListEl.appendChild(row);
-      });
-      updateHeaderMemberCount();
-    }
-
-    function renderMembers(){
-      membersListEl.innerHTML = '';
-      const others = memberProfiles.slice().sort((a,b)=>{
-        if (a.online === b.online) return a.name.localeCompare(b.name);
-        return (a.online ? -1 : 1);
-      });
-      others.forEach(m => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.gap = '10px';
-        row.style.justifyContent = 'space-between';
-        const leftGroup = document.createElement('div');
-        leftGroup.style.display = 'flex';
-        leftGroup.style.alignItems = 'center';
-        leftGroup.style.gap = '10px';
-        const avatar = document.createElement('div');
-        avatar.appendChild(createAvatarNodeForProfile(m));
-        leftGroup.appendChild(avatar);
-        const nameDiv = document.createElement('div');
-        nameDiv.style.color = 'var(--muted)';
-        nameDiv.style.fontSize = '14px';
-        nameDiv.style.display = 'flex';
-        nameDiv.style.alignItems = 'center';
-        nameDiv.style.gap = '8px';
-        const statusDot = document.createElement('span');
-        statusDot.className = 'status-dot ' + (m.online ? 'online' : 'offline');
-        statusDot.setAttribute('aria-hidden', 'true');
-        nameDiv.appendChild(statusDot);
-        const nameText = document.createElement('span');
-        nameText.textContent = m.name;
-        nameDiv.appendChild(nameText);
-        if (m.isMod) {
-          const badge = document.createElement('span');
-          badge.className = 'mod-badge';
-          badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:4px; font-weight:700;">MOD</span>';
-          nameDiv.appendChild(badge);
-        }
-        leftGroup.appendChild(nameDiv);
-        row.appendChild(leftGroup);
-        const right = document.createElement('div');
-        right.style.color = 'var(--muted)';
-        right.style.fontSize = '12px';
-        right.textContent = m.online ? 'online' : 'offline';
-        row.appendChild(right);
-        membersListEl.appendChild(row);
-      });
-      updateHeaderMemberCount();
-    }
-
-    function renderMessages(){
-      messagesList.innerHTML = '';
-      seededMessages.forEach((m, idx) => {
-        const article = document.createElement('article');
-        article.style.marginBottom = '8px';
-        if(m.role === 'system'){
-          article.className = 'msg-system';
-          article.textContent = `${m.time} ${m.text}`;
-        } else {
-          article.className = m.role === 'admin' ? 'msg-admin' : m.role === 'mod' ? 'msg-mod' : 'msg-regular';
-          article.style.padding = '12px';
-          article.style.borderRadius = '12px';
-          const header = document.createElement('div');
-          header.style.display = 'flex';
-          header.style.justifyContent = 'space-between';
-          header.style.alignItems = 'center';
-          const left = document.createElement('div');
-          left.style.display = 'flex';
-          left.style.alignItems = 'center';
-          left.style.gap = '10px';
-          const profile = memberProfiles.find(p => m.member && p.name && m.member.toLowerCase().includes(p.name.toLowerCase()));
-          if (profile) left.appendChild(createAvatarNodeForProfile(profile));
-          else left.appendChild(createAvatarNodeForProfile(m.member));
-          const nameDiv = document.createElement('div');
-          nameDiv.style.fontWeight = '700';
-          nameDiv.style.color = 'var(--text)';
-          nameDiv.style.display = 'flex';
-          nameDiv.style.alignItems = 'center';
-          nameDiv.style.gap = '8px';
-          nameDiv.textContent = m.member || 'Member';
-          if (m.role === 'admin') {
-            const badge = document.createElement('span');
-            badge.className = 'admin-badge';
-            badge.style.fontSize = '11px';
-            badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">ADMIN</span>';
-            nameDiv.appendChild(badge);
-          } else if (m.role === 'mod') {
-            const badge = document.createElement('span');
-            badge.className = 'mod-badge';
-            badge.style.fontSize = '11px';
-            badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">MOD</span>';
-            nameDiv.appendChild(badge);
-          } else if (profile) {
-            if (profile.isAdmin) {
-              const badge = document.createElement('span');
-              badge.className = 'admin-badge';
-              badge.style.fontSize = '11px';
-              badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">ADMIN</span>';
-              nameDiv.appendChild(badge);
-            } else if (profile.isMod) {
-              const badge = document.createElement('span');
-              badge.className = 'mod-badge';
-              badge.style.fontSize = '11px';
-              badge.innerHTML = '<span class="dot"></span><span style="opacity:0.95; margin-left:6px; font-weight:700;">MOD</span>';
-              nameDiv.appendChild(badge);
-            }
-          }
-          left.appendChild(nameDiv);
-          header.appendChild(left);
-          const time = document.createElement('div');
-          time.style.color = 'var(--muted)';
-          time.style.fontSize = '12px';
-          time.textContent = m.time;
-          header.appendChild(time);
-          const p = document.createElement('p');
-          p.style.marginTop = '8px';
-          p.style.color = 'var(--text)';
-          p.style.fontSize = '14px';
-          p.textContent = m.text;
-          article.appendChild(header);
-          article.appendChild(p);
-          const isNewMember = (m.role === 'new');
-          if (isNewMember) {
-            article.classList.add('highlight-new');
-            triggerStatusJoinPulse();
-            setTimeout(() => { article.classList.remove('highlight-new'); }, 2400);
-          }
-        }
-        messagesList.appendChild(article);
-      });
-      try { chatWindow.scrollTop = chatWindow.scrollHeight; } catch(e){}
-    }
-
-    /* Interactions */
-    document.getElementById('copy-pinned').addEventListener('click', async () => {
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(pinned.join('\n'));
-          alert('Pinned rules copied to clipboard');
-        } else {
-          const ta = document.createElement('textarea');
-          ta.value = pinned.join('\n');
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          ta.remove();
-          alert('Pinned rules copied to clipboard');
-        }
-      } catch (err) { console.warn('copy failed', err); alert('Unable to copy'); }
-    });
-
-    document.getElementById('toggle-notes').addEventListener('click', () => {
-      const el = document.getElementById('behavior-notes');
-      const isHidden = el.style.display === 'none' || el.style.display === '';
-      el.style.display = isHidden ? 'block' : 'none';
-      document.getElementById('toggle-notes').setAttribute('aria-expanded', String(isHidden));
-    });
-
-    document.getElementById('verify-btn').addEventListener('click', () => {
-      document.getElementById('composer-locked').style.display = 'none';
-      document.getElementById('composer').style.display = 'flex';
-      document.getElementById('composer-text').focus();
-    });
-
-    document.getElementById('send-btn').addEventListener('click', () => {
-      const txt = document.getElementById('composer-text').value.trim();
-      if (!txt) return;
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const newMsg = { time: timeStr, member: 'You', text: txt, role: 'member' };
-      seededMessages.push(newMsg);
-      saveMessages(seededMessages);
-      if (bc) {
-        try { bc.postMessage({ type: 'new-message', payload: newMsg }); } catch(e){ console.warn('bc post err', e); }
-      }
-      document.getElementById('composer-text').value = '';
-      renderMessages();
-      const val = parseInt(statusNumberEl.textContent, 10) || 6;
-      const list = computeDeterministicOnlineList(val);
-      applyOnlineList(list);
-      saveOnlineList(list);
-      renderMembers();
-    });
-
-    document.getElementById('composer-text').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('send-btn').click(); }
-    });
-
-    /* Robust name extraction for admin/mod detection */
-    function extractAdminNamesFromSeed(){
-      const set = new Set();
-      seededMessages.forEach(m => {
-        if (!m.member || typeof m.member !== 'string') return;
-        const member = m.member.trim();
-        // prefer name before parentheses, e.g., "Hooshang Bahari (admin)"
-        const beforeParen = member.match(/^(.+?)\s*\(/);
-        if (beforeParen && beforeParen[1]) {
-          set.add(beforeParen[1].trim());
-          return;
-        }
-        // if "admin" appears, try to take preceding words (best-effort)
-        if (/admin/i.test(member)) {
-          const parts = member.split(/\s+/).filter(Boolean);
-          // pick up to first two words that are not 'admin'
-          const filtered = parts.filter(p => !/admin/i.test(p)).slice(0,2);
-          if (filtered.length) set.add(filtered.join(' ').trim());
-        }
-      });
-      return Array.from(set).filter(Boolean);
-    }
-
-    function extractModeratorNamesFromSeed(){
-      const set = new Set();
-      seededMessages.forEach(m => {
-        if (!m.member || typeof m.member !== 'string') return;
-        const member = m.member.trim();
-        const beforeParen = member.match(/^(.+?)\s*\(/);
-        if (beforeParen && beforeParen[1]) {
-          // add only if role text includes mod/moderator somewhere
-          if (/moderator|mod/i.test(member)) set.add(beforeParen[1].trim());
-          return;
-        }
-        if (/moderator|moder|mod/i.test(member)) {
-          const parts = member.split(/\s+/).filter(Boolean);
-          const filtered = parts.filter(p => !/moderator|moder|mod/i.test(p)).slice(0,2);
-          if (filtered.length) set.add(filtered.join(' ').trim());
-        }
-      });
-      return Array.from(set).filter(Boolean);
-    }
-
-    /* Deterministic online selection */
-    function computeDeterministicOnlineList(count){
-      const admins = extractAdminNamesFromSeed();
-      const onlineSet = new Set();
-      // make sure explicit admin-marked profiles are included
-      memberProfiles.forEach(p => { if (p.isAdmin) onlineSet.add(p.name); });
-
-      // also add admin names extracted from messages
-      admins.forEach(adminName => {
-        const prof = memberProfiles.find(p => {
-          const pn = (p.name||'').toLowerCase();
-          return pn === adminName.toLowerCase() || pn.includes(adminName.toLowerCase()) || adminName.toLowerCase().includes(pn);
-        });
-        if (prof) onlineSet.add(prof.name);
-      });
-
-      const authors = [];
-      for (let i = seededMessages.length - 1; i >= 0 && authors.length < count; i--) {
-        const m = seededMessages[i];
-        if (!m.member || typeof m.member !== 'string') continue;
-        const low = m.member.toLowerCase();
-        if (low.includes('system')) continue;
-        const prof = memberProfiles.find(p => m.member.toLowerCase().includes(p.name.toLowerCase()));
-        const nameToAdd = prof ? prof.name : m.member.trim();
-        if (!authors.some(a => a.toLowerCase() === nameToAdd.toLowerCase()) && ![...onlineSet].some(s => s.toLowerCase() === nameToAdd.toLowerCase())) {
-          authors.push(nameToAdd);
-        }
-      }
-
-      authors.forEach(a => onlineSet.add(a));
-
-      if (onlineSet.size < count) {
-        for (let i = 0; i < memberProfiles.length && onlineSet.size < count; i++) {
-          const p = memberProfiles[i];
-          if (!onlineSet.has(p.name)) onlineSet.add(p.name);
-        }
-      }
-
-      return Array.from(onlineSet);
-    }
-
-    function applyOnlineList(list){
-      memberProfiles.forEach(p => p.online = false);
-      list.forEach(item => {
-        if (!item) return;
-        const it = (item || '').toString().toLowerCase();
-        const prof = memberProfiles.find(p => {
-          const pn = (p.name || '').toLowerCase();
-          return pn === it || pn.includes(it) || it.includes(pn);
-        });
-        if (prof) prof.online = true;
-      });
-    }
-
-    function updateStatusNumber(){
-      const val = 3 + Math.floor(Math.random() * 6); // 3..8
-      const statEl = document.getElementById('status-number');
-      if (statEl) statEl.textContent = val;
-      const saved = loadOnlineList();
-      if (Array.isArray(saved) && saved.length > 0) {
-        applyOnlineList(saved);
-      } else {
-        const list = computeDeterministicOnlineList(val);
-        applyOnlineList(list);
-        saveOnlineList(list);
-      }
-      renderMembers();
-      renderMessages();
-    }
-
-    function triggerStatusJoinPulse(){
-      const ring = document.querySelector('.online-indicator .ring');
-      const num = document.getElementById('status-number');
-      if (ring) {
-        ring.classList.add('new-join-pulse');
-        setTimeout(()=> ring.classList.remove('new-join-pulse'), 900);
-      }
-      if (num) {
-        num.style.transform = 'scale(1.12)';
-        num.style.transition = 'transform 420ms ease-out';
-        setTimeout(()=> { num.style.transform = ''; }, 420);
-      }
-    }
-
-    /* Avatar fetching (best-effort; fallback safe) */
-    async function fetchIranAvatars(){
-      try {
-        const avatarMap = loadAvatarMap();
-        const femaleCount = memberProfiles.filter(p => p.gender === 'female').length;
-        const maleCount = memberProfiles.length - femaleCount;
-        const targetFemaleFetch = Math.min(150, Math.ceil(femaleCount * 1.2) + 10);
-        const targetMaleFetch = Math.min(150, Math.ceil(maleCount * 1.2) + 10);
-
-        async function fetchPool(gender, results, nat){
-          if (results <= 0) return [];
-          const natParam = nat ? `&nat=${nat}` : '';
-          const url = `https://randomuser.me/api/?gender=${gender}&results=${results}${natParam}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('randomuser fetch failed');
-          const json = await res.json();
-          const seen = new Set();
-          const unique = [];
-          (json.results || []).forEach(u => {
-            const id = (u.login && u.login.uuid) || u.email || (u.picture && u.picture.large) || null;
-            const pic = (u.picture && (u.picture.large || u.picture.medium || u.picture.thumbnail)) || null;
-            if (!pic) return;
-            if (id && seen.has(id)) return;
-            if (pic && Array.from(seen).some(s => s === pic)) return;
-            seen.add(id || pic);
-            unique.push({ id, pic });
-          });
-          return unique;
-        }
-
-        let femalePool = [], malePool = [];
-        try {
-          [femalePool, malePool] = await Promise.all([
-            fetchPool('female', targetFemaleFetch, 'ir'),
-            fetchPool('male', targetMaleFetch, 'ir')
-          ]);
-        } catch (errNat) {
-          console.warn('nat=ir fetch may not be supported, falling back', errNat);
-          [femalePool, malePool] = await Promise.all([
-            fetchPool('female', Math.min(100, targetFemaleFetch), ''),
-            fetchPool('male', Math.min(100, targetMaleFetch), '')
-          ]);
-        }
-
-        let femalePics = femalePool.map(x => x.pic);
-        let malePics = malePool.map(x => x.pic);
-
-        function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } }
-        shuffle(femalePics); shuffle(malePics);
-
-        memberProfiles.forEach(p => { if (avatarMap[p.name]) p.avatar = avatarMap[p.name]; else p.avatar = null; });
-
-        let fIdx = 0, mIdx = 0;
-        for (let i = 0; i < memberProfiles.length; i++) {
-          const p = memberProfiles[i];
-          if (p.avatar) continue;
-          if (p.gender === 'female' && fIdx < femalePics.length) { p.avatar = femalePics[fIdx++]; continue; }
-          if (p.gender === 'male' && mIdx < malePics.length) { p.avatar = malePics[mIdx++]; continue; }
-          if (fIdx < femalePics.length) { p.avatar = femalePics[fIdx++]; continue; }
-          if (mIdx < malePics.length) { p.avatar = malePics[mIdx++]; continue; }
-          p.avatar = null;
-        }
-
-        const remaining = memberProfiles.filter(p => !p.avatar).length;
-        if (remaining > 0) {
-          try {
-            const pool = await fetchPool('', Math.min(200, remaining * 2 + 20), '');
-            const pics = pool.map(x => x.pic);
-            shuffle(pics);
-            let idx = 0;
-            for (let i = 0; i < memberProfiles.length && idx < pics.length; i++) {
-              const p = memberProfiles[i];
-              if (!p.avatar) { p.avatar = pics[idx++]; }
-            }
-          } catch (err) {
-            console.warn('fallback pool fetch failed', err);
-          }
-        }
-
-        const used = new Set();
-        for (let i = 0; i < memberProfiles.length; i++) {
-          const p = memberProfiles[i];
-          if (p.avatar) {
-            if (used.has(p.avatar)) { p.avatar = null; } else { used.add(p.avatar); }
-          }
-        }
-
-        const newMap = loadAvatarMap();
-        memberProfiles.forEach(p => { if (p.avatar) newMap[p.name] = p.avatar; });
-        saveAvatarMap(newMap);
-
-        renderAdminCard(); renderMembers(); renderMessages();
-      } catch (err) {
-        console.warn('Could not fetch iran avatars:', err);
-        renderAdminCard(); renderMembers(); renderMessages();
-      }
-    }
-
-    function wireLucideSvgs(retries = 0){
-      const MAX_RETRIES = 12;
-      if (window.lucide && typeof lucide.replace === 'function') {
-        try { lucide.replace(); } catch(e){}
-      } else if (retries < MAX_RETRIES) {
-        setTimeout(()=> wireLucideSvgs(retries+1), 180);
-      }
-    }
-
-    /* detect and mark roles: combine explicit heuristics and extracted names */
-    function detectAndMarkRoles(){
-      // explicit male admin defaults chosen by you
-      const explicitAdmins = ['Hooshang Bahari','Hooshmand Kateb','Ahura Bahrami'];
-      const explicitMods = ['Parvosh Ramyar','Hoshmand Kateb','Hooshang Bahari'];
-
-      // extract names from seeded messages too
-      const extractedAdmins = extractAdminNamesFromSeed();
-      const extractedMods = extractModeratorNamesFromSeed();
-
-      memberProfiles.forEach(p => {
-        const pname = p.name.toLowerCase();
-        p.isAdmin = explicitAdmins.some(n => n.toLowerCase() === pname) || extractedAdmins.some(n => n.toLowerCase() === pname);
-        p.isMod = explicitMods.some(n => n.toLowerCase() === pname) || extractedMods.some(n => n.toLowerCase() === pname);
-      });
-      updateHeaderMemberCount();
-    }
-
-    /* Simulated timeline, streamed if no saved messages (keeps realistic flow) */
-    function simulateFlowsRealistic(){
-      const timeline = [
-        { time: "09:02", member: "Hooshang Bahari (admin)", text: "Welcome. Please read the pinned rules before participating.", role: "admin" },
-        { time: "09:11", member: "Parvosh Ramyar (moderator)", text: "Verification required before any sensitive discussion. DM admin.", role: "mod" },
-        { time: "09:18", member: "Amin Shayegan (Tehran)", text: "Thanks, read the rules.", role: "member" },
-        { time: "09:41", member: "Sudeh Kianpour (Isfahan)", text: "Bank transfers delayed again today.", role: "member" },
-        { time: "09:44", member: "Parvosh Ramyar (moderator)", text: "Please take banking questions to the admin privately.", role: "mod" },
-
-        { time: "Jan 3", member: "Saman Tihu", text: "Inflation has been high this month and it's getting tougher.", role: "member" },
-        { time: "Jan 5", member: "Kourosh Nikmanesh", text: "Same here. Hard to keep value.", role: "member" },
-        { time: "Jan 8", member: "Parvosh Ramyar (moderator)", text: "Reminder: this group is for protection, not speculation.", role: "mod" },
-        { time: "14:12", member: "Radin Sepehri", text: "Waiting for verification.", role: "member" },
-        { time: "16:40", member: "Parvosh Ramyar (moderator)", text: "Please be patient. Admin reviews in batches.", role: "mod" },
-        { time: "18:05", member: "Niloufar Behrbakhsh (Shiraz)", text: "USDT helped me avoid last drop.", role: "member" },
-
-        { time: "11:00", member: "Hooshang Bahari (admin)", text: "Verification queue is nearly full today. Next review window tomorrow.", role: "admin" },
-        { time: "10:22", member: "Narges Delaram", text: "Got approved yesterday.", role: "member" },
-        { time: "10:24", member: "Amin Shayegan", text: "Same here. Took a few days.", role: "member" },
-
-        { time: "09:31", member: "Narges Delaram (Karaj)", text: "Confirmed — verification complete.", role: "member" },
-        { time: "09:34", member: "Amin Shayegan", text: "Same here.", role: "member" },
-        { time: "14:06", member: "Hooshang Bahari (admin)", text: "Limited verification window today. Please wait your turn.", role: "admin" },
-        { time: "16:21", member: "Rosta Mehrayin (Isfahan)", text: "Any starting tips for newcomers?", role: "member" },
-        { time: "16:24", member: "Parvosh Ramyar (moderator)", text: "Please DM admin for details.", role: "mod" },
-
-        { time: "10:12", member: "Niloufar Behrbakhsh", text: "Tehran traffic was better today.", role: "member" },
-        { time: "13:40", member: "Kourosh Nikmanesh", text: "Still waiting for approval.", role: "member" },
-        { time: "17:02", member: "Parvosh Ramyar (moderator)", text: "Reminder: do not post private contact info in public.", role: "mod" },
-
-        { time: "11:00", member: "Hooshang Bahari (admin)", text: "If you applied within the last 72 hours, check your DMs.", role: "admin" },
-        { time: "14:30", member: "Kourosh Nikmanesh", text: "Still waiting. Testing my patience.", role: "member" },
-        { time: "18:30", member: "Narges Delaram", text: "A few confirmations, nothing dramatic — quiet.", role: "member" }
-      ];
-
-      const initialCount = 4;
-      seededMessages = seededMessages.slice(0,2).concat(timeline.slice(0, initialCount));
-      saveMessages(seededMessages);
-      renderMessages();
-
-      let idx = initialCount;
-      const streamInterval = 900 + Math.floor(Math.random()*1200);
-      const stream = setInterval(() => {
-        if (idx >= timeline.length) { clearInterval(stream); saveMessages(seededMessages); renderMessages(); return; }
-        seededMessages.push(timeline[idx]);
-        saveMessages(seededMessages);
-        const val = parseInt(statusNumberEl.textContent, 10) || 5;
-        const list = computeDeterministicOnlineList(val);
-        applyOnlineList(list);
-        renderMessages();
-        renderMembers();
-        idx++;
-      }, streamInterval);
-    }
-
-    /* Init */
-    function init(){
-      renderPinned();
-      const savedMsgs = loadMessages();
-      if (Array.isArray(savedMsgs) && savedMsgs.length > 0) {
-        seededMessages = savedMsgs.slice();
-      } else {
-        simulateFlowsRealistic();
-      }
-      detectAndMarkRoles();
-      const avatarMap = loadAvatarMap();
-      if (Object.keys(avatarMap).length > 0) {
-        memberProfiles.forEach(p => { if (avatarMap[p.name]) p.avatar = avatarMap[p.name]; });
-      }
-      const savedOnline = loadOnlineList();
-      if (Array.isArray(savedOnline) && savedOnline.length > 0) {
-        applyOnlineList(savedOnline);
-      } else {
-        const initialVal = parseInt(statusNumberEl.textContent, 10) || 6;
-        const list = computeDeterministicOnlineList(initialVal);
-        applyOnlineList(list);
-        saveOnlineList(list);
-      }
-      renderAdminCard(); renderMembers(); renderMessages();
-      wireLucideSvgs();
-      fetchIranAvatars();
-      setInterval(updateStatusNumber, 6000 + Math.floor(Math.random()*9000));
-    }
-
-    init();
-  </script>
-
-  <script>
-    (function ensureLucide(){
-      if (window.lucide && typeof lucide.replace === 'function') {
-        try { lucide.replace(); } catch(e){ /* ignore */ }
-      } else {
-        setTimeout(ensureLucide, 160);
-      }
-    })();
-  </script>
+  </div>
 </body>
 </html>
