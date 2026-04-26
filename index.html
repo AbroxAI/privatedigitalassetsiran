@@ -33,6 +33,20 @@
     .card-border:hover {
       border-color: rgba(234, 179, 8, 0.3);
     }
+    /* Loading spinner */
+    .loader {
+      border: 3px solid rgba(234, 179, 8, 0.2);
+      border-top: 3px solid #eab308;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="text-white font-sans antialiased">
@@ -71,6 +85,11 @@
         <i data-lucide="zap" class="w-4 h-4 inline text-yellow-400 mr-1"></i>
         Add today's matches — get instant edge
       </p>
+      <!-- Backend status indicator -->
+      <div id="backend-status" class="mt-3 text-xs text-yellow-200/40">
+        <span id="status-dot" class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>
+        <span id="status-text">Checking backend...</span>
+      </div>
     </div>
 
     <!-- Add Match Buttons -->
@@ -92,8 +111,8 @@
 
     <!-- Scan Button -->
     <div class="flex justify-center mb-12">
-      <button onclick="scanBets()" 
-              class="btn-glow flex items-center gap-3 px-12 py-4 bg-yellow-500 rounded-2xl text-red-700 font-extrabold text-lg tracking-wide hover:bg-yellow-400 transition">
+      <button onclick="scanBets()" id="scan-btn"
+              class="btn-glow flex items-center gap-3 px-12 py-4 bg-yellow-500 rounded-2xl text-red-700 font-extrabold text-lg tracking-wide hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed">
         <i data-lucide="search" class="w-6 h-6"></i> Scan for Value Bets
       </button>
     </div>
@@ -114,12 +133,51 @@
   </footer>
 
   <script>
-    // ---------- GLOBAL ----------
-    const API_BASE = "https://cortex-jaundice-disprove.ngrok-free.dev/";  // ← Replace with Colab ngrok URL
+    // ---------- CONFIGURATION ----------
+    const API_BASE = "https://cortex-jaundice-disprove.ngrok-free.dev";
+    
+    // ---------- GLOBAL STATE ----------
     let matches = [];
+    let teamCache = {};  // cache team lists per league
+
+    // ---------- BACKEND HEALTH CHECK ----------
+    async function checkBackend() {
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+      try {
+        const resp = await fetch(`${API_BASE}/teams/Championship`);
+        if (resp.ok) {
+          statusDot.className = 'inline-block w-2 h-2 rounded-full bg-green-500 mr-1';
+          statusText.textContent = 'Backend connected';
+        } else {
+          throw new Error('Not OK');
+        }
+      } catch (e) {
+        statusDot.className = 'inline-block w-2 h-2 rounded-full bg-red-500 mr-1';
+        statusText.textContent = 'Backend offline — start Colab Cell 4';
+      }
+    }
+    checkBackend();
+    // Re-check every 30 seconds
+    setInterval(checkBackend, 30000);
+
+    // ---------- HELPER: FETCH TEAMS WITH CACHE ----------
+    async function fetchTeams(league) {
+      if (teamCache[league]) return teamCache[league];
+      try {
+        const resp = await fetch(`${API_BASE}/teams/${league}`);
+        if (!resp.ok) throw new Error('Failed');
+        const teams = await resp.json();
+        teamCache[league] = teams;
+        return teams;
+      } catch (e) {
+        console.warn(`Could not fetch teams for ${league}, using manual input`);
+        return [];
+      }
+    }
 
     // ---------- ADD MATCH ROW ----------
-    function addMatch(league) {
+    async function addMatch(league) {
       const container = document.getElementById('matches-container');
       const id = Date.now();
       matches.push({ id, league, home: '', away: '', odds: '' });
@@ -130,27 +188,49 @@
 
       // League badge
       const badge = document.createElement('span');
-      badge.className = `text-xs font-semibold px-3 py-1 rounded-full ${
-        league === 'Championship' 
-          ? 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/25' 
-          : 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/25'
-      }`;
+      badge.className = `text-xs font-semibold px-3 py-1 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/25`;
       badge.textContent = league;
 
-      // Home team dropdown
-      const homeSelect = document.createElement('select');
-      homeSelect.className = 'bg-black/40 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-white input-glow min-w-[150px]';
-      homeSelect.innerHTML = '<option value="">Home team...</option>';
+      // Home team input (tries dropdown, falls back to text)
+      const homeInput = document.createElement('input');
+      homeInput.type = 'text';
+      homeInput.list = `home-list-${id}`;
+      homeInput.placeholder = 'Home team...';
+      homeInput.className = 'bg-black/40 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-white input-glow min-w-[140px] placeholder:text-gray-500';
+      // Datalist for autocomplete
+      const homeDatalist = document.createElement('datalist');
+      homeDatalist.id = `home-list-${id}`;
+      homeInput.appendChild(homeDatalist);
+      // Fetch teams and populate datalist
+      fetchTeams(league).then(teams => {
+        teams.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t;
+          homeDatalist.appendChild(opt);
+        });
+      });
 
       // vs label
       const vsLabel = document.createElement('span');
       vsLabel.className = 'text-yellow-200/50 font-semibold text-sm';
       vsLabel.textContent = 'vs';
 
-      // Away team dropdown
-      const awaySelect = document.createElement('select');
-      awaySelect.className = 'bg-black/40 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-white input-glow min-w-[150px]';
-      awaySelect.innerHTML = '<option value="">Away team...</option>';
+      // Away team input
+      const awayInput = document.createElement('input');
+      awayInput.type = 'text';
+      awayInput.list = `away-list-${id}`;
+      awayInput.placeholder = 'Away team...';
+      awayInput.className = 'bg-black/40 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-white input-glow min-w-[140px] placeholder:text-gray-500';
+      const awayDatalist = document.createElement('datalist');
+      awayDatalist.id = `away-list-${id}`;
+      awayInput.appendChild(awayDatalist);
+      fetchTeams(league).then(teams => {
+        teams.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t;
+          awayDatalist.appendChild(opt);
+        });
+      });
 
       // Odds input
       const oddsInput = document.createElement('input');
@@ -169,42 +249,19 @@
         card.remove();
       };
 
-      // Populate team lists from backend
-      fetch(`${API_BASE}/teams/${league}`)
-        .then(r => r.json())
-        .then(teams => {
-          teams.forEach(t => {
-            homeSelect.innerHTML += `<option value="${t}">${t}</option>`;
-            awaySelect.innerHTML += `<option value="${t}">${t}</option>`;
-          });
-        })
-        .catch(() => {
-          // Fallback: allow manual typing if backend unavailable
-          homeSelect.innerHTML += '<option value="">(type manually)</option>';
-        });
-
       // Assemble card
       card.appendChild(badge);
-      card.appendChild(homeSelect);
+      card.appendChild(homeInput);
       card.appendChild(vsLabel);
-      card.appendChild(awaySelect);
+      card.appendChild(awayInput);
       card.appendChild(oddsInput);
       card.appendChild(delBtn);
       container.appendChild(card);
 
-      // Make selects editable by typing (fallback)
-      homeSelect.onchange = () => { 
-        const m = matches.find(m => m.id == id); 
-        if (m) m.home = homeSelect.value; 
-      };
-      awaySelect.onchange = () => { 
-        const m = matches.find(m => m.id == id); 
-        if (m) m.away = awaySelect.value; 
-      };
-      oddsInput.oninput = () => { 
-        const m = matches.find(m => m.id == id); 
-        if (m) m.odds = oddsInput.value; 
-      };
+      // Sync state
+      homeInput.oninput = () => { const m = matches.find(m => m.id == id); if (m) m.home = homeInput.value.trim(); };
+      awayInput.oninput = () => { const m = matches.find(m => m.id == id); if (m) m.away = awayInput.value.trim(); };
+      oddsInput.oninput = () => { const m = matches.find(m => m.id == id); if (m) m.odds = oddsInput.value; };
 
       lucide.createIcons();
     }
@@ -213,9 +270,14 @@
     async function scanBets() {
       const valid = matches.filter(m => m.home && m.away && m.odds);
       if (!valid.length) {
-        alert('Please fill all match fields before scanning.');
+        alert('Please fill in ALL match fields (home team, away team, AND odds) before scanning.');
         return;
       }
+
+      // Show loading state
+      const scanBtn = document.getElementById('scan-btn');
+      scanBtn.disabled = true;
+      scanBtn.innerHTML = '<span class="loader"></span> Scanning...';
 
       const champ = valid
         .filter(m => m.league === 'Championship')
@@ -224,54 +286,64 @@
         .filter(m => m.league === 'League Two')
         .map(m => ({ home_team: m.home, away_team: m.away, odds_over: parseFloat(m.odds) }));
 
-      const res = await fetch(`${API_BASE}/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ championship: champ, league_two: l2 })
-      });
-      const data = await res.json();
+      try {
+        const res = await fetch(`${API_BASE}/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ championship: champ, league_two: l2 })
+        });
+        const data = await res.json();
 
-      const resultsDiv = document.getElementById('results');
-      const betsList = document.getElementById('bets-list');
-      betsList.innerHTML = '';
+        const resultsDiv = document.getElementById('results');
+        const betsList = document.getElementById('bets-list');
+        betsList.innerHTML = '';
 
-      if (!data.bets || data.bets.length === 0) {
+        if (!data.bets || data.bets.length === 0) {
+          resultsDiv.classList.remove('hidden');
+          betsList.innerHTML = `
+            <div class="text-center py-8 bg-white/[0.02] rounded-2xl border border-yellow-500/10">
+              <i data-lucide="thumbs-up" class="w-10 h-10 text-yellow-500/40 mx-auto mb-3"></i>
+              <p class="text-yellow-200/50 text-lg">No value bets today</p>
+              <p class="text-yellow-200/30 text-sm mt-1">Stay disciplined. The edge comes to those who wait.</p>
+            </div>`;
+          lucide.createIcons();
+          return;
+        }
+
+        data.bets.forEach(bet => {
+          const item = document.createElement('div');
+          item.className = 'bg-white/[0.03] p-5 rounded-2xl card-border backdrop-blur-sm';
+          item.innerHTML = `
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/25">
+                  ${bet.league}
+                </span>
+                <h3 class="text-xl font-bold mt-2 text-white">${bet.home} vs ${bet.away}</h3>
+                <p class="text-sm text-yellow-200/50 mt-1">
+                  Over 2.5 Goals · Odds: <span class="text-yellow-300 font-semibold">${bet.odds}</span>
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-2xl font-extrabold text-red-400">${bet.edge}</p>
+                <p class="text-sm text-yellow-200/60 mt-1">Stake: <span class="font-bold text-yellow-300">1%</span> of bankroll</p>
+              </div>
+            </div>`;
+          betsList.appendChild(item);
+        });
+
         resultsDiv.classList.remove('hidden');
-        betsList.innerHTML = `
-          <div class="text-center py-8 bg-white/[0.02] rounded-2xl border border-yellow-500/10">
-            <i data-lucide="thumbs-up" class="w-10 h-10 text-yellow-500/40 mx-auto mb-3"></i>
-            <p class="text-yellow-200/50 text-lg">No value bets today</p>
-            <p class="text-yellow-200/30 text-sm mt-1">Stay disciplined. The edge comes to those who wait.</p>
-          </div>`;
         lucide.createIcons();
-        return;
+        resultsDiv.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Backend connection failed. Is Colab Cell 4 running? Check the status indicator above.');
+        console.error(err);
+      } finally {
+        // Reset button
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = '<i data-lucide="search" class="w-6 h-6"></i> Scan for Value Bets';
+        lucide.createIcons();
       }
-
-      data.bets.forEach(bet => {
-        const item = document.createElement('div');
-        item.className = 'bg-white/[0.03] p-5 rounded-2xl card-border backdrop-blur-sm';
-        item.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-            <div>
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/25">
-                ${bet.league}
-              </span>
-              <h3 class="text-xl font-bold mt-2 text-white">${bet.home} vs ${bet.away}</h3>
-              <p class="text-sm text-yellow-200/50 mt-1">
-                Over 2.5 Goals · Odds: <span class="text-yellow-300 font-semibold">${bet.odds}</span>
-              </p>
-            </div>
-            <div class="text-right">
-              <p class="text-2xl font-extrabold text-red-400">${bet.edge}</p>
-              <p class="text-sm text-yellow-200/60 mt-1">Stake: <span class="font-bold text-yellow-300">1%</span> of bankroll</p>
-            </div>
-          </div>`;
-        betsList.appendChild(item);
-      });
-
-      resultsDiv.classList.remove('hidden');
-      lucide.createIcons();
-      resultsDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     lucide.createIcons();
