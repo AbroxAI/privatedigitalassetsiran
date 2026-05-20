@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KingdomTraders</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --topbar:#050D18;
+      --nav1:#0F2340;
+      --nav2:#173C63;
+      --title:#16304F;
+      --body:#6D7686;
+      --red:#B13B43;
+      --green:#25D366;
+      --border:#D8E0EA;
+      --bg:#EEF3F8;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:Inter,sans-serif;
+      background:#fff;
+      overflow-x:hidden;
+      color:#111827;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .page{
+      max-width:820px;
+      margin:auto;
+      background:white;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .tracking-brand{letter-spacing:-0.05em;}
+    .shadow-soft{box-shadow:0 18px 50px rgba(16,24,40,.06);}
+    .shadow-card{box-shadow:0 8px 20px rgba(16,24,40,.04);}
+
+    .ticker{
+      overflow:hidden;
+      white-space:nowrap;
+      background:#050D18;
+      padding:14px 0;
+    }
+    .ticker-track{
+      display:inline-block;
+      white-space:nowrap;
+      animation:ticker 42s linear infinite;
+      font-size:16px;
+      font-weight:700;
+      color:#D7E1F2;
+      line-height:1;
+    }
+    @keyframes ticker{
+      0%{transform:translateX(0);}
+      100%{transform:translateX(-50%);}
+    }
+
+    .nav-gradient{
+      background:linear-gradient(90deg,#0F2340,#173C63);
+    }
+
+    .products-grid{
+      display:grid;
+      gap:28px;
+      margin-top:40px;
+    }
+
+    .product-card{
+      background:white;
+      border:1px solid #E6ECF2;
+      border-radius:34px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(16,24,40,.05);
+      transition:.35s;
+    }
+
+    .product-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 45px rgba(16,24,40,.12);
+    }
+
+    .product-image{
+      width:100%;
+      height:240px;
+      object-fit:cover;
+      border-radius:24px;
+      background:#F8FAFC;
+      margin-bottom:20px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 18px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .product-card h3{
+      font-size:clamp(26px,4.1vw,34px);
+      line-height:1.12;
+      margin-top:18px;
+      font-weight:800;
+      color:#16304F;
+      letter-spacing:-0.03em;
+      overflow-wrap:anywhere;
+    }
+
+    .product-price{
+      font-size:clamp(22px,3.3vw,28px);
+      font-weight:800;
+      color:#B13B43;
+      margin-top:10px;
+      line-height:1.1;
+    }
+
+    .product-desc{
+      font-size:clamp(17px,2.5vw,22px);
+      line-height:1.55;
+      color:#6D7686;
+      margin-top:16px;
+      overflow-wrap:anywhere;
+    }
+
+    .feature-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:22px;
+    }
+
+    .feature{
+      background:#F8FAFC;
+      border:1px solid #E6ECF2;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      color:#4B5563;
+    }
+
+    .product-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:28px;
+    }
+
+    .btn-primary,
+    .btn-secondary{
+      height:58px;
+      border-radius:999px;
+      font-size:18px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    .btn-primary{
+      border:none;
+      background:#B13B43;
+      color:white;
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      opacity:.95;
+    }
+
+    .btn-secondary{
+      border:1px solid #D8E0EA;
+      background:white;
+      color:#16304F;
+    }
+
+    .btn-secondary:hover{
+      background:#F8FAFC;
+    }
+
+    .floating-whatsapp{
+      position:fixed;
+      right:24px;
+      bottom:24px;
+      height:74px;
+      padding:0 28px;
+      border-radius:999px;
+      background:#25D366;
+      color:white;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:24px;
+      font-weight:800;
+      text-decoration:none;
+      z-index:999;
+      box-shadow:0 18px 40px rgba(37,211,102,.35);
+      animation:glow 2s infinite;
+    }
+
+    @keyframes glow{
+      0%{box-shadow:0 0 0 rgba(37,211,102,.35);}
+      50%{box-shadow:0 0 25px rgba(37,211,102,.55);}
+      100%{box-shadow:0 0 0 rgba(37,211,102,.35);}
+    }
+
+    .section-title{
+      font-size:clamp(28px,5vw,48px);
+      line-height:1.1;
+    }
+
+    .section-lead{
+      font-size:clamp(18px,3vw,28px);
+      line-height:1.5;
+    }
+
+    .hero-title{
+      font-size:clamp(34px,6vw,52px);
+      line-height:1.06;
+    }
+
+    .hero-lead{
+      font-size:clamp(18px,3vw,28px);
+      line-height:1.5;
+    }
+
+    .nav-link{
+      font-size:clamp(18px,3vw,30px);
+      line-height:1.15;
+    }
+
+    .mini-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:14px;
+      background:#F8FAFC;
+      border:1px solid #E6ECF2;
+      color:#6D7686;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      padding:18px;
+    }
+
+    .modal-backdrop.show{display:flex;}
+
+    .modal-card{
+      width:min(820px,100%);
+      max-height:min(88vh,900px);
+      overflow:auto;
+      background:#fff;
+      border-radius:28px;
+      border:1px solid #E6ECF2;
+      box-shadow:0 30px 80px rgba(0,0,0,.25);
+    }
+
+    .modal-header{
+      position:sticky;
+      top:0;
+      background:#fff;
+      border-bottom:1px solid #E6ECF2;
+      z-index:2;
+    }
+
+    .modal-body p,
+    .modal-body li{
+      font-size:16px;
+      line-height:1.7;
+      color:#374151;
+    }
+
+    .modal-body h3{
+      font-size:18px;
+      line-height:1.3;
+      color:#16304F;
+      font-weight:800;
+    }
+
+    .top-legal-inline{
+      display:none;
+    }
+
+    @media (max-width: 768px){
+      .nav-link{font-size:18px;}
+      .product-actions{grid-template-columns:1fr;}
+      .floating-whatsapp{
+        height:64px;
+        padding:0 20px;
+        font-size:18px;
+        right:16px;
+        bottom:16px;
+      }
+      .product-card h3{font-size:26px;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <div class="ticker">
+      <div class="ticker-track">
+        Live Markets&nbsp;&nbsp; XAUUSD $4491.21 ▲ &nbsp;&nbsp; XAUZAR R74,979 ▲ &nbsp;&nbsp; EURUSD 1.16490 ● &nbsp;&nbsp; GBPUSD 1.34119 ● &nbsp;&nbsp; USDZAR 16.5937 ● &nbsp;&nbsp; GBPZAR 22.2553 ● &nbsp;&nbsp; EURZAR 19.3301 ● &nbsp;&nbsp; BTCUSD $76,853 ▼ &nbsp;&nbsp;
+        Live Markets&nbsp;&nbsp; XAUUSD $4491.21 ▲ &nbsp;&nbsp; XAUZAR R74,979 ▲ &nbsp;&nbsp; EURUSD 1.16490 ● &nbsp;&nbsp; GBPUSD 1.34119 ● &nbsp;&nbsp; USDZAR 16.5937 ● &nbsp;&nbsp; GBPZAR 22.2553 ● &nbsp;&nbsp; EURZAR 19.3301 ● &nbsp;&nbsp; BTCUSD $76,853 ▼
+      </div>
+    </div>
+
+    <div class="nav-gradient h-[104px] px-6 flex items-center justify-between text-white">
+      <div class="flex items-center gap-6 text-[18px] font-semibold flex-wrap">
+        <div class="flex items-center gap-2">
+          <i data-lucide="zap"></i>
+          <span>Live FX</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-check"></i>
+          <span>Secure</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="message-circle"></i>
+          <span>Support</span>
+        </div>
+      </div>
+    </div>
+
+    <header class="px-6 pt-10 bg-white">
+      <div class="flex items-center gap-4">
+        <img src="assets/logo.png" alt="KingdomTraders Logo" class="w-[58px] h-[58px] object-contain" />
+        <div>
+          <div class="text-[clamp(34px,6.5vw,52px)] font-black tracking-brand leading-none">
+            <span class="text-[#16304F]">Kingdom</span><span class="text-[#B13B43]">Traders</span>
+          </div>
+          <div class="tracking-[0.22em] uppercase text-[#9099A8] mt-1 text-[12px] sm:text-[14px]">
+            institutional automation
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex flex-wrap gap-8 mt-10 text-[#2C3E57] font-semibold">
+        <a href="#catalog" class="border-b-4 border-[#B13B43] pb-2 nav-link">Trading Bots</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <button id="openLegal" type="button" class="inline-flex items-center gap-3 rounded-full border px-6 py-4 text-[#B13B43] bg-[#FAF0F1] border-[#E9C7CB] text-[18px] sm:text-[24px] font-semibold">
+          <i data-lucide="shield-check"></i>
+          Legal &amp; Risk
+        </button>
+      </nav>
+    </header>
+
+    <section class="px-6 pt-16 pb-12 bg-[#EEF3F8]">
+      <div class="rounded-[40px] bg-white p-8 shadow-soft">
+        <div class="mx-auto w-fit rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold flex gap-3 items-center text-[14px] sm:text-[18px]">
+          <i data-lucide="bot"></i>
+          <span>AI-powered trading infrastructure</span>
+        </div>
+
+        <h1 class="mt-10 text-center text-[#16304F] hero-title font-black tracking-brand">
+          Elite trading bots for forex &amp; automated markets
+        </h1>
+
+        <p class="mt-8 text-center text-[#6D7686] hero-lead">
+          Institutional-grade automated strategies with clear product information and a streamlined buying experience.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-5 mt-10">
+          <a href="#catalog">
+            <button class="bg-[#B13B43] text-white h-[74px] px-10 rounded-full text-[20px] sm:text-[24px] font-bold">
+              Browse bots
+            </button>
+          </a>
+
+          <a href="https://wa.me/27639263559" target="_blank" class="bg-white border border-[#D8E0EA] h-[74px] px-10 rounded-full text-[20px] sm:text-[24px] font-bold flex items-center gap-3">
+            <i data-lucide="message-circle"></i>
+            WhatsApp Us
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-12">
+          <div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+            <div class="text-[34px] font-bold text-[#16304F]">7</div>
+            <div class="text-[#6D7686] text-[20px] sm:text-[22px]">Premium bots</div>
+          </div>
+          <div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+            <div class="text-[34px] font-bold text-[#16304F]">24/7</div>
+            <div class="text-[#6D7686] text-[20px] sm:text-[22px]">Automation</div>
+          </div>
+          <div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+            <div class="text-[34px] font-bold text-[#16304F]">Secure</div>
+            <div class="text-[#6D7686] text-[20px] sm:text-[22px]">Checkout</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="catalog" class="px-6 py-16 bg-[#EEF3F8] scroll-mt-6">
+      <h2 class="section-title font-black text-[#16304F] tracking-brand">Trading bot catalog</h2>
+      <p class="mt-4 text-[#6D7686] section-lead">
+        Explore our collection of automated trading systems for forex, indices, commodities, and portfolio risk management.
+      </p>
+
+      <div class="mt-10 bg-white rounded-[34px] p-5 shadow-soft border">
+        <div class="h-[84px] rounded-[24px] bg-[#F8FAFC] border flex items-center px-5 text-[#6D7686] text-[18px] sm:text-[24px]">
+          <i data-lucide="search"></i>
+          <span class="ml-4">Search bots...</span>
+        </div>
+
+        <div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[18px] sm:text-[24px]">
+          <div class="flex items-center gap-3">
+            <i data-lucide="layers-3"></i>
+            <span>All categories</span>
+          </div>
+          <i data-lucide="chevron-down"></i>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-4 text-[14px] sm:text-[16px] text-[#6D7686] font-semibold">
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Mobile Bot</span>
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Bundle</span>
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Indicator</span>
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Strategy</span>
+        </div>
+
+        <div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[18px] sm:text-[24px]">
+          <div class="flex items-center gap-3">
+            <i data-lucide="arrow-down-up"></i>
+            <span>Sort: Featured</span>
+          </div>
+          <i data-lucide="chevron-down"></i>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-4 text-[14px] sm:text-[16px] text-[#6D7686] font-semibold">
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Price: Low to high</span>
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Price: High to low</span>
+          <span class="px-4 py-2 rounded-full bg-[#F8FAFC] border border-[#E6ECF2]">Name: A to Z</span>
+        </div>
+      </div>
+
+      <div class="products-grid">
+
+        <div class="product-card">
+          <img src="assets/bot1.jpg" class="product-image" alt="KT No Sleep EA V1">
+          <div class="badge bg-[#1E2C43] text-white">🔥 Hot Seller</div>
+          <h3>KT No Sleep EA V1</h3>
+          <div class="product-price">R2000.00</div>
+          <p class="product-desc">Quick-scalping MT4 bot that trades around the clock — no rest, no manual watching.</p>
+          <div class="feature-list">
+            <div class="feature">MT4 Platform</div>
+            <div class="feature">Quick Scalping</div>
+            <div class="feature">Runs 24/5</div>
+            <div class="feature">Fully Automated</div>
+            <div class="feature">Verified on Myfxbook</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot2.jpg" class="product-image" alt="KT AMG 90% Winrate System">
+          <div class="badge bg-[#F6E9EA] text-[#B13B43]">indicator</div>
+          <h3>KT AMG 90% Winrate System</h3>
+          <div class="product-price">R1500.00</div>
+          <p class="product-desc">Accurate forex trading system with price action buy/sell arrows, trendlines, TP &amp; SL levels.</p>
+          <div class="feature-list">
+            <div class="feature">Price Action</div>
+            <div class="feature">Buy &amp; Sell Arrows</div>
+            <div class="feature">Auto Trendlines</div>
+            <div class="feature">TP &amp; SL Levels</div>
+            <div class="feature">90% Win Rate</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot3.jpg" class="product-image" alt="KT Pocket Trader Pro 2.0">
+          <div class="badge bg-[#E9F7EF] text-[#0F8A43]">Mobile Bot</div>
+          <h3>KT POCKET TRADER PRO 2.0</h3>
+          <div class="product-price">R850.00</div>
+          <p class="product-desc">Advanced mobile trading bot for traders on the go.</p>
+          <div class="feature-list">
+            <div class="feature">Mobile version</div>
+            <div class="feature">Easy setup</div>
+            <div class="feature">Smart execution</div>
+            <div class="feature">User-friendly</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot4.jpg" class="product-image" alt="1 Min Gold Scalper">
+          <div class="badge bg-[#FFF7E8] text-[#B7791F]">Gold Scalper</div>
+          <h3>1 Min Gold Scalper</h3>
+          <div class="product-price">R1250.00</div>
+          <p class="product-desc">Fast gold scalper built for the 1 minute timeframe.</p>
+          <div class="feature-list">
+            <div class="feature">1 Min timeframe</div>
+            <div class="feature">Gold focused</div>
+            <div class="feature">Fast entries</div>
+            <div class="feature">MT4 &amp; MT5</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot5.jpg" class="product-image" alt="KT All-In-One Package">
+          <div class="badge bg-[#EEF2FF] text-[#4338CA]">Best Value</div>
+          <h3>KT All-In-One Package</h3>
+          <div class="product-price">R5250.00</div>
+          <p class="product-desc">Complete KingdomTraders package with multiple premium products.</p>
+          <div class="feature-list">
+            <div class="feature">Complete package</div>
+            <div class="feature">Best value</div>
+            <div class="feature">Multiple tools</div>
+            <div class="feature">Premium access</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot6.jpg" class="product-image" alt="KT SMC System">
+          <div class="badge bg-[#F6E9EA] text-[#B13B43]">Indicator</div>
+          <h3>KT SMC System</h3>
+          <div class="product-price">R900.00</div>
+          <p class="product-desc">SMC trading system with structured entries.</p>
+          <div class="feature-list">
+            <div class="feature">SMC based</div>
+            <div class="feature">Structured entries</div>
+            <div class="feature">MT5 ready</div>
+            <div class="feature">Trading guidance</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot7.jpg" class="product-image" alt="KingdomTraders Gold Strategy">
+          <div class="badge bg-[#FFF7E8] text-[#B7791F]">PDF Strategy</div>
+          <h3>KingdomTraders Gold Strategy</h3>
+          <div class="product-price">R1650.00</div>
+          <p class="product-desc">Gold strategy package with teachings.</p>
+          <div class="feature-list">
+            <div class="feature">Gold strategy</div>
+            <div class="feature">PDF included</div>
+            <div class="feature">Teaching included</div>
+            <div class="feature">Guided setups</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot8.jpg" class="product-image" alt="30 Profit PC Bots Bundle">
+          <div class="badge bg-[#EEF2FF] text-[#4338CA]">Elite Bundle</div>
+          <h3>30 Profit PC Bots Bundle</h3>
+          <div class="product-price">R3000.00</div>
+          <p class="product-desc">Mix of 30 profitable bots for Forex, BTCUSD, and Gold.</p>
+          <div class="feature-list">
+            <div class="feature">30 Premium Bots</div>
+            <div class="feature">Forex &amp; Crypto</div>
+            <div class="feature">Gold Optimized</div>
+            <div class="feature">Multi-strategy mix</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <img src="assets/bot9.jpg" class="product-image" alt="KT Crown Scalper 1.0">
+          <div class="badge bg-[#1E2C43] text-white">Elite Scalper</div>
+          <h3>KT CROWN SCALPER 1.0</h3>
+          <div class="product-price">R1000.00</div>
+          <p class="product-desc">Ultra-precision Crown Scalper for high-frequency gold and FX markets.</p>
+          <div class="feature-list">
+            <div class="feature">High-Frequency</div>
+            <div class="feature">AI Entry Confirmation</div>
+            <div class="feature">Gold &amp; FX</div>
+            <div class="feature">Low Drawdown</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary">Buy Now</button>
+            <button class="btn-secondary">View details</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="px-6 py-16 bg-white border-t border-[#E6ECF2]">
+      <h2 class="section-title font-black text-[#16304F] tracking-brand">Real Trader Results</h2>
+      <p class="mt-4 text-[#6D7686] section-lead">
+        Direct WhatsApp feedback from our clients — unfiltered and authentic.
+      </p>
+
+      <div class="mt-8 inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-5 py-3 text-[#B13B43] font-bold text-[16px] sm:text-[20px]">
+        ⭐⭐⭐⭐⭐ Rated 4.9/5
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+        <img src="assets/testimonial1.jpg" alt="Client feedback 1" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+        <img src="assets/testimonial2.jpg" alt="Client feedback 2" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+        <img src="assets/testimonial3.jpg" alt="Client feedback 3" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+        <img src="assets/testimonial4.jpg" alt="Client feedback 4" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+        <img src="assets/testimonial5.jpg" alt="Client feedback 5" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+        <img src="assets/testimonial6.jpg" alt="Client feedback 6" class="w-full rounded-[24px] border border-[#E6ECF2] shadow-card bg-[#F8FAFC]">
+      </div>
+    </section>
+
+    <section class="px-6 py-16 bg-[#EEF3F8] border-t border-[#E6ECF2]">
+      <div class="rounded-[38px] bg-white p-8 shadow-soft border border-[#E6ECF2] text-center">
+        <h2 class="section-title font-black text-[#16304F] tracking-brand">Start automating today</h2>
+        <p class="mt-4 text-[#6D7686] section-lead">
+          Access professional-grade trading bots and streamline your execution.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="#catalog">
+            <button class="bg-[#B13B43] text-white h-[66px] px-8 rounded-full text-[18px] sm:text-[22px] font-bold">
+              Browse Bots
+            </button>
+          </a>
+          <a href="#contact">
+            <button class="bg-white border border-[#D8E0EA] h-[66px] px-8 rounded-full text-[18px] sm:text-[22px] font-bold text-[#16304F]">
+              Contact Us
+            </button>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="px-6 py-20 bg-white border-t border-[#E6ECF2] scroll-mt-6">
+      <div class="inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold text-[16px] sm:text-[22px]">
+        <i data-lucide="building-2"></i>
+        <span>About KingdomTraders</span>
+      </div>
+
+      <h2 class="mt-8 section-title font-black tracking-brand text-[#16304F]">
+        Built for modern automated trading
+      </h2>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <span class="mini-chip">Algorithmic focus</span>
+        <span class="mini-chip">Structured execution logic</span>
+        <span class="mini-chip">Multi-market tools</span>
+        <span class="mini-chip">Forex, indices, commodities</span>
+      </div>
+
+      <p class="mt-8 text-[#6D7686] section-lead">
+        Founded by quantitative traders and fintech engineers, KingdomTraders focuses on automation tools for forex and multi-asset trading.
+      </p>
+
+      <p class="mt-6 text-[#6D7686] section-lead">
+        Our goal is to help traders access structured, technology-driven execution systems with clear product information and dependable support.
+      </p>
+    </section>
+
+    <section id="contact" class="px-6 py-20 bg-[#EEF3F8] border-t border-[#E6ECF2] scroll-mt-6">
+      <div class="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-6 py-4 text-[#4338CA] font-semibold text-[16px] sm:text-[22px]">
+        <i data-lucide="message-square-more"></i>
+        <span>Contact</span>
+      </div>
+
+      <div class="mt-8 rounded-[38px] bg-white border border-[#E6ECF2] p-8 shadow-card">
+        <div class="text-[24px] sm:text-[28px] font-bold text-[#16304F]">Email</div>
+        <div class="mt-2 text-[#6D7686] text-[18px] sm:text-[22px] break-all">kingdomtraders00@gmail.com</div>
+
+        <div class="mt-10 text-[24px] sm:text-[28px] font-bold text-[#16304F]">WhatsApp</div>
+        <div class="mt-2 text-[#6D7686] text-[18px] sm:text-[22px]">+27 63 926 3559</div>
+
+        <p class="mt-8 text-[#6D7686] text-[16px] sm:text-[18px] leading-[1.7]">
+          For institutional licensing, demos, or API integration discussions, contact our team directly.
+        </p>
+      </div>
+    </section>
+
+    <section id="checkout" class="px-6 py-20 bg-white border-t border-[#E6ECF2] scroll-mt-6">
+      <div class="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-6 py-4 text-[#4338CA] font-semibold text-[16px] sm:text-[22px]">
+        <i data-lucide="credit-card"></i>
+        <span>Checkout</span>
+      </div>
+
+      <div class="mt-8 rounded-[38px] bg-[#F8FAFC] border border-[#E6ECF2] p-8 shadow-card space-y-6">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <a href="#catalog" class="text-[#16304F] font-bold text-[18px] sm:text-[22px]">Back to store</a>
+          <button class="bg-[#B13B43] text-white rounded-full px-6 py-3 font-bold text-[16px] sm:text-[18px]">
+            Buy Now
+          </button>
+        </div>
+
+        <p class="text-[#6D7686] text-[18px] sm:text-[20px]">Choose your payment method below</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-[28px] border border-[#E6ECF2] p-6">
+            <h3 class="text-[#16304F] font-extrabold text-[22px]">Manual EFT</h3>
+            <p class="mt-2 text-[#6D7686]">FNB Bank Transfer</p>
+            <div class="mt-4 space-y-2 text-[#374151] text-[16px] sm:text-[18px]">
+              <p><span class="font-bold">Bank:</span> First National Bank (FNB)</p>
+              <p><span class="font-bold">Account Name:</span> KingdomTraders</p>
+              <p><span class="font-bold">Account Type:</span> Easy Account (Savings)</p>
+              <p><span class="font-bold">Account Number:</span> 63205848394 <span class="ml-2 inline-flex items-center rounded-full border border-[#E6ECF2] px-3 py-1 text-[13px] text-[#16304F] font-semibold">Copy</span></p>
+              <p><span class="font-bold">Branch Code:</span> 250655</p>
+              <p><span class="font-bold">Reference:</span> KT-ORDER</p>
+            </div>
+            <p class="mt-4 text-[#6D7686] text-[16px] sm:text-[18px]">
+              After payment, send proof of payment via WhatsApp to receive your product.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-[28px] border border-[#E6ECF2] p-6">
+            <h3 class="text-[#16304F] font-extrabold text-[22px]">Crypto Payment</h3>
+            <div class="mt-4 space-y-2 text-[#374151] text-[16px] sm:text-[18px] break-all">
+              <p><span class="font-bold">Bitcoin (BTC):</span> 35s2fJE9yx68cn6gF2FYh5uepHS9p8ojWV</p>
+              <p><span class="font-bold">USDT TRC20:</span> TPdDtqWmTx9tTmBozZMd15pyAYAGxFgaaA</p>
+            </div>
+            <p class="mt-4 text-[#6D7686] text-[16px] sm:text-[18px]">
+              Send the ZAR equivalent in crypto. After sending, confirm via WhatsApp with your transaction ID.
+            </p>
+            <div class="mt-4 text-[#6D7686] text-[16px] sm:text-[18px]">
+              Amount (ZAR) —
+            </div>
+            <button class="mt-6 bg-[#B13B43] text-white rounded-full px-6 py-3 font-bold text-[16px] sm:text-[18px]">
+              Confirm Payment on WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+          <div class="bg-white border border-[#E6ECF2] rounded-[28px] p-5 shadow-card">
+            <div class="text-[#6D7686] text-[14px] font-bold uppercase tracking-[0.14em]">You are buying</div>
+            <div class="mt-3 text-[#16304F] text-[20px] font-extrabold">—</div>
+          </div>
+
+          <div class="bg-white border border-[#E6ECF2] rounded-[28px] p-5 shadow-card">
+            <div class="text-[#6D7686] text-[14px] font-bold uppercase tracking-[0.14em]">Amount (ZAR)</div>
+            <div class="mt-3 text-[#16304F] text-[20px] font-extrabold">—</div>
+          </div>
+
+          <div class="bg-white border border-[#E6ECF2] rounded-[28px] p-5 shadow-card">
+            <div class="text-[#6D7686] text-[14px] font-bold uppercase tracking-[0.14em]">Your cart</div>
+            <div class="mt-3 text-[#16304F] text-[20px] font-extrabold">Cart is empty</div>
+            <div class="mt-2 text-[#6D7686]">Total R0.00</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-[28px] border border-[#E6ECF2] p-5 shadow-card">
+          <div class="text-[#16304F] text-[22px] font-extrabold">Secure checkout</div>
+          <p class="mt-2 text-[#6D7686] text-[16px] sm:text-[18px] leading-[1.7]">
+            Make your payment, send proof on WhatsApp, and we will deliver the product manually.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-[#050D18] text-white py-14 px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="text-[#D7E1F2] text-[18px]">© 2026 KingdomTraders — Premium automation.</div>
+
+        <div class="flex items-center gap-4">
+          <a href="https://www.tiktok.com/@kingdom.traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+            <i data-lucide="music-2"></i>
+          </a>
+          <a href="https://www.instagram.com/_kingdomtraders_/" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+            <i data-lucide="instagram"></i>
+          </a>
+          <a href="https://www.youtube.com/@kingdom-traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+            <i data-lucide="youtube"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/27639263559" target="_blank" class="floating-whatsapp">
+      <i data-lucide="message-circle"></i>
+      <span>WhatsApp</span>
+    </a>
+  </div>
+
+  <div id="legalModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header px-5 sm:px-8 py-5 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 text-[#B13B43] font-bold text-[18px] sm:text-[22px]">
+          <i data-lucide="shield-alert"></i>
+          <span>Legal Disclaimer &amp; Risk Warning</span>
+        </div>
+        <button id="closeLegal" class="h-11 w-11 rounded-full border border-[#E6ECF2] flex items-center justify-center text-[#16304F] bg-white" aria-label="Close legal modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body px-5 sm:px-8 py-6 space-y-5">
+        <div>
+          <h3 class="mb-2">Forex &amp; CFD Trading Risk</h3>
+          <p>
+            Trading forex, CFDs, and related financial instruments involves a high level of risk and may not be suitable for all investors.
+            The value of your investment can go up as well as down, and you may lose more than your initial deposit.
+            You should never trade with money you cannot afford to lose.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="mb-2">Your Financial Decisions</h3>
+          <p>
+            KingdomTraders provides automated trading software tools only. We do not provide financial advice, investment recommendations,
+            or portfolio management services. All trading decisions are made solely by you. You are entirely responsible for your own
+            financial decisions and outcomes. Past performance of any bot or strategy does not guarantee future results.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="mb-2">Automated Software Disclaimer</h3>
+          <p>
+            Our trading bots and EAs are software tools intended to assist with trade execution based on pre-set parameters.
+            They do not guarantee profit. Market conditions change and no algorithm can predict the market.
+            Always use proper risk management, including appropriate lot sizes and stop-loss settings.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="mb-2">Refund &amp; Exchange Policy — No Refunds</h3>
+          <p>
+            Due to the digital nature of our products, all sales are final — no refunds will be issued under any circumstances.
+            If you are unhappy with a product, you may contact us via WhatsApp to arrange a product swap for another item of equal or lesser value.
+            By purchasing any product from KingdomTraders, you confirm that you have read, understood, and agreed to this policy.
+          </p>
+        </div>
+
+        <div>
+          <p>
+            KingdomTraders is a software provider. We are not a licensed financial advisor, broker, or asset manager.
+            Always consult a qualified financial professional before trading. Contact: kingdomtraders00@gmail.com
+          </p>
+        </div>
+
+        <div class="pt-2 pb-2 flex justify-end">
+          <button id="acceptLegal" class="bg-[#B13B43] text-white rounded-full px-6 py-4 font-bold text-[16px] sm:text-[18px]">
+            I Understand &amp; Accept
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const legalModal = document.getElementById('legalModal');
+    const openLegal = document.getElementById('openLegal');
+    const closeLegal = document.getElementById('closeLegal');
+    const acceptLegal = document.getElementById('acceptLegal');
+
+    function showLegal() {
+      legalModal.classList.add('show');
+      legalModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideLegal() {
+      legalModal.classList.remove('show');
+      legalModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    openLegal?.addEventListener('click', showLegal);
+    closeLegal?.addEventListener('click', hideLegal);
+    acceptLegal?.addEventListener('click', hideLegal);
+
+    legalModal?.addEventListener('click', (e) => {
+      if (e.target === legalModal) hideLegal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && legalModal.classList.contains('show')) {
+        hideLegal();
+      }
+    });
+  </script>
+</body>
+</html>
