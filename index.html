@@ -1,0 +1,771 @@
+<!-- =========================================================
+KINGDOMTRADERS — FULL COMBINED FINAL SCRIPT
+========================================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>KingdomTraders</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--topbar:#050D18;
+--nav1:#0F2340;
+--nav2:#173C63;
+--title:#16304F;
+--body:#6D7686;
+--red:#B13B43;
+--green:#25D366;
+--border:#D8E0EA;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+font-family:Inter,sans-serif;
+background:#fff;
+overflow-x:hidden;
+color:#111827;
+}
+
+.page{
+max-width:820px;
+margin:auto;
+background:white;
+position:relative;
+overflow:hidden;
+}
+
+.tracking-brand{
+letter-spacing:-0.05em;
+}
+
+.shadow-soft{
+box-shadow:0 18px 50px rgba(16,24,40,.06);
+}
+
+.shadow-card{
+box-shadow:0 8px 20px rgba(16,24,40,.04);
+}
+
+.ticker{
+overflow:hidden;
+white-space:nowrap;
+background:#050D18;
+padding:16px 0;
+}
+
+.ticker-track{
+display:inline-block;
+white-space:nowrap;
+animation:ticker 42s linear infinite;
+font-size:18px;
+font-weight:700;
+color:#D7E1F2;
+}
+
+@keyframes ticker{
+0%{
+transform:translateX(0);
+}
+100%{
+transform:translateX(-50%);
+}
+}
+
+.nav-gradient{
+background:linear-gradient(90deg,#0F2340,#173C63);
+}
+
+.products-grid{
+display:grid;
+gap:28px;
+margin-top:40px;
+}
+
+.product-card{
+background:white;
+border:1px solid #E6ECF2;
+border-radius:34px;
+padding:22px;
+box-shadow:0 10px 30px rgba(16,24,40,.05);
+transition:.35s;
+}
+
+.product-card:hover{
+transform:translateY(-6px);
+box-shadow:0 18px 45px rgba(16,24,40,.12);
+}
+
+.product-image{
+width:100%;
+height:240px;
+object-fit:cover;
+border-radius:24px;
+background:#F8FAFC;
+margin-bottom:20px;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:10px 18px;
+border-radius:999px;
+font-size:14px;
+font-weight:700;
+}
+
+.product-card h3{
+font-size:34px;
+line-height:1.05;
+margin-top:18px;
+font-weight:900;
+color:#16304F;
+letter-spacing:-0.04em;
+}
+
+.product-price{
+font-size:28px;
+font-weight:800;
+color:#B13B43;
+margin-top:10px;
+}
+
+.product-desc{
+font-size:22px;
+line-height:1.55;
+color:#6D7686;
+margin-top:16px;
+}
+
+.feature-list{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:22px;
+}
+
+.feature{
+background:#F8FAFC;
+border:1px solid #E6ECF2;
+padding:10px 14px;
+border-radius:999px;
+font-size:14px;
+font-weight:700;
+color:#4B5563;
+}
+
+.product-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-top:28px;
+}
+
+.btn-primary{
+height:58px;
+border:none;
+border-radius:999px;
+background:#B13B43;
+color:white;
+font-size:18px;
+font-weight:800;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+opacity:.95;
+}
+
+.btn-secondary{
+height:58px;
+border-radius:999px;
+border:1px solid #D8E0EA;
+background:white;
+color:#16304F;
+font-size:18px;
+font-weight:800;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn-secondary:hover{
+background:#F8FAFC;
+}
+
+.floating-whatsapp{
+position:fixed;
+right:24px;
+bottom:24px;
+height:74px;
+padding:0 28px;
+border-radius:999px;
+background:#25D366;
+color:white;
+display:flex;
+align-items:center;
+gap:12px;
+font-size:24px;
+font-weight:800;
+text-decoration:none;
+z-index:999;
+box-shadow:0 18px 40px rgba(37,211,102,.35);
+animation:glow 2s infinite;
+}
+
+@keyframes glow{
+0%{
+box-shadow:0 0 0 rgba(37,211,102,.35);
+}
+50%{
+box-shadow:0 0 25px rgba(37,211,102,.55);
+}
+100%{
+box-shadow:0 0 0 rgba(37,211,102,.35);
+}
+}
+
+@media(max-width:768px){
+
+.product-card h3{
+font-size:28px;
+}
+
+.product-desc{
+font-size:19px;
+}
+
+.product-actions{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- MARKET TICKER -->
+<div class="ticker">
+
+<div class="ticker-track">
+
+Live Markets
+XAUUSD $4491.21 ▲
+XAUZAR R74,979 ▲
+EURUSD 1.16490 ●
+GBPUSD 1.34119 ●
+USDZAR 16.5937 ●
+GBPZAR 22.2553 ●
+EURZAR 19.3301 ●
+BTCUSD $76,853 ▼
+
+Live Markets
+XAUUSD $4491.21 ▲
+XAUZAR R74,979 ▲
+EURUSD 1.16490 ●
+GBPUSD 1.34119 ●
+USDZAR 16.5937 ●
+GBPZAR 22.2553 ●
+EURZAR 19.3301 ●
+BTCUSD $76,853 ▼
+
+</div>
+</div>
+
+<!-- NAV -->
+<div class="nav-gradient h-[104px] px-6 flex items-center justify-between text-white">
+
+<div class="flex items-center gap-6 text-[18px] font-semibold flex-wrap">
+
+<div class="flex items-center gap-2">
+<i data-lucide="zap"></i>
+Live FX
+</div>
+
+<div class="flex items-center gap-2">
+<i data-lucide="shield-check"></i>
+Secure
+</div>
+
+<div class="flex items-center gap-2">
+<i data-lucide="message-circle"></i>
+Support
+</div>
+
+</div>
+
+</div>
+
+<!-- HEADER -->
+<div class="px-6 pt-10 bg-white">
+
+<div class="flex items-center gap-4">
+
+<img
+src="assets/logo.png"
+alt="KingdomTraders Logo"
+class="w-[58px] h-[58px] object-contain"
+/>
+
+<div>
+
+<div class="text-[52px] font-black tracking-brand">
+<span class="text-[#16304F]">Kingdom</span><span class="text-[#B13B43]">Traders</span>
+</div>
+
+<div class="tracking-[0.22em] uppercase text-[#9099A8]">
+institutional automation
+</div>
+
+</div>
+</div>
+
+<div class="flex flex-wrap gap-10 mt-10 text-[30px] font-semibold text-[#2C3E57]">
+
+<a href="#catalog" class="border-b-4 border-[#B13B43] pb-2">
+Trading Bots
+</a>
+
+<a href="#about">
+About
+</a>
+
+<a href="#contact">
+Contact
+</a>
+
+<a
+href="#legal"
+class="inline-flex items-center gap-3 rounded-full border px-6 py-4 text-[#B13B43] bg-[#FAF0F1] border-[#E9C7CB] text-[24px] font-semibold"
+>
+<i data-lucide="shield-check"></i>
+Legal & Risk
+</a>
+
+</div>
+
+</div>
+
+<!-- HERO -->
+<section class="px-6 pt-16 pb-12 bg-[#EEF3F8]">
+
+<div class="rounded-[40px] bg-white p-8 shadow-soft">
+
+<div class="mx-auto w-fit rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold flex gap-3 items-center">
+<i data-lucide="bot"></i>
+AI-powered trading infrastructure
+</div>
+
+<h1 class="mt-10 text-center text-[#16304F] text-[52px] font-black leading-[1.05] tracking-brand">
+Elite trading bots for forex & automated markets
+</h1>
+
+<p class="mt-8 text-center text-[#6D7686] text-[28px] leading-[1.45]">
+Institutional-grade automated strategies with clear product information and a streamlined buying experience.
+</p>
+
+<div class="flex flex-wrap justify-center gap-5 mt-10">
+
+<a href="#catalog">
+<button class="bg-[#B13B43] text-white h-[74px] px-10 rounded-full text-[24px] font-bold">
+Browse bots
+</button>
+</a>
+
+<a
+href="https://wa.me/27639263559"
+target="_blank"
+class="bg-white border border-[#D8E0EA] h-[74px] px-10 rounded-full text-[24px] font-bold flex items-center gap-3"
+>
+<i data-lucide="message-circle"></i>
+WhatsApp Us
+</a>
+
+</div>
+
+<!-- STATS -->
+<div class="grid grid-cols-3 gap-5 mt-12">
+
+<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+<div class="text-[34px] font-bold text-[#16304F]">7</div>
+<div class="text-[#6D7686] text-[22px]">Premium bots</div>
+</div>
+
+<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+<div class="text-[34px] font-bold text-[#16304F]">24/7</div>
+<div class="text-[#6D7686] text-[22px]">Automation</div>
+</div>
+
+<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
+<div class="text-[34px] font-bold text-[#16304F]">Secure</div>
+<div class="text-[#6D7686] text-[22px]">Checkout</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- CATALOG -->
+<section id="catalog" class="px-6 py-16 bg-[#EEF3F8]">
+
+<h2 class="text-[42px] font-black text-[#16304F] tracking-brand">
+Trading bot catalog
+</h2>
+
+<p class="mt-4 text-[#6D7686] text-[26px] leading-[1.45]">
+Explore our collection of automated trading systems for forex, indices, commodities, and portfolio risk management.
+</p>
+
+<!-- FILTERS -->
+<div class="mt-10 bg-white rounded-[34px] p-5 shadow-soft border">
+
+<div class="h-[84px] rounded-[24px] bg-[#F8FAFC] border flex items-center px-5 text-[#6D7686] text-[24px]">
+<i data-lucide="search"></i>
+<span class="ml-4">Search bots...</span>
+</div>
+
+<div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[24px]">
+<div class="flex items-center gap-3">
+<i data-lucide="layers-3"></i>
+All categories
+</div>
+<i data-lucide="chevron-down"></i>
+</div>
+
+<div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[24px]">
+<div class="flex items-center gap-3">
+<i data-lucide="arrow-down-up"></i>
+Sort: Featured
+</div>
+<i data-lucide="chevron-down"></i>
+</div>
+
+</div>
+
+<!-- PRODUCTS -->
+<div class="products-grid">
+
+<!-- CARD 1 -->
+<div class="product-card">
+<img src="assets/bot1.jpg" class="product-image">
+<div class="badge bg-[#1E2C43] text-white">🔥 Hot Seller</div>
+<h3>KT No Sleep EA V1</h3>
+<div class="product-price">R2000.00</div>
+<p class="product-desc">Quick-scalping MT4 bot that trades around the clock — no rest, no manual watching.</p>
+<div class="feature-list">
+<div class="feature">MT4 Platform</div>
+<div class="feature">Quick Scalping</div>
+<div class="feature">Runs 24/5</div>
+<div class="feature">Fully Automated</div>
+<div class="feature">Verified on Myfxbook</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 2 -->
+<div class="product-card">
+<img src="assets/bot2.jpg" class="product-image">
+<div class="badge bg-[#F6E9EA] text-[#B13B43]">indicator</div>
+<h3>KT AMG 90% Winrate System</h3>
+<div class="product-price">R1500.00</div>
+<p class="product-desc">Accurate forex trading system with price action buy/sell arrows, trendlines, TP & SL levels.</p>
+<div class="feature-list">
+<div class="feature">Price Action</div>
+<div class="feature">Buy & Sell Arrows</div>
+<div class="feature">Auto Trendlines</div>
+<div class="feature">TP & SL Levels</div>
+<div class="feature">90% Win Rate</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 3 -->
+<div class="product-card">
+<img src="assets/bot3.jpg" class="product-image">
+<div class="badge bg-[#E9F7EF] text-[#0F8A43]">Mobile Bot</div>
+<h3>KT POCKET TRADER PRO 2.0</h3>
+<div class="product-price">R850.00</div>
+<p class="product-desc">Advanced mobile trading bot for traders on the go.</p>
+<div class="feature-list">
+<div class="feature">Mobile version</div>
+<div class="feature">Easy setup</div>
+<div class="feature">Smart execution</div>
+<div class="feature">User-friendly</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 4 -->
+<div class="product-card">
+<img src="assets/bot4.jpg" class="product-image">
+<div class="badge bg-[#FFF7E8] text-[#B7791F]">Gold Scalper</div>
+<h3>1 Min Gold Scalper</h3>
+<div class="product-price">R1250.00</div>
+<p class="product-desc">Fast gold scalper built for the 1 minute timeframe.</p>
+<div class="feature-list">
+<div class="feature">1 Min timeframe</div>
+<div class="feature">Gold focused</div>
+<div class="feature">Fast entries</div>
+<div class="feature">MT4 & MT5</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 5 -->
+<div class="product-card">
+<img src="assets/bot5.jpg" class="product-image">
+<div class="badge bg-[#EEF2FF] text-[#4338CA]">Best Value</div>
+<h3>KT All-In-One Package</h3>
+<div class="product-price">R5250.00</div>
+<p class="product-desc">Complete KingdomTraders package with multiple premium products.</p>
+<div class="feature-list">
+<div class="feature">Complete package</div>
+<div class="feature">Best value</div>
+<div class="feature">Multiple tools</div>
+<div class="feature">Premium access</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 6 -->
+<div class="product-card">
+<img src="assets/bot6.jpg" class="product-image">
+<div class="badge bg-[#F6E9EA] text-[#B13B43]">Indicator</div>
+<h3>KT SMC System</h3>
+<div class="product-price">R900.00</div>
+<p class="product-desc">SMC trading system with structured entries.</p>
+<div class="feature-list">
+<div class="feature">SMC based</div>
+<div class="feature">Structured entries</div>
+<div class="feature">MT5 ready</div>
+<div class="feature">Trading guidance</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 7 -->
+<div class="product-card">
+<img src="assets/bot7.jpg" class="product-image">
+<div class="badge bg-[#FFF7E8] text-[#B7791F]">PDF Strategy</div>
+<h3>KingdomTraders Gold Strategy</h3>
+<div class="product-price">R1650.00</div>
+<p class="product-desc">Gold strategy package with teachings.</p>
+<div class="feature-list">
+<div class="feature">Gold strategy</div>
+<div class="feature">PDF included</div>
+<div class="feature">Teaching included</div>
+<div class="feature">Guided setups</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 8 -->
+<div class="product-card">
+<img src="assets/bot8.jpg" class="product-image">
+<div class="badge bg-[#EEF2FF] text-[#4338CA]">Elite Bundle</div>
+<h3>30 Profit PC Bots Bundle</h3>
+<div class="product-price">R3000.00</div>
+<p class="product-desc">Mix of 30 profitable bots for Forex, BTCUSD, and Gold.</p>
+<div class="feature-list">
+<div class="feature">30 Premium Bots</div>
+<div class="feature">Forex & Crypto</div>
+<div class="feature">Gold Optimized</div>
+<div class="feature">Multi-strategy mix</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+<!-- CARD 9 -->
+<div class="product-card">
+<img src="assets/bot9.jpg" class="product-image">
+<div class="badge bg-[#1E2C43] text-white">Elite Scalper</div>
+<h3>KT CROWN SCALPER 1.0</h3>
+<div class="product-price">R1000.00</div>
+<p class="product-desc">Ultra-precision Crown Scalper for high-frequency gold and FX markets.</p>
+<div class="feature-list">
+<div class="feature">High-Frequency</div>
+<div class="feature">AI Entry Confirmation</div>
+<div class="feature">Gold & FX</div>
+<div class="feature">Low Drawdown</div>
+</div>
+<div class="product-actions">
+<button class="btn-primary">Buy Now</button>
+<button class="btn-secondary">View details</button>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="px-6 py-20 bg-white border-t border-[#E6ECF2]">
+
+<div class="inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold text-[22px]">
+<i data-lucide="building-2"></i>
+About KingdomTraders
+</div>
+
+<h2 class="mt-8 text-[48px] font-black tracking-brand text-[#16304F]">
+Built for modern automated trading
+</h2>
+
+<p class="mt-8 text-[#6D7686] text-[27px] leading-[1.55]">
+Founded by quantitative traders and fintech engineers, KingdomTraders focuses on automation tools for forex and multi-asset trading.
+</p>
+
+<p class="mt-6 text-[#6D7686] text-[27px] leading-[1.55]">
+Our goal is to help traders access structured, technology-driven execution systems with clear product information and dependable support.
+</p>
+
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="px-6 py-20 bg-[#EEF3F8] border-t border-[#E6ECF2]">
+
+<div class="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-6 py-4 text-[#4338CA] font-semibold text-[22px]">
+<i data-lucide="message-square-more"></i>
+Contact
+</div>
+
+<div class="mt-8 rounded-[38px] bg-white border border-[#E6ECF2] p-8 shadow-card">
+
+<div class="text-[28px] font-bold text-[#16304F]">
+Email
+</div>
+
+<div class="mt-2 text-[#6D7686] text-[22px]">
+kingdomtraders00@gmail.com
+</div>
+
+<div class="mt-10 text-[28px] font-bold text-[#16304F]">
+WhatsApp
+</div>
+
+<div class="mt-2 text-[#6D7686] text-[22px]">
++27 63 926 3559
+</div>
+
+</div>
+
+</section>
+
+<!-- LEGAL -->
+<section id="legal" class="px-6 py-20 bg-white border-t border-[#E6ECF2]">
+
+<div class="inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold text-[22px]">
+<i data-lucide="shield-alert"></i>
+Legal Disclaimer & Risk Warning
+</div>
+
+<div class="mt-8 rounded-[38px] bg-[#F8FAFC] border border-[#E6ECF2] p-8 shadow-card">
+
+<p class="text-[#6D7686] text-[22px] leading-[1.7]">
+Trading forex and CFDs involves substantial risk and may not be suitable for all investors.
+</p>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-[#050D18] text-white py-14 px-6">
+
+<div class="flex flex-col md:flex-row items-center justify-between gap-8">
+
+<div class="text-[#D7E1F2] text-[18px]">
+© 2026 KingdomTraders — Premium automation.
+</div>
+
+<div class="flex items-center gap-4">
+
+<a href="https://www.tiktok.com/@kingdom.traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+<i data-lucide="music-2"></i>
+</a>
+
+<a href="https://www.instagram.com/_kingdomtraders_/" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+<i data-lucide="instagram"></i>
+</a>
+
+<a href="https://www.youtube.com/@kingdom-traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+<i data-lucide="youtube"></i>
+</a>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a
+href="https://wa.me/27639263559"
+target="_blank"
+class="floating-whatsapp"
+>
+<i data-lucide="message-circle"></i>
+WhatsApp
+</a>
+
+</div>
+
+<script>
+lucide.createIcons();
+</script>
+
+</body>
+</html>
