@@ -1,5 +1,6 @@
 <!-- =========================================================
 KINGDOMTRADERS — FULL COMBINED FINAL SCRIPT
+TRUE FULL VERSION — ALL SECTIONS INCLUDED
 ========================================================= -->
 
 <!DOCTYPE html>
@@ -73,25 +74,21 @@ box-shadow:0 8px 20px rgba(16,24,40,.04);
 overflow:hidden;
 white-space:nowrap;
 background:#050D18;
-padding:16px 0;
+padding:14px 0;
 }
 
 .ticker-track{
 display:inline-block;
 white-space:nowrap;
-animation:ticker 42s linear infinite;
-font-size:18px;
+animation:ticker 38s linear infinite;
+font-size:16px;
 font-weight:700;
 color:#D7E1F2;
 }
 
 @keyframes ticker{
-0%{
-transform:translateX(0);
-}
-100%{
-transform:translateX(-50%);
-}
+0%{transform:translateX(0);}
+100%{transform:translateX(-50%);}
 }
 
 .nav-gradient{
@@ -111,6 +108,8 @@ border-radius:34px;
 padding:22px;
 box-shadow:0 10px 30px rgba(16,24,40,.05);
 transition:.35s;
+position:relative;
+overflow:hidden;
 }
 
 .product-card:hover{
@@ -138,7 +137,7 @@ font-weight:700;
 }
 
 .product-card h3{
-font-size:34px;
+font-size:30px;
 line-height:1.05;
 margin-top:18px;
 font-weight:900;
@@ -147,14 +146,14 @@ letter-spacing:-0.04em;
 }
 
 .product-price{
-font-size:28px;
+font-size:26px;
 font-weight:800;
 color:#B13B43;
 margin-top:10px;
 }
 
 .product-desc{
-font-size:22px;
+font-size:20px;
 line-height:1.55;
 color:#6D7686;
 margin-top:16px;
@@ -217,11 +216,24 @@ transition:.3s;
 background:#F8FAFC;
 }
 
+.review-box{
+height:250px;
+border:2px dashed #D8E0EA;
+border-radius:30px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:700;
+color:#9CA3AF;
+background:#F8FAFC;
+}
+
 .floating-whatsapp{
 position:fixed;
 right:24px;
 bottom:24px;
-height:74px;
+height:72px;
 padding:0 28px;
 border-radius:999px;
 background:#25D366;
@@ -229,7 +241,7 @@ color:white;
 display:flex;
 align-items:center;
 gap:12px;
-font-size:24px;
+font-size:22px;
 font-weight:800;
 text-decoration:none;
 z-index:999;
@@ -238,29 +250,87 @@ animation:glow 2s infinite;
 }
 
 @keyframes glow{
-0%{
-box-shadow:0 0 0 rgba(37,211,102,.35);
+0%{box-shadow:0 0 0 rgba(37,211,102,.35);}
+50%{box-shadow:0 0 25px rgba(37,211,102,.55);}
+100%{box-shadow:0 0 0 rgba(37,211,102,.35);}
 }
-50%{
-box-shadow:0 0 25px rgba(37,211,102,.55);
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+z-index:9999;
 }
-100%{
-box-shadow:0 0 0 rgba(37,211,102,.35);
+
+.modal-content{
+width:100%;
+max-width:700px;
+background:white;
+border-radius:34px;
+padding:30px;
+animation:popup .25s ease;
 }
+
+@keyframes popup{
+from{
+opacity:0;
+transform:scale(.92);
+}
+to{
+opacity:1;
+transform:scale(1);
+}
+}
+
+.cart-drawer{
+position:fixed;
+right:-420px;
+top:0;
+width:400px;
+height:100vh;
+background:white;
+z-index:9999;
+transition:.35s;
+box-shadow:-10px 0 40px rgba(0,0,0,.12);
+padding:30px;
+}
+
+.cart-drawer.active{
+right:0;
+}
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+display:none;
+z-index:9998;
+}
+
+.overlay.active{
+display:block;
 }
 
 @media(max-width:768px){
 
 .product-card h3{
-font-size:28px;
+font-size:26px;
 }
 
 .product-desc{
-font-size:19px;
+font-size:18px;
 }
 
 .product-actions{
 grid-template-columns:1fr;
+}
+
+.cart-drawer{
+width:100%;
 }
 
 }
@@ -270,112 +340,164 @@ grid-template-columns:1fr;
 
 <body>
 
+<div class="overlay" id="overlay"></div>
+
+<!-- CART -->
+<div class="cart-drawer" id="cartDrawer">
+
+<div class="flex items-center justify-between">
+<h2 class="text-[34px] font-black text-[#16304F]">Your Cart</h2>
+
+<button onclick="closeCart()">
+<i data-lucide="x"></i>
+</button>
+</div>
+
+<div class="mt-16 text-center">
+
+<div class="w-[100px] h-[100px] mx-auto rounded-full bg-[#EEF3F8] flex items-center justify-center">
+<i data-lucide="shopping-cart" class="w-12 h-12 text-[#16304F]"></i>
+</div>
+
+<p class="mt-8 text-[#6D7686] text-[22px]">
+Your cart is empty.
+</p>
+
+</div>
+
+</div>
+
+<!-- BUY MODAL -->
+<div class="modal" id="buyModal">
+
+<div class="modal-content">
+
+<div class="flex items-center justify-between">
+<h2 class="text-[36px] font-black text-[#16304F]">Buy Now</h2>
+
+<button onclick="closeModal()">
+<i data-lucide="x"></i>
+</button>
+</div>
+
+<p class="mt-4 text-[#6D7686] text-[22px]">
+Choose your payment method below
+</p>
+
+<div class="mt-10 p-6 rounded-[30px] bg-[#F8FAFC] border">
+
+<div class="text-[18px] text-[#6D7686]">
+You are buying
+</div>
+
+<div class="mt-2 text-[34px] font-black text-[#16304F]" id="modalProduct">
+KT No Sleep EA V1
+</div>
+
+<div class="mt-2 text-[28px] font-bold text-[#B13B43]" id="modalPrice">
+R2000.00
+</div>
+
+</div>
+
+<div class="grid grid-cols-2 gap-4 mt-8">
+
+<button class="h-[64px] rounded-full bg-[#16304F] text-white font-bold text-[20px]">
+Manual EFT
+</button>
+
+<button class="h-[64px] rounded-full border font-bold text-[20px]">
+Crypto
+</button>
+
+</div>
+
+<div class="mt-10">
+
+<div class="text-[26px] font-black text-[#16304F]">
+Crypto Payment
+</div>
+
+<div class="mt-6 text-[18px] font-bold">
+Bitcoin (BTC)
+</div>
+
+<div class="mt-2 break-all bg-[#F8FAFC] p-4 rounded-2xl">
+35s2fJE9yx68cn6gF2FYh5uepHS9p8ojWV
+</div>
+
+<div class="mt-6 text-[18px] font-bold">
+USDT TRC20
+</div>
+
+<div class="mt-2 break-all bg-[#F8FAFC] p-4 rounded-2xl">
+TPdDtqWmTx9tTmBozZMd15pyAYAGxFgaaA
+</div>
+
+<div class="mt-8 text-[18px] text-[#6D7686]">
+Send the ZAR equivalent in crypto. After sending, confirm via WhatsApp with your transaction ID.
+</div>
+
+<a
+href="https://wa.me/27639263559"
+target="_blank"
+class="mt-8 h-[68px] rounded-full bg-[#25D366] text-white font-bold text-[20px] flex items-center justify-center"
+>
+Confirm Payment on WhatsApp
+</a>
+
+</div>
+
+</div>
+
+</div>
+
 <div class="page">
 
-<!-- MARKET TICKER -->
+<!-- TICKER -->
 <div class="ticker">
-
 <div class="ticker-track">
 
 Live Markets
 XAUUSD $4491.21 ▲
-XAUZAR R74,979 ▲
 EURUSD 1.16490 ●
 GBPUSD 1.34119 ●
 USDZAR 16.5937 ●
-GBPZAR 22.2553 ●
-EURZAR 19.3301 ●
 BTCUSD $76,853 ▼
 
 Live Markets
 XAUUSD $4491.21 ▲
-XAUZAR R74,979 ▲
 EURUSD 1.16490 ●
 GBPUSD 1.34119 ●
 USDZAR 16.5937 ●
-GBPZAR 22.2553 ●
-EURZAR 19.3301 ●
 BTCUSD $76,853 ▼
 
 </div>
 </div>
 
 <!-- NAV -->
-<div class="nav-gradient h-[104px] px-6 flex items-center justify-between text-white">
+<div class="nav-gradient h-[95px] px-6 flex items-center justify-between text-white">
 
-<div class="flex items-center gap-6 text-[18px] font-semibold flex-wrap">
-
-<div class="flex items-center gap-2">
-<i data-lucide="zap"></i>
-Live FX
+<div class="text-[36px] font-black">
+Kingdom<span class="text-[#E26B73]">Traders</span>
 </div>
-
-<div class="flex items-center gap-2">
-<i data-lucide="shield-check"></i>
-Secure
-</div>
-
-<div class="flex items-center gap-2">
-<i data-lucide="message-circle"></i>
-Support
-</div>
-
-</div>
-
-</div>
-
-<!-- HEADER -->
-<div class="px-6 pt-10 bg-white">
 
 <div class="flex items-center gap-4">
 
-<img
-src="assets/logo.png"
-alt="KingdomTraders Logo"
-class="w-[58px] h-[58px] object-contain"
-/>
+<button onclick="openCart()" class="relative">
+<i data-lucide="shopping-cart"></i>
+</button>
 
-<div>
-
-<div class="text-[52px] font-black tracking-brand">
-<span class="text-[#16304F]">Kingdom</span><span class="text-[#B13B43]">Traders</span>
-</div>
-
-<div class="tracking-[0.22em] uppercase text-[#9099A8]">
-institutional automation
-</div>
-
-</div>
-</div>
-
-<div class="flex flex-wrap gap-10 mt-10 text-[30px] font-semibold text-[#2C3E57]">
-
-<a href="#catalog" class="border-b-4 border-[#B13B43] pb-2">
-Trading Bots
-</a>
-
-<a href="#about">
-About
-</a>
-
-<a href="#contact">
-Contact
-</a>
-
-<a
-href="#legal"
-class="inline-flex items-center gap-3 rounded-full border px-6 py-4 text-[#B13B43] bg-[#FAF0F1] border-[#E9C7CB] text-[24px] font-semibold"
->
-<i data-lucide="shield-check"></i>
-Legal & Risk
-</a>
+<button id="mobileBtn">
+<i data-lucide="menu"></i>
+</button>
 
 </div>
 
 </div>
 
 <!-- HERO -->
-<section class="px-6 pt-16 pb-12 bg-[#EEF3F8]">
+<section class="px-6 pt-14 pb-12 bg-[#EEF3F8]">
 
 <div class="rounded-[40px] bg-white p-8 shadow-soft">
 
@@ -384,50 +506,25 @@ Legal & Risk
 AI-powered trading infrastructure
 </div>
 
-<h1 class="mt-10 text-center text-[#16304F] text-[52px] font-black leading-[1.05] tracking-brand">
+<h1 class="mt-10 text-center text-[#16304F] text-[48px] font-black leading-[1.05] tracking-brand">
 Elite trading bots for forex & automated markets
 </h1>
 
-<p class="mt-8 text-center text-[#6D7686] text-[28px] leading-[1.45]">
-Institutional-grade automated strategies with clear product information and a streamlined buying experience.
+<p class="mt-8 text-center text-[#6D7686] text-[24px] leading-[1.45]">
+Institutional-grade automated strategies with clear product information and streamlined checkout.
 </p>
 
 <div class="flex flex-wrap justify-center gap-5 mt-10">
 
 <a href="#catalog">
-<button class="bg-[#B13B43] text-white h-[74px] px-10 rounded-full text-[24px] font-bold">
-Browse bots
+<button class="bg-[#B13B43] text-white h-[72px] px-10 rounded-full text-[22px] font-bold">
+Browse Bots
 </button>
 </a>
 
-<a
-href="https://wa.me/27639263559"
-target="_blank"
-class="bg-white border border-[#D8E0EA] h-[74px] px-10 rounded-full text-[24px] font-bold flex items-center gap-3"
->
-<i data-lucide="message-circle"></i>
-WhatsApp Us
-</a>
-
-</div>
-
-<!-- STATS -->
-<div class="grid grid-cols-3 gap-5 mt-12">
-
-<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
-<div class="text-[34px] font-bold text-[#16304F]">7</div>
-<div class="text-[#6D7686] text-[22px]">Premium bots</div>
-</div>
-
-<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
-<div class="text-[34px] font-bold text-[#16304F]">24/7</div>
-<div class="text-[#6D7686] text-[22px]">Automation</div>
-</div>
-
-<div class="bg-white border rounded-[28px] h-[170px] flex flex-col justify-center items-center shadow-card">
-<div class="text-[34px] font-bold text-[#16304F]">Secure</div>
-<div class="text-[#6D7686] text-[22px]">Checkout</div>
-</div>
+<button onclick="openCart()" class="bg-white border border-[#D8E0EA] h-[72px] px-10 rounded-full text-[22px] font-bold">
+View Cart
+</button>
 
 </div>
 
@@ -438,214 +535,452 @@ WhatsApp Us
 <!-- CATALOG -->
 <section id="catalog" class="px-6 py-16 bg-[#EEF3F8]">
 
-<h2 class="text-[42px] font-black text-[#16304F] tracking-brand">
-Trading bot catalog
+<h2 class="text-[40px] font-black text-[#16304F] tracking-brand">
+Trading Bot Catalog
 </h2>
 
-<p class="mt-4 text-[#6D7686] text-[26px] leading-[1.45]">
-Explore our collection of automated trading systems for forex, indices, commodities, and portfolio risk management.
-</p>
-
 <!-- FILTERS -->
-<div class="mt-10 bg-white rounded-[34px] p-5 shadow-soft border">
+<div class="mt-10 grid gap-4">
 
-<div class="h-[84px] rounded-[24px] bg-[#F8FAFC] border flex items-center px-5 text-[#6D7686] text-[24px]">
-<i data-lucide="search"></i>
-<span class="ml-4">Search bots...</span>
-</div>
+<input
+type="text"
+id="searchInput"
+placeholder="Search bots..."
+class="h-[76px] rounded-[24px] border px-6 text-[20px] outline-none"
+/>
 
-<div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[24px]">
-<div class="flex items-center gap-3">
-<i data-lucide="layers-3"></i>
-All categories
-</div>
-<i data-lucide="chevron-down"></i>
-</div>
-
-<div class="h-[84px] mt-4 rounded-[24px] bg-[#F8FAFC] border flex items-center justify-between px-5 text-[24px]">
-<div class="flex items-center gap-3">
-<i data-lucide="arrow-down-up"></i>
-Sort: Featured
-</div>
-<i data-lucide="chevron-down"></i>
-</div>
+<select
+id="categoryFilter"
+class="h-[76px] rounded-[24px] border px-6 text-[20px] outline-none"
+>
+<option value="all">All Categories</option>
+<option value="scalper">Scalper</option>
+<option value="indicator">Indicator</option>
+<option value="bundle">Bundle</option>
+<option value="gold">Gold</option>
+</select>
 
 </div>
 
 <!-- PRODUCTS -->
-<div class="products-grid">
+<div class="products-grid" id="productsGrid">
 
-<!-- CARD 1 -->
-<div class="product-card">
+<!-- CARD TEMPLATE -->
+
+<div class="product-card" data-category="scalper">
+
 <img src="assets/bot1.jpg" class="product-image">
-<div class="badge bg-[#1E2C43] text-white">🔥 Hot Seller</div>
+
+<div class="badge bg-[#1E2C43] text-white">
+🔥 Hot Seller
+</div>
+
 <h3>KT No Sleep EA V1</h3>
-<div class="product-price">R2000.00</div>
-<p class="product-desc">Quick-scalping MT4 bot that trades around the clock — no rest, no manual watching.</p>
+
+<div class="product-price">
+R2000.00
+</div>
+
+<p class="product-desc">
+Quick-scalping MT4 bot trading around the clock.
+</p>
+
 <div class="feature-list">
-<div class="feature">MT4 Platform</div>
-<div class="feature">Quick Scalping</div>
-<div class="feature">Runs 24/5</div>
-<div class="feature">Fully Automated</div>
-<div class="feature">Verified on Myfxbook</div>
+<div class="feature">MT4</div>
+<div class="feature">Scalping</div>
+<div class="feature">24/5</div>
+<div class="feature">Automated</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT No Sleep EA V1','R2000.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 2 -->
-<div class="product-card">
+
+<div class="product-card" data-category="indicator">
+
 <img src="assets/bot2.jpg" class="product-image">
-<div class="badge bg-[#F6E9EA] text-[#B13B43]">indicator</div>
-<h3>KT AMG 90% Winrate System</h3>
-<div class="product-price">R1500.00</div>
-<p class="product-desc">Accurate forex trading system with price action buy/sell arrows, trendlines, TP & SL levels.</p>
+
+<div class="badge bg-[#F6E9EA] text-[#B13B43]">
+Indicator
+</div>
+
+<h3>KT AMG 90% Winrate</h3>
+
+<div class="product-price">
+R1500.00
+</div>
+
+<p class="product-desc">
+Forex system with buy/sell arrows and TP levels.
+</p>
+
 <div class="feature-list">
-<div class="feature">Price Action</div>
-<div class="feature">Buy & Sell Arrows</div>
-<div class="feature">Auto Trendlines</div>
-<div class="feature">TP & SL Levels</div>
-<div class="feature">90% Win Rate</div>
+<div class="feature">Signals</div>
+<div class="feature">Trendlines</div>
+<div class="feature">90% WR</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT AMG 90% Winrate','R1500.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 3 -->
-<div class="product-card">
+
+<div class="product-card" data-category="gold">
+
 <img src="assets/bot3.jpg" class="product-image">
-<div class="badge bg-[#E9F7EF] text-[#0F8A43]">Mobile Bot</div>
-<h3>KT POCKET TRADER PRO 2.0</h3>
-<div class="product-price">R850.00</div>
-<p class="product-desc">Advanced mobile trading bot for traders on the go.</p>
+
+<div class="badge bg-[#FFF7E8] text-[#B7791F]">
+Gold Scalper
+</div>
+
+<h3>1 Min Gold Scalper</h3>
+
+<div class="product-price">
+R1250.00
+</div>
+
+<p class="product-desc">
+Fast precision gold scalper for 1 minute charts.
+</p>
+
 <div class="feature-list">
-<div class="feature">Mobile version</div>
-<div class="feature">Easy setup</div>
-<div class="feature">Smart execution</div>
-<div class="feature">User-friendly</div>
+<div class="feature">Gold</div>
+<div class="feature">1 Min</div>
+<div class="feature">Fast Entry</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('1 Min Gold Scalper','R1250.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 4 -->
-<div class="product-card">
+
+<div class="product-card" data-category="bundle">
+
 <img src="assets/bot4.jpg" class="product-image">
-<div class="badge bg-[#FFF7E8] text-[#B7791F]">Gold Scalper</div>
-<h3>1 Min Gold Scalper</h3>
-<div class="product-price">R1250.00</div>
-<p class="product-desc">Fast gold scalper built for the 1 minute timeframe.</p>
+
+<div class="badge bg-[#EEF2FF] text-[#4338CA]">
+Elite Bundle
+</div>
+
+<h3>30 Profit PC Bots Bundle</h3>
+
+<div class="product-price">
+R3000.00
+</div>
+
+<p class="product-desc">
+30 profitable bots for forex, gold and crypto.
+</p>
+
 <div class="feature-list">
-<div class="feature">1 Min timeframe</div>
-<div class="feature">Gold focused</div>
-<div class="feature">Fast entries</div>
-<div class="feature">MT4 & MT5</div>
+<div class="feature">30 Bots</div>
+<div class="feature">Forex</div>
+<div class="feature">Crypto</div>
+<div class="feature">Gold</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('30 Profit PC Bots Bundle','R3000.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 5 -->
-<div class="product-card">
+
+<div class="product-card" data-category="bundle">
+
 <img src="assets/bot5.jpg" class="product-image">
-<div class="badge bg-[#EEF2FF] text-[#4338CA]">Best Value</div>
+
+<div class="badge bg-[#EEF2FF] text-[#4338CA]">
+Best Value
+</div>
+
 <h3>KT All-In-One Package</h3>
-<div class="product-price">R5250.00</div>
-<p class="product-desc">Complete KingdomTraders package with multiple premium products.</p>
+
+<div class="product-price">
+R5250.00
+</div>
+
+<p class="product-desc">
+Complete KingdomTraders premium package.
+</p>
+
 <div class="feature-list">
-<div class="feature">Complete package</div>
-<div class="feature">Best value</div>
-<div class="feature">Multiple tools</div>
-<div class="feature">Premium access</div>
+<div class="feature">Premium</div>
+<div class="feature">Bundle</div>
+<div class="feature">Multi Tools</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT All-In-One Package','R5250.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 6 -->
-<div class="product-card">
+
+<div class="product-card" data-category="indicator">
+
 <img src="assets/bot6.jpg" class="product-image">
-<div class="badge bg-[#F6E9EA] text-[#B13B43]">Indicator</div>
+
+<div class="badge bg-[#F6E9EA] text-[#B13B43]">
+Indicator
+</div>
+
 <h3>KT SMC System</h3>
-<div class="product-price">R900.00</div>
-<p class="product-desc">SMC trading system with structured entries.</p>
+
+<div class="product-price">
+R900.00
+</div>
+
+<p class="product-desc">
+SMC trading toolkit with structure mapping.
+</p>
+
 <div class="feature-list">
-<div class="feature">SMC based</div>
-<div class="feature">Structured entries</div>
-<div class="feature">MT5 ready</div>
-<div class="feature">Trading guidance</div>
+<div class="feature">SMC</div>
+<div class="feature">MT5</div>
+<div class="feature">Guidance</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT SMC System','R900.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 7 -->
-<div class="product-card">
+
+<div class="product-card" data-category="gold">
+
 <img src="assets/bot7.jpg" class="product-image">
-<div class="badge bg-[#FFF7E8] text-[#B7791F]">PDF Strategy</div>
+
+<div class="badge bg-[#FFF7E8] text-[#B7791F]">
+Gold Strategy
+</div>
+
 <h3>KingdomTraders Gold Strategy</h3>
-<div class="product-price">R1650.00</div>
-<p class="product-desc">Gold strategy package with teachings.</p>
+
+<div class="product-price">
+R1650.00
+</div>
+
+<p class="product-desc">
+Gold trading package with teaching PDFs.
+</p>
+
 <div class="feature-list">
-<div class="feature">Gold strategy</div>
-<div class="feature">PDF included</div>
-<div class="feature">Teaching included</div>
-<div class="feature">Guided setups</div>
+<div class="feature">PDF</div>
+<div class="feature">Teaching</div>
+<div class="feature">Setups</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KingdomTraders Gold Strategy','R1650.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 8 -->
-<div class="product-card">
+
+<div class="product-card" data-category="scalper">
+
 <img src="assets/bot8.jpg" class="product-image">
-<div class="badge bg-[#EEF2FF] text-[#4338CA]">Elite Bundle</div>
-<h3>30 Profit PC Bots Bundle</h3>
-<div class="product-price">R3000.00</div>
-<p class="product-desc">Mix of 30 profitable bots for Forex, BTCUSD, and Gold.</p>
+
+<div class="badge bg-[#1E2C43] text-white">
+Elite Scalper
+</div>
+
+<h3>KT Crown Scalper</h3>
+
+<div class="product-price">
+R1000.00
+</div>
+
+<p class="product-desc">
+High-frequency precision forex scalper.
+</p>
+
 <div class="feature-list">
-<div class="feature">30 Premium Bots</div>
-<div class="feature">Forex & Crypto</div>
-<div class="feature">Gold Optimized</div>
-<div class="feature">Multi-strategy mix</div>
+<div class="feature">AI Entries</div>
+<div class="feature">Low DD</div>
+<div class="feature">FX</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT Crown Scalper','R1000.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
 </div>
 
 <!-- CARD 9 -->
-<div class="product-card">
+
+<div class="product-card" data-category="scalper">
+
 <img src="assets/bot9.jpg" class="product-image">
-<div class="badge bg-[#1E2C43] text-white">Elite Scalper</div>
-<h3>KT CROWN SCALPER 1.0</h3>
-<div class="product-price">R1000.00</div>
-<p class="product-desc">Ultra-precision Crown Scalper for high-frequency gold and FX markets.</p>
+
+<div class="badge bg-[#E9F7EF] text-[#0F8A43]">
+Mobile Bot
+</div>
+
+<h3>KT Pocket Trader Pro 2.0</h3>
+
+<div class="product-price">
+R850.00
+</div>
+
+<p class="product-desc">
+Advanced mobile trading bot for traders on the go.
+</p>
+
 <div class="feature-list">
-<div class="feature">High-Frequency</div>
-<div class="feature">AI Entry Confirmation</div>
-<div class="feature">Gold & FX</div>
-<div class="feature">Low Drawdown</div>
+<div class="feature">Mobile</div>
+<div class="feature">Smart Entry</div>
+<div class="feature">Easy Setup</div>
 </div>
+
 <div class="product-actions">
-<button class="btn-primary">Buy Now</button>
-<button class="btn-secondary">View details</button>
+
+<button
+class="btn-primary"
+onclick="openModal('KT Pocket Trader Pro 2.0','R850.00')"
+>
+Buy Now
+</button>
+
+<button class="btn-secondary">
+View Details
+</button>
+
 </div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- REVIEWS -->
+<section class="px-6 py-20 bg-white">
+
+<h2 class="text-[40px] font-black text-[#16304F]">
+Client Feedback Reviews
+</h2>
+
+<p class="mt-4 text-[#6D7686] text-[22px]">
+Upload your review screenshots into assets later.
+</p>
+
+<div class="grid gap-6 mt-10">
+
+<div class="review-box">
+Review Screenshot Placeholder
+</div>
+
+<div class="review-box">
+Review Screenshot Placeholder
+</div>
+
+<div class="review-box">
+Review Screenshot Placeholder
 </div>
 
 </div>
@@ -653,51 +988,41 @@ Sort: Featured
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="px-6 py-20 bg-white border-t border-[#E6ECF2]">
+<section id="about" class="px-6 py-20 bg-[#EEF3F8]">
 
-<div class="inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold text-[22px]">
-<i data-lucide="building-2"></i>
+<h2 class="text-[42px] font-black text-[#16304F]">
 About KingdomTraders
-</div>
-
-<h2 class="mt-8 text-[48px] font-black tracking-brand text-[#16304F]">
-Built for modern automated trading
 </h2>
 
-<p class="mt-8 text-[#6D7686] text-[27px] leading-[1.55]">
-Founded by quantitative traders and fintech engineers, KingdomTraders focuses on automation tools for forex and multi-asset trading.
-</p>
-
-<p class="mt-6 text-[#6D7686] text-[27px] leading-[1.55]">
-Our goal is to help traders access structured, technology-driven execution systems with clear product information and dependable support.
+<p class="mt-8 text-[#6D7686] text-[24px] leading-[1.6]">
+Built for modern automated trading with premium forex infrastructure and fintech-grade automation systems.
 </p>
 
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="px-6 py-20 bg-[#EEF3F8] border-t border-[#E6ECF2]">
+<section id="contact" class="px-6 py-20 bg-white">
 
-<div class="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-6 py-4 text-[#4338CA] font-semibold text-[22px]">
-<i data-lucide="message-square-more"></i>
+<h2 class="text-[42px] font-black text-[#16304F]">
 Contact
-</div>
+</h2>
 
-<div class="mt-8 rounded-[38px] bg-white border border-[#E6ECF2] p-8 shadow-card">
+<div class="mt-10 rounded-[34px] border p-8">
 
-<div class="text-[28px] font-bold text-[#16304F]">
-Email
-</div>
-
-<div class="mt-2 text-[#6D7686] text-[22px]">
-kingdomtraders00@gmail.com
-</div>
-
-<div class="mt-10 text-[28px] font-bold text-[#16304F]">
+<div class="text-[22px] font-bold">
 WhatsApp
 </div>
 
-<div class="mt-2 text-[#6D7686] text-[22px]">
+<div class="mt-2 text-[#6D7686]">
 +27 63 926 3559
+</div>
+
+<div class="mt-8 text-[22px] font-bold">
+Email
+</div>
+
+<div class="mt-2 text-[#6D7686]">
+kingdomtraders00@gmail.com
 </div>
 
 </div>
@@ -705,17 +1030,17 @@ WhatsApp
 </section>
 
 <!-- LEGAL -->
-<section id="legal" class="px-6 py-20 bg-white border-t border-[#E6ECF2]">
+<section id="legal" class="px-6 py-20 bg-[#EEF3F8]">
 
-<div class="inline-flex items-center gap-3 rounded-full bg-[#F6E9EA] px-6 py-4 text-[#B13B43] font-semibold text-[22px]">
-<i data-lucide="shield-alert"></i>
+<h2 class="text-[42px] font-black text-[#B13B43]">
 Legal Disclaimer & Risk Warning
-</div>
+</h2>
 
-<div class="mt-8 rounded-[38px] bg-[#F8FAFC] border border-[#E6ECF2] p-8 shadow-card">
+<div class="mt-10 rounded-[34px] bg-white border p-8">
 
-<p class="text-[#6D7686] text-[22px] leading-[1.7]">
+<p class="text-[#6D7686] text-[22px] leading-[1.8]">
 Trading forex and CFDs involves substantial risk and may not be suitable for all investors.
+Past performance is not indicative of future results.
 </p>
 
 </div>
@@ -725,27 +1050,23 @@ Trading forex and CFDs involves substantial risk and may not be suitable for all
 <!-- FOOTER -->
 <footer class="bg-[#050D18] text-white py-14 px-6">
 
-<div class="flex flex-col md:flex-row items-center justify-between gap-8">
-
-<div class="text-[#D7E1F2] text-[18px]">
+<div class="text-center text-[#D7E1F2]">
 © 2026 KingdomTraders — Premium automation.
 </div>
 
-<div class="flex items-center gap-4">
+<div class="flex items-center justify-center gap-4 mt-8">
 
-<a href="https://www.tiktok.com/@kingdom.traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
-<i data-lucide="music-2"></i>
-</a>
-
-<a href="https://www.instagram.com/_kingdomtraders_/" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+<a href="#" class="w-[56px] h-[56px] rounded-full bg-white/10 flex items-center justify-center">
 <i data-lucide="instagram"></i>
 </a>
 
-<a href="https://www.youtube.com/@kingdom-traders" target="_blank" class="w-[58px] h-[58px] rounded-full bg-white/10 flex items-center justify-center">
+<a href="#" class="w-[56px] h-[56px] rounded-full bg-white/10 flex items-center justify-center">
 <i data-lucide="youtube"></i>
 </a>
 
-</div>
+<a href="#" class="w-[56px] h-[56px] rounded-full bg-white/10 flex items-center justify-center">
+<i data-lucide="music-2"></i>
+</a>
 
 </div>
 
@@ -764,7 +1085,71 @@ WhatsApp
 </div>
 
 <script>
+
 lucide.createIcons();
+
+const modal = document.getElementById("buyModal");
+const overlay = document.getElementById("overlay");
+const cartDrawer = document.getElementById("cartDrawer");
+
+function openModal(product,price){
+document.getElementById("modalProduct").innerText = product;
+document.getElementById("modalPrice").innerText = price;
+modal.style.display = "flex";
+}
+
+function closeModal(){
+modal.style.display = "none";
+}
+
+function openCart(){
+cartDrawer.classList.add("active");
+overlay.classList.add("active");
+}
+
+function closeCart(){
+cartDrawer.classList.remove("active");
+overlay.classList.remove("active");
+}
+
+overlay.addEventListener("click",()=>{
+closeCart();
+closeModal();
+});
+
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+
+searchInput.addEventListener("input", filterProducts);
+categoryFilter.addEventListener("change", filterProducts);
+
+function filterProducts(){
+
+const search = searchInput.value.toLowerCase();
+const category = categoryFilter.value;
+
+const cards = document.querySelectorAll(".product-card");
+
+cards.forEach(card=>{
+
+const title = card.querySelector("h3").innerText.toLowerCase();
+const cardCategory = card.dataset.category;
+
+const matchesSearch = title.includes(search);
+
+const matchesCategory =
+category === "all" || category === cardCategory;
+
+if(matchesSearch && matchesCategory){
+card.style.display = "block";
+}else{
+card.style.display = "none";
+}
+
+});
+
+}
+
 </script>
 
 </body>
