@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Finance Dashboard Replica</title>
+  <style>
+    :root{
+      --bg:#040713;
+      --bg2:#070b18;
+      --card:#0b1020;
+      --card2:#0a0f1d;
+      --line:rgba(255,255,255,.05);
+      --text:#f5f7ff;
+      --muted:#9aa3b2;
+      --purple:#8b5cf6;
+      --purple2:#a855f7;
+      --green:#22c55e;
+      --blue:#3b82f6;
+      --amber:#f59e0b;
+      --pink:#ec4899;
+      --red:#ef4444;
+      --shadow:0 12px 40px rgba(0,0,0,.45);
+      --shadow2:0 8px 30px rgba(0,0,0,.35);
+      --navh:92px;
+      --safe: env(safe-area-inset-bottom, 0px);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(139,92,246,.15), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(168,85,247,.12), transparent 20%),
+        linear-gradient(180deg, #02040c 0%, #040713 100%);
+      color:var(--text);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .phone{
+      width:100%;
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      position:relative;
+      padding-bottom: calc(var(--navh) + 22px + var(--safe));
+      background:
+        radial-gradient(circle at 50% 0%, rgba(139,92,246,.10), transparent 26%),
+        linear-gradient(180deg, #040713 0%, #040713 100%);
+    }
+
+    .top-safe{
+      padding-top: 8px;
+    }
+
+    .statusbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding: 4px 18px 0;
+      color:#fff;
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:-.02em;
+    }
+    .status-icons{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      opacity:.95;
+    }
+    .signal{
+      display:flex;
+      align-items:flex-end;
+      gap:3px;
+      height:18px;
+    }
+    .signal span{
+      width:3px;
+      border-radius:999px;
+      background:#fff;
+      display:block;
+    }
+    .signal span:nth-child(1){height:5px;opacity:.55}
+    .signal span:nth-child(2){height:9px;opacity:.7}
+    .signal span:nth-child(3){height:13px;opacity:.85}
+    .signal span:nth-child(4){height:17px}
+    .battery{
+      width:26px;height:14px;border:1.8px solid rgba(255,255,255,.9);border-radius:4px;position:relative;
+    }
+    .battery:after{
+      content:"";position:absolute;right:-4px;top:3px;width:2px;height:6px;border-radius:2px;background:#fff;
+    }
+    .battery .fill{
+      position:absolute;inset:2px 2px 2px 2px;border-radius:2px;background:#fff;
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 18px 0;
+      margin-top: 2px;
+    }
+    .header .title{
+      font-size:22px;
+      line-height:1;
+      font-weight:600;
+      letter-spacing:-.03em;
+    }
+    .icon-btn{
+      background:transparent;
+      border:0;
+      padding:0;
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      cursor:pointer;
+    }
+    .icon-btn svg{display:block}
+    .badge{
+      position:absolute;
+      right:-3px;
+      top:-3px;
+      background:var(--red);
+      color:#fff;
+      min-width:18px;
+      height:18px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      display:grid;
+      place-items:center;
+      padding:0 4px;
+      box-shadow:0 6px 16px rgba(239,68,68,.35);
+    }
+
+    .section{
+      padding: 0 16px;
+      margin-top: 16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(11,16,32,.92) 0%, rgba(10,15,29,.92) 100%);
+      box-shadow: var(--shadow2);
+    }
+
+    .balance-card{
+      position:relative;
+      overflow:hidden;
+      border-radius: 24px;
+      padding: 18px 16px 16px;
+      background:
+        radial-gradient(circle at 75% 28%, rgba(168,85,247,.24), transparent 18%),
+        radial-gradient(circle at 70% 55%, rgba(139,92,246,.16), transparent 28%),
+        linear-gradient(145deg, rgba(7,10,22,.97) 0%, rgba(11,16,32,.97) 55%, rgba(24,6,38,.97) 100%);
+      border:1px solid rgba(168,85,247,.14);
+      box-shadow: 0 0 40px rgba(124,58,237,.12), var(--shadow2);
+      min-height: 210px;
+    }
+    .balance-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      align-items:center;
+    }
+    .balance-label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:17px;
+      color:#d6d9e4;
+      margin-bottom: 10px;
+    }
+    .balance-label .eye{
+      width:18px;height:18px;opacity:.85
+    }
+    .amount{
+      font-size: 32px;
+      line-height:1;
+      font-weight:700;
+      letter-spacing:-.05em;
+      margin: 0 0 10px;
+    }
+    .fx{
+      font-size:15px;
+      color:var(--muted);
+      margin-bottom: 16px;
+    }
+    .cta-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      height:44px;
+      border-radius:999px;
+      border:0;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:0 18px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn-primary{
+      color:#fff;
+      background: linear-gradient(90deg, #6d28d9 0%, #8b5cf6 100%);
+      box-shadow: 0 10px 24px rgba(124,58,237,.35);
+    }
+    .btn-outline{
+      background: transparent;
+      color:#e9d5ff;
+      border:1px solid rgba(196,181,253,.35);
+      box-shadow: inset 0 0 0 1px rgba(168,85,247,.03);
+    }
+
+    .wallet-art{
+      position:relative;
+      height: 176px;
+      transform: translateX(6px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .glow{
+      position:absolute;
+      border-radius:50%;
+      filter: blur(18px);
+      pointer-events:none;
+    }
+    .glow.g1{width:112px;height:112px;right:8px;top:10px;background:rgba(168,85,247,.18)}
+    .glow.g2{width:56px;height:56px;left:10px;top:55px;background:rgba(168,85,247,.10)}
+    .glow.g3{width:80px;height:80px;right:0;bottom:18px;background:rgba(139,92,246,.08)}
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .action{
+      height: 92px;
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.05);
+      background: rgba(11,16,32,.88);
+      box-shadow: 0 8px 24px rgba(0,0,0,.30);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+    }
+    .action .circle{
+      width:46px;height:46px;border-radius:999px;
+      display:grid;place-items:center;
+      box-shadow: 0 0 18px rgba(168,85,247,.18);
+    }
+    .action .label{
+      font-size:12px;
+      font-weight:500;
+      color:#e5e7eb;
+    }
+
+    .section-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom: 10px;
+    }
+    .section-title{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-.03em;
+    }
+    .chip{
+      height:28px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.06);
+      background:#0b1020;
+      color:#e5e7eb;
+      padding:0 10px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      cursor:pointer;
+    }
+
+    .overview-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .stat{
+      border-radius: 18px;
+      padding: 12px 10px;
+      min-height: 128px;
+      background: rgba(11,16,32,.92);
+    }
+    .stat .ico{
+      width:38px;height:38px;border-radius:999px;
+      display:grid;place-items:center;
+      margin-bottom: 12px;
+    }
+    .stat .title{
+      font-size:12px;
+      color:#aeb6c5;
+      margin-bottom: 6px;
+    }
+    .stat .value{
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:-.03em;
+      margin-bottom: 8px;
+    }
+    .stat .sub{
+      font-size:11px;
+      font-weight:600;
+    }
+
+    .chart-card{
+      border-radius: 24px;
+      padding: 14px 14px 10px;
+      overflow:hidden;
+    }
+    .chart-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom: 8px;
+    }
+    .chart-title{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-.03em;
+      margin-bottom: 8px;
+    }
+    .profit{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:16px;
+      font-weight:700;
+      color: var(--green);
+    }
+    .profit .dot{
+      width:8px;height:8px;border-radius:50%;background:var(--green);
+      box-shadow:0 0 12px rgba(34,197,94,.65);
+    }
+    .profit .muted{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .chart-wrap{
+      position:relative;
+      height:250px;
+      margin-top: 4px;
+    }
+
+    .tooltip{
+      position:absolute;
+      left: 61%;
+      top: 24%;
+      transform: translateX(-50%);
+      z-index:3;
+      background: rgba(17,22,42,.92);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:14px;
+      padding:8px 12px;
+      font-size:12px;
+      color:#fff;
+      box-shadow:0 20px 32px rgba(0,0,0,.45);
+      min-width: 86px;
+      text-align:left;
+    }
+    .tooltip:after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:100%;
+      transform: translateX(-50%);
+      width:1px;
+      height:20px;
+      background: rgba(34,197,94,.55);
+    }
+    .tooltip .small{color:#9ca3af;margin-bottom:3px}
+    .tooltip .big{font-size:13px;font-weight:700}
+    .tooltip .dot{
+      position:absolute;
+      left:50%;
+      bottom:-14px;
+      transform:translateX(-50%);
+      width:12px;height:12px;border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 18px rgba(34,197,94,.6);
+      border:3px solid #0f1d11;
+    }
+
+    .chart-svg{
+      width:100%;
+      height:100%;
+      display:block;
+      overflow:visible;
+    }
+    .axis-text{
+      font-size:11px;
+      fill:#9ca3af;
+    }
+    .ytext{
+      font-size:11px;
+      fill:#9ca3af;
+    }
+
+    .transactions{
+      border-radius: 24px;
+      overflow:hidden;
+    }
+    .tx-row{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: 14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .tx-row:last-child{border-bottom:0}
+    .tx-ico{
+      width:44px;height:44px;border-radius:50%;
+      display:grid;place-items:center;
+      flex:0 0 auto;
+    }
+    .tx-main{
+      min-width:0;
+      flex:1;
+    }
+    .tx-title{
+      font-size:15px;
+      font-weight:700;
+      color:#f8fafc;
+      margin-bottom: 4px;
+    }
+    .tx-sub{
+      font-size:12px;
+      color:#9aa3b2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tx-right{
+      text-align:right;
+      flex:0 0 auto;
+    }
+    .tx-amt{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom: 4px;
+      white-space:nowrap;
+    }
+    .status{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 70px;
+      height: 22px;
+      border-radius:999px;
+      background: rgba(34,197,94,.09);
+      color:#34d399;
+      font-size:11px;
+      font-weight:700;
+      margin-bottom: 2px;
+      padding:0 10px;
+    }
+    .menu{
+      width:18px;height:18px;flex:0 0 auto;color:#6b7280;margin-left:6px;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom: calc(10px + var(--safe));
+      width:min(430px, 100%);
+      z-index:20;
+      padding: 0 10px;
+    }
+    .nav-shell{
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.05);
+      background: rgba(11,16,32,.98);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      display:flex;
+      align-items:stretch;
+      justify-content:space-between;
+      padding: 2px 4px;
+    }
+    .nav-item{
+      position:relative;
+      flex:1;
+      background:transparent;
+      border:0;
+      color:#9aa3b2;
+      padding: 10px 0 11px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .nav-item.active{
+      color:#a78bfa;
+    }
+    .nav-item.active svg{color:#a78bfa}
+    .nav-item .dot{
+      position:absolute;
+      bottom:3px;
+      width:6px;height:6px;border-radius:50%;
+      background:#a855f7;
+      box-shadow:0 0 10px rgba(168,85,247,.5);
+      display:none;
+    }
+    .nav-item.active .dot{display:block}
+    .nav-item svg{display:block}
+
+    .svg-ico{
+      width:20px;height:20px;display:block;
+    }
+
+    .wallet-svg{
+      width:100%;
+      height:100%;
+      overflow:visible;
+      filter: drop-shadow(0 0 18px rgba(168,85,247,.45));
+    }
+
+    @media (max-width: 390px){
+      .amount{font-size:31px}
+      .wallet-art{height:168px}
+      .action{height:90px}
+      .stat{min-height:132px}
+      .quick-actions{gap:7px}
+      .overview-grid{gap:7px}
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="top-safe">
+      <div class="statusbar">
+        <div>9:41</div>
+        <div class="status-icons">
+          <div class="signal" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="battery" aria-hidden="true"><div class="fill"></div></div>
+        </div>
+      </div>
+
+      <div class="header">
+        <button class="icon-btn" aria-label="Menu">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+          </svg>
+        </button>
+        <div class="title">Home</div>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 17H5c1.1-1 2-2.2 2-4V9a5 5 0 0 1 10 0v4c0 1.8.9 3 2 4h-4"/>
+            <path d="M10 19a2 2 0 0 0 4 0"/>
+          </svg>
+          <span class="badge">3</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="balance-card">
+        <div class="balance-grid">
+          <div>
+            <div class="balance-label">
+              <span>Total Balance</span>
+              <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M3 21l18-18" />
+              </svg>
+            </div>
+
+            <div class="amount">₦ 12,450.00</div>
+            <div class="fx">≈ $ 8.21</div>
+
+            <div class="cta-row">
+              <button class="btn btn-primary">
+                <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3v12"/>
+                  <path d="m7 10 5 5 5-5"/>
+                  <path d="M5 21h14"/>
+                </svg>
+                Deposit
+              </button>
+              <button class="btn btn-outline">
+                <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21V9"/>
+                  <path d="m7 14 5-5 5 5"/>
+                  <path d="M5 3h14"/>
+                </svg>
+                Withdraw
+              </button>
+            </div>
+          </div>
+
+          <div class="wallet-art">
+            <div class="glow g1"></div>
+            <div class="glow g2"></div>
+            <div class="glow g3"></div>
+
+            <svg class="wallet-svg" viewBox="0 0 420 280" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="g1" x1="40" y1="40" x2="360" y2="240" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#A855F7"/>
+                  <stop offset="0.5" stop-color="#7C3AED"/>
+                  <stop offset="1" stop-color="#4C1D95"/>
+                </linearGradient>
+                <linearGradient id="g2" x1="110" y1="70" x2="310" y2="220" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#D8B4FE" stop-opacity="0.9"/>
+                  <stop offset="1" stop-color="#7C3AED" stop-opacity="0.4"/>
+                </linearGradient>
+              </defs>
+              <g opacity="0.97">
+                <path d="M104 72C104 61.5066 112.507 53 123 53H244C251.389 53 258.279 56.8226 262.236 63.0911L291.236 109.091C293.403 112.54 294.553 116.527 294.553 120.598V201C294.553 211.493 286.047 220 275.553 220H123C112.507 220 104 211.493 104 201V72Z" fill="url(#g1)"/>
+                <path d="M119 71C119 66.0294 123.029 62 128 62H238.405C242.5 62 246.344 64.0322 248.68 67.4251L272.68 102.425C274.174 104.602 275.038 107.155 275.173 109.796L279.553 195.5C279.814 200.612 275.741 205 270.623 205H128C123.029 205 119 200.971 119 196V71Z" fill="url(#g2)" opacity="0.45"/>
+                <rect x="113" y="117" width="182" height="82" rx="22" fill="#160425" fill-opacity="0.46"/>
+                <circle cx="231" cy="158" r="20" fill="#2E1065"/>
+                <circle cx="231" cy="158" r="7" fill="#C084FC"/>
+                <path d="M163 177C163 171.477 167.477 167 173 167H205C210.523 167 215 171.477 215 177V177C215 182.523 210.523 187 205 187H173C167.477 187 163 182.523 163 177V177Z" fill="#C084FC" fill-opacity="0.55"/>
+                <path d="M156 131H214" stroke="#F5D0FE" stroke-opacity="0.5" stroke-width="7" stroke-linecap="round"/>
+                <path d="M148 88H201" stroke="#E9D5FF" stroke-opacity="0.35" stroke-width="8" stroke-linecap="round"/>
+                <path d="M289 129C305 128 319 135 330 146" stroke="#A855F7" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+                <path d="M286 146C303 150 315 160 323 174" stroke="#A855F7" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+                <circle cx="99" cy="94" r="7" fill="#A855F7" opacity="0.7"/>
+                <circle cx="88" cy="170" r="5" fill="#A855F7" opacity="0.65"/>
+                <circle cx="324" cy="99" r="6" fill="#A855F7" opacity="0.65"/>
+                <circle cx="338" cy="170" r="9" fill="#C084FC" opacity="0.42"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="quick-actions" id="quickActions"></div>
+    </div>
+
+    <div class="section" style="margin-top:20px;">
+      <div class="section-header">
+        <div class="section-title">Today’s Overview</div>
+        <button class="chip">Today
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="overview-grid" id="overviewCards"></div>
+    </div>
+
+    <div class="section" style="margin-top:20px;">
+      <div class="chart-card card">
+        <div class="chart-top">
+          <div>
+            <div class="chart-title">Portfolio Performance</div>
+            <div class="profit">
+              <span class="dot"></span>
+              +16.58%
+              <span class="muted">This Month</span>
+            </div>
+          </div>
+          <button class="chip">Monthly
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="tooltip">
+            <div class="small">May 20</div>
+            <div class="big">₦ 1,820.00</div>
+            <div class="dot"></div>
+          </div>
+
+          <svg class="chart-svg" viewBox="0 0 360 250" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="fillGreen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.35"/>
+                <stop offset="70%" stop-color="#22c55e" stop-opacity="0.08"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="2.2" result="b"/>
+                <feColorMatrix in="b" type="matrix" values="1 0 0 0 0.1 0 1 0 0 0.85 0 0 1 0 0.3 0 0 0 1 0"/>
+                <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <g opacity="0.32">
+              <line x1="20" y1="26" x2="348" y2="26" stroke="rgba(255,255,255,.06)" />
+              <line x1="20" y1="74" x2="348" y2="74" stroke="rgba(255,255,255,.06)" />
+              <line x1="20" y1="122" x2="348" y2="122" stroke="rgba(255,255,255,.06)" />
+              <line x1="20" y1="170" x2="348" y2="170" stroke="rgba(255,255,255,.06)" />
+              <line x1="20" y1="218" x2="348" y2="218" stroke="rgba(255,255,255,.06)" />
+            </g>
+
+            <g>
+              <text class="ytext" x="6" y="220">₦ 0</text>
+              <text class="ytext" x="0" y="175">₦ 500</text>
+              <text class="ytext" x="-2" y="127">₦ 1,000</text>
+              <text class="ytext" x="-2" y="79">₦ 1,500</text>
+              <text class="ytext" x="-2" y="31">₦ 2,000</text>
+            </g>
+
+            <path d="M 20 221
+                     L 50 210
+                     L 80 198
+                     L 110 170
+                     L 140 178
+                     L 170 150
+                     L 200 155
+                     L 230 126
+                     L 260 136
+                     L 290 112
+                     L 320 88
+                     L 348 58
+                     L 348 221 Z"
+                  fill="url(#fillGreen)"/>
+
+            <path d="M 20 221
+                     C 30 219, 40 214, 50 210
+                     S 70 200, 80 198
+                     S 100 178, 110 170
+                     S 130 176, 140 178
+                     S 160 154, 170 150
+                     S 190 157, 200 155
+                     S 220 130, 230 126
+                     S 250 138, 260 136
+                     S 280 116, 290 112
+                     S 310 90, 320 88
+                     S 340 63, 348 58"
+                  fill="none" stroke="#22c55e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)"/>
+
+            <circle cx="230" cy="126" r="7" fill="#22c55e" filter="url(#softGlow)"/>
+            <circle cx="348" cy="58" r="6.5" fill="#22c55e" filter="url(#softGlow)"/>
+
+            <g>
+              <text class="axis-text" x="18" y="238">May 5</text>
+              <text class="axis-text" x="70" y="238">May 10</text>
+              <text class="axis-text" x="122" y="238">May 15</text>
+              <text class="axis-text" x="175" y="238">May 20</text>
+              <text class="axis-text" x="228" y="238">May 25</text>
+              <text class="axis-text" x="282" y="238">May 30</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:20px;">
+      <div class="section-header">
+        <div class="section-title">Recent Transactions</div>
+        <button class="icon-btn" style="color:#a855f7;font-size:15px;font-weight:500">
+          View All
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:2px">
+            <path d="m9 6 6 6-6 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="transactions card" id="transactions"></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-shell">
+      <button class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10.5 12 3l9 7.5"/>
+          <path d="M5 9v11h6v-6h2v6h6V9"/>
+        </svg>
+        <span>Home</span>
+        <span class="dot"></span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19V5"/>
+          <path d="M4 19h16"/>
+          <path d="M8 16v-6"/>
+          <path d="M12 16V8"/>
+          <path d="M16 16v-3"/>
+        </svg>
+        <span>Invest</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/>
+          <path d="m7 10 5 5 5-5"/>
+          <path d="M5 21h14"/>
+        </svg>
+        <span>Withdraw</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7h18v10H3z"/>
+          <path d="M7 7v10"/>
+          <path d="M17 7v10"/>
+          <path d="M8 11h8"/>
+        </svg>
+        <span>Wallet</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/>
+          <path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/>
+          <path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/>
+          <path d="M14 19c.4-1.4 1.3-2.4 2.4-3"/>
+        </svg>
+        <span>Community</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h4v4H4zM10 6h4v4h-4zM16 6h4v4h-4zM4 12h4v4H4zM10 12h4v4h-4zM16 12h4v4h-4zM4 18h4v-1H4zM10 18h4v-1h-4zM16 18h4v-1h-4z"/>
+        </svg>
+        <span>More</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const quickActions = [
+      { label: "Invest", color: "linear-gradient(135deg,#6d28d9,#8b5cf6)", icon: iconTrendingUp },
+      { label: "Deposit", color: "linear-gradient(135deg,#16a34a,#4ade80)", icon: iconDown },
+      { label: "Withdraw", color: "linear-gradient(135deg,#d97706,#f59e0b)", icon: iconUp },
+      { label: "Transfer", color: "linear-gradient(135deg,#2563eb,#60a5fa)", icon: iconTransfer },
+      { label: "Wallet", color: "linear-gradient(135deg,#db2777,#f472b6)", icon: iconWallet },
+      { label: "Community", color: "linear-gradient(135deg,#5b21b6,#8b5cf6)", icon: iconUsers },
+    ];
+
+    const overviewCards = [
+      {
+        title: "Total Profit",
+        value: "₦ 1,820.00",
+        sub: "+16.58%",
+        subColor: "#34d399",
+        iconBg: "rgba(34,197,94,.12)",
+        iconColor: "#4ade80",
+        icon: iconTrendingUp,
+      },
+      {
+        title: "Active Investments",
+        value: "₦ 10,000.00",
+        sub: "2 Plans",
+        subColor: "#94a3b8",
+        iconBg: "rgba(59,130,246,.12)",
+        iconColor: "#60a5fa",
+        icon: iconUsers,
+      },
+      {
+        title: "Referral Earnings",
+        value: "₦ 2,350.00",
+        sub: "32 Referrals",
+        subColor: "#94a3b8",
+        iconBg: "rgba(245,158,11,.12)",
+        iconColor: "#fbbf24",
+        icon: iconUsers,
+      },
+      {
+        title: "Withdrawn",
+        value: "₦ 5,400.00",
+        sub: "This Month",
+        subColor: "#94a3b8",
+        iconBg: "rgba(168,85,247,.12)",
+        iconColor: "#c084fc",
+        icon: iconWallet,
+      },
+    ];
+
+    const transactions = [
+      {
+        title: "Deposit",
+        subtitle: "From GTBank",
+        meta: "May 12, 2024 08:47 PM",
+        amount: "+ ₦ 25,000.00",
+        amountColor: "#4ade80",
+        iconBg: "rgba(34,197,94,.12)",
+        iconColor: "#4ade80",
+        icon: iconDown,
+      },
+      {
+        title: "Withdrawal",
+        subtitle: "To GTBank",
+        meta: "May 11, 2024 06:15 PM",
+        amount: "- ₦ 15,000.00",
+        amountColor: "#f87171",
+        iconBg: "rgba(245,158,11,.12)",
+        iconColor: "#f59e0b",
+        icon: iconUp,
+      },
+      {
+        title: "Profit Earned",
+        subtitle: "Daily Profit",
+        meta: "May 12, 2024 12:30 PM",
+        amount: "+ ₦ 1,820.00",
+        amountColor: "#4ade80",
+        iconBg: "rgba(59,130,246,.12)",
+        iconColor: "#60a5fa",
+        icon: iconTransfer,
+      },
+      {
+        title: "Referral Bonus",
+        subtitle: "From Referral Program",
+        meta: "May 12, 2024 09:10 AM",
+        amount: "+ ₦ 500.00",
+        amountColor: "#4ade80",
+        iconBg: "rgba(168,85,247,.12)",
+        iconColor: "#c084fc",
+        icon: iconUsers,
+      }
+    ];
+
+    function iconTrendingUp(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17l6-6 4 4 7-7"/>
+          <path d="M14 8h6v6"/>
+        </svg>`;
+    }
+
+    function iconDown(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/>
+          <path d="m7 10 5 5 5-5"/>
+          <path d="M5 21h14"/>
+        </svg>`;
+    }
+
+    function iconUp(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21V9"/>
+          <path d="m7 14 5-5 5 5"/>
+          <path d="M5 3h14"/>
+        </svg>`;
+    }
+
+    function iconTransfer(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 7h14"/>
+          <path d="m18 4 3 3-3 3"/>
+          <path d="M17 17H3"/>
+          <path d="m6 14-3 3 3 3"/>
+        </svg>`;
+    }
+
+    function iconWallet(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7h18v10H3z"/>
+          <path d="M16 12h4"/>
+          <circle cx="16.5" cy="12" r="1.2" fill="${color}" stroke="none"/>
+        </svg>`;
+    }
+
+    function iconUsers(color = "currentColor") {
+      return `
+        <svg class="svg-ico" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/>
+          <path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/>
+          <path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/>
+          <path d="M14 19c.4-1.4 1.3-2.4 2.4-3"/>
+        </svg>`;
+    }
+
+    const quickWrap = document.getElementById("quickActions");
+    quickActions.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "action";
+      div.innerHTML = `
+        <div class="circle" style="background:${item.color}">
+          ${item.icon("white")}
+        </div>
+        <div class="label">${item.label}</div>
+      `;
+      quickWrap.appendChild(div);
+    });
+
+    const overviewWrap = document.getElementById("overviewCards");
+    overviewCards.forEach(card => {
+      const div = document.createElement("div");
+      div.className = "stat card";
+      div.innerHTML = `
+        <div class="ico" style="background:${card.iconBg}">
+          ${card.icon(card.iconColor)}
+        </div>
+        <div class="title">${card.title}</div>
+        <div class="value">${card.value}</div>
+        <div class="sub" style="color:${card.subColor}">${card.sub}</div>
+      `;
+      overviewWrap.appendChild(div);
+    });
+
+    const txWrap = document.getElementById("transactions");
+    transactions.forEach(tx => {
+      const row = document.createElement("div");
+      row.className = "tx-row";
+      row.innerHTML = `
+        <div class="tx-ico" style="background:${tx.iconBg}">
+          ${tx.icon(tx.iconColor)}
+        </div>
+        <div class="tx-main">
+          <div class="tx-title">${tx.title}</div>
+          <div class="tx-sub">${tx.subtitle} • ${tx.meta}</div>
+        </div>
+        <div class="tx-right">
+          <div class="tx-amt" style="color:${tx.amountColor}">${tx.amount}</div>
+          <div class="status">Completed</div>
+        </div>
+        <svg class="menu" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="12" cy="5" r="1.7"></circle>
+          <circle cx="12" cy="12" r="1.7"></circle>
+          <circle cx="12" cy="19" r="1.7"></circle>
+        </svg>
+      `;
+      txWrap.appendChild(row);
+    });
+  </script>
+</body>
+</html>
