@@ -53,57 +53,11 @@
         linear-gradient(180deg, #040713 0%, #040713 100%);
     }
 
-    .top-safe{
-      padding-top: 8px;
-    }
-
-    .statusbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding: 4px 18px 0;
-      color:#fff;
-      font-weight:600;
-      font-size:18px;
-      letter-spacing:-.02em;
-    }
-    .status-icons{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      opacity:.95;
-    }
-    .signal{
-      display:flex;
-      align-items:flex-end;
-      gap:3px;
-      height:18px;
-    }
-    .signal span{
-      width:3px;
-      border-radius:999px;
-      background:#fff;
-      display:block;
-    }
-    .signal span:nth-child(1){height:5px;opacity:.55}
-    .signal span:nth-child(2){height:9px;opacity:.7}
-    .signal span:nth-child(3){height:13px;opacity:.85}
-    .signal span:nth-child(4){height:17px}
-    .battery{
-      width:26px;height:14px;border:1.8px solid rgba(255,255,255,.9);border-radius:4px;position:relative;
-    }
-    .battery:after{
-      content:"";position:absolute;right:-4px;top:3px;width:2px;height:6px;border-radius:2px;background:#fff;
-    }
-    .battery .fill{
-      position:absolute;inset:2px 2px 2px 2px;border-radius:2px;background:#fff;
-    }
-
     .header{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding: 14px 18px 0;
+      padding: 18px 18px 0;
       margin-top: 2px;
     }
     .header .title{
@@ -122,6 +76,7 @@
       justify-content:center;
       position:relative;
       cursor:pointer;
+      flex:0 0 auto;
     }
     .icon-btn svg{display:block}
     .badge{
@@ -167,32 +122,40 @@
     }
     .balance-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
       gap: 4px;
       align-items:center;
     }
+    .balance-grid > div{min-width:0;}
     .balance-label{
       display:flex;
       align-items:center;
       gap:8px;
-      font-size:17px;
+      font-size:16px;
       color:#d6d9e4;
       margin-bottom: 10px;
+      min-width:0;
+      white-space:nowrap;
     }
+    .balance-label span{min-width:0;}
     .balance-label .eye{
-      width:18px;height:18px;opacity:.85
+      width:18px;height:18px;opacity:.85;flex:0 0 auto;
     }
     .amount{
-      font-size: 32px;
-      line-height:1;
+      font-size: clamp(28px, 7vw, 33px);
+      line-height:1.05;
       font-weight:700;
       letter-spacing:-.05em;
       margin: 0 0 10px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .fx{
-      font-size:15px;
+      font-size:14px;
       color:var(--muted);
       margin-bottom: 16px;
+      white-space:nowrap;
     }
     .cta-row{
       display:flex;
@@ -200,18 +163,19 @@
       flex-wrap:wrap;
     }
     .btn{
-      height:44px;
+      height:42px;
       border-radius:999px;
       border:0;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:0 18px;
-      font-size:15px;
+      padding:0 16px;
+      font-size:14px;
       font-weight:600;
       cursor:pointer;
       transition:.2s ease;
       white-space:nowrap;
+      min-width:0;
     }
     .btn:active{transform:scale(.98)}
     .btn-primary{
@@ -233,6 +197,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      min-width:0;
     }
     .glow{
       position:absolute;
@@ -250,8 +215,8 @@
       gap: 8px;
     }
     .action{
-      height: 92px;
-      border-radius: 20px;
+      height: 88px;
+      border-radius: 18px;
       border:1px solid rgba(255,255,255,.05);
       background: rgba(11,16,32,.88);
       box-shadow: 0 8px 24px rgba(0,0,0,.30);
@@ -259,29 +224,37 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap: 8px;
+      gap: 7px;
+      min-width:0;
+      overflow:hidden;
     }
     .action .circle{
-      width:46px;height:46px;border-radius:999px;
+      width:44px;height:44px;border-radius:999px;
       display:grid;place-items:center;
       box-shadow: 0 0 18px rgba(168,85,247,.18);
+      flex:0 0 auto;
     }
     .action .label{
-      font-size:12px;
+      font-size:11px;
+      line-height:1;
       font-weight:500;
       color:#e5e7eb;
+      white-space:nowrap;
     }
 
     .section-header{
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:12px;
       margin-bottom: 10px;
     }
     .section-title{
       font-size:18px;
       font-weight:700;
       letter-spacing:-.03em;
+      min-width:0;
+      white-space:nowrap;
     }
     .chip{
       height:28px;
@@ -295,6 +268,8 @@
       gap:6px;
       font-size:12px;
       cursor:pointer;
+      flex:0 0 auto;
+      white-space:nowrap;
     }
 
     .overview-grid{
@@ -304,29 +279,40 @@
     }
     .stat{
       border-radius: 18px;
-      padding: 12px 10px;
-      min-height: 128px;
+      padding: 12px 10px 11px;
+      min-height: 122px;
       background: rgba(11,16,32,.92);
+      overflow:hidden;
+      min-width:0;
     }
     .stat .ico{
       width:38px;height:38px;border-radius:999px;
       display:grid;place-items:center;
       margin-bottom: 12px;
+      flex:0 0 auto;
     }
     .stat .title{
-      font-size:12px;
+      font-size:11px;
+      line-height:1.1;
       color:#aeb6c5;
       margin-bottom: 6px;
+      text-wrap: balance;
+      min-height: 24px;
     }
     .stat .value{
-      font-size:16px;
+      font-size:15px;
+      line-height:1.08;
       font-weight:700;
       letter-spacing:-.03em;
       margin-bottom: 8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .stat .sub{
-      font-size:11px;
+      font-size:10px;
       font-weight:600;
+      white-space:nowrap;
     }
 
     .chart-card{
@@ -351,17 +337,19 @@
       display:flex;
       align-items:center;
       gap:8px;
-      font-size:16px;
+      font-size:15px;
       font-weight:700;
       color: var(--green);
+      white-space:nowrap;
     }
     .profit .dot{
       width:8px;height:8px;border-radius:50%;background:var(--green);
       box-shadow:0 0 12px rgba(34,197,94,.65);
+      flex:0 0 auto;
     }
     .profit .muted{
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       font-weight:500;
     }
 
@@ -386,6 +374,7 @@
       box-shadow:0 20px 32px rgba(0,0,0,.45);
       min-width: 86px;
       text-align:left;
+      pointer-events:none;
     }
     .tooltip:after{
       content:"";
@@ -398,7 +387,7 @@
       background: rgba(34,197,94,.55);
     }
     .tooltip .small{color:#9ca3af;margin-bottom:3px}
-    .tooltip .big{font-size:13px;font-weight:700}
+    .tooltip .big{font-size:13px;font-weight:700;white-space:nowrap}
     .tooltip .dot{
       position:absolute;
       left:50%;
@@ -415,6 +404,7 @@
       height:100%;
       display:block;
       overflow:visible;
+      shape-rendering:geometricPrecision;
     }
     .axis-text{
       font-size:11px;
@@ -462,6 +452,7 @@
     .tx-right{
       text-align:right;
       flex:0 0 auto;
+      min-width: 98px;
     }
     .tx-amt{
       font-size:15px;
@@ -482,6 +473,7 @@
       font-weight:700;
       margin-bottom: 2px;
       padding:0 10px;
+      white-space:nowrap;
     }
     .menu{
       width:18px;height:18px;flex:0 0 auto;color:#6b7280;margin-left:6px;
@@ -521,6 +513,7 @@
       gap: 4px;
       font-size:12px;
       cursor:pointer;
+      min-width:0;
     }
     .nav-item.active{
       color:#a78bfa;
@@ -531,7 +524,7 @@
       bottom:3px;
       width:6px;height:6px;border-radius:50%;
       background:#a855f7;
-      box-shadow:0 0 10px rgba(168,85,247,.5);
+      box-shadow:0 0 10px rgba(168,247,247,.5);
       display:none;
     }
     .nav-item.active .dot{display:block}
@@ -549,43 +542,33 @@
     }
 
     @media (max-width: 390px){
-      .amount{font-size:31px}
+      .header{padding-top:16px}
+      .amount{font-size:30px}
       .wallet-art{height:168px}
-      .action{height:90px}
-      .stat{min-height:132px}
+      .action{height:86px}
+      .stat{min-height:126px}
       .quick-actions{gap:7px}
       .overview-grid{gap:7px}
+      .tx-right{min-width:92px}
     }
   </style>
 </head>
 <body>
   <div class="phone">
-    <div class="top-safe">
-      <div class="statusbar">
-        <div>9:41</div>
-        <div class="status-icons">
-          <div class="signal" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="battery" aria-hidden="true"><div class="fill"></div></div>
-        </div>
-      </div>
-
-      <div class="header">
-        <button class="icon-btn" aria-label="Menu">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
-            <path d="M3 6h18M3 12h18M3 18h18"/>
-          </svg>
-        </button>
-        <div class="title">Home</div>
-        <button class="icon-btn" aria-label="Notifications">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 17H5c1.1-1 2-2.2 2-4V9a5 5 0 0 1 10 0v4c0 1.8.9 3 2 4h-4"/>
-            <path d="M10 19a2 2 0 0 0 4 0"/>
-          </svg>
-          <span class="badge">3</span>
-        </button>
-      </div>
+    <div class="header">
+      <button class="icon-btn" aria-label="Menu">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+      <div class="title">Home</div>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 17H5c1.1-1 2-2.2 2-4V9a5 5 0 0 1 10 0v4c0 1.8.9 3 2 4h-4"/>
+          <path d="M10 19a2 2 0 0 0 4 0"/>
+        </svg>
+        <span class="badge">3</span>
+      </button>
     </div>
 
     <div class="section">
@@ -728,11 +711,11 @@
             </g>
 
             <g>
-              <text class="ytext" x="6" y="220">₦ 0</text>
-              <text class="ytext" x="0" y="175">₦ 500</text>
-              <text class="ytext" x="-2" y="127">₦ 1,000</text>
-              <text class="ytext" x="-2" y="79">₦ 1,500</text>
-              <text class="ytext" x="-2" y="31">₦ 2,000</text>
+              <text class="ytext" x="10" y="222">₦ 0</text>
+              <text class="ytext" x="4" y="174">₦ 500</text>
+              <text class="ytext" x="0" y="126">₦ 1,000</text>
+              <text class="ytext" x="0" y="78">₦ 1,500</text>
+              <text class="ytext" x="0" y="30">₦ 2,000</text>
             </g>
 
             <path d="M 20 221
