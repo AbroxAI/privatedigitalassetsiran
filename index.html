@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Trade Dashboard – Full Interactive</title>
+    <style>
+        :root{
+            --bg:#040713;--panel:#0a1020;--panel2:#0c1428;--line:rgba(255,255,255,.06);--text:#f5f7ff;--muted:#9aa3b2;
+            --purple:#a855f7;--purple2:#7c3aed;--green:#22c55e;--blue:#3b82f6;--amber:#f59e0b;--pink:#ec4899;--red:#ef4444;
+            --shadow:0 18px 46px rgba(0,0,0,.44);--shadow2:0 10px 28px rgba(0,0,0,.30);--safe: env(safe-area-inset-bottom, 0px);--navh: 92px;
+        }
+        *{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;color:var(--text);background:radial-gradient(circle at 50% 0%, rgba(168,85,247,.14), transparent 24%),radial-gradient(circle at 75% 18%, rgba(59,130,246,.08), transparent 18%),linear-gradient(180deg, #02040b 0%, var(--bg) 100%);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+        .app{width:100%;max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:calc(var(--navh) + 16px + var(--safe));position:relative;}
+        .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0;gap:10px;}.icon-btn{border:0;background:transparent;color:#fff;padding:0;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:0 0 auto;cursor:pointer;}.icon-btn svg{display:block;width:22px;height:22px;}.title{flex:1;min-width:0;font-size:22px;font-weight:700;letter-spacing:-.03em;padding-left:8px;}.badge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 4px;box-shadow:0 8px 20px rgba(239,68,68,.3);}
+        .view{display:none}.view.active{display:block}.section{padding:0 16px;margin-top:16px}.panel{background:linear-gradient(180deg, rgba(12,18,38,.92), rgba(10,15,30,.92));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow2);}.section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;}.section-title{font-size:18px;font-weight:700;letter-spacing:-.03em;min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.chip{height:28px;border-radius:999px;border:1px solid rgba(255,255,255,.06);background:#0b1020;color:#e5e7eb;padding:0 10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;flex:0 0 auto;white-space:nowrap;}.chip svg{width:14px;height:14px;}
+        .balance-card{position:relative;overflow:hidden;border-radius:24px;padding:18px 16px 16px;background:radial-gradient(circle at 75% 28%, rgba(168,85,247,.24), transparent 18%),radial-gradient(circle at 70% 55%, rgba(139,92,246,.16), transparent 28%),linear-gradient(145deg, rgba(7,10,22,.97) 0%, rgba(11,16,32,.97) 55%, rgba(24,6,38,.97) 100%);border:1px solid rgba(168,85,247,.14);box-shadow:0 0 40px rgba(124,58,237,.12), var(--shadow2);min-height:210px;}.balance-grid{display:grid;grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr);gap:4px;align-items:center;}.balance-grid>div{min-width:0}.balance-label{display:flex;align-items:center;gap:8px;font-size:16px;color:#d6d9e4;margin-bottom:10px;min-width:0;white-space:nowrap;overflow:hidden;}.balance-label span{min-width:0;overflow:hidden;text-overflow:ellipsis;}.balance-label .eye{width:18px;height:18px;opacity:.85;flex:0 0 auto;cursor:pointer;}.amount{font-size: clamp(28px,7vw,33px);line-height:1.05;font-weight:700;letter-spacing:-.05em;margin:0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.fx{font-size:14px;color:var(--muted);margin-bottom:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cta-row{display:flex;gap:10px;flex-wrap:wrap;}.btn{height:42px;border-radius:999px;border:0;display:inline-flex;align-items:center;gap:8px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s ease;white-space:nowrap;min-width:0;max-width:100%;}.btn:active{transform:scale(.98)}.btn-primary{color:#fff;background:linear-gradient(90deg,#6d28d9,#8b5cf6);box-shadow:0 10px 24px rgba(124,58,237,.35);}.btn-outline{background:transparent;color:#e9d5ff;border:1px solid rgba(196,181,253,.35);box-shadow:inset 0 0 0 1px rgba(168,85,247,.03);}.btn svg{width:18px;height:18px;}
+        .home-wallet-placeholder{width:100%;max-width:180px;height:176px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);border-radius:24px;color:rgba(255,255,255,0.25);}.home-wallet-placeholder svg{width:120px;height:120px;}
+        .quick-actions{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;}.action{height:92px;border-radius:18px;border:1px solid rgba(255,255,255,.05);background:rgba(11,16,32,.88);box-shadow:0 8px 24px rgba(0,0,0,.30);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;overflow:hidden;padding:0 4px;cursor:pointer;}.action .circle{width:42px;height:42px;border-radius:999px;display:grid;place-items:center;box-shadow:0 0 18px rgba(168,85,247,.18);flex:0 0 auto;}.action .circle svg{width:18px;height:18px;}.action .label{font-size:11px;line-height:1.15;font-weight:500;color:#e5e7eb;text-align:center;white-space:normal;overflow:visible;max-width:100%;word-break:break-word;}
+        .overview-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;}.stat{border-radius:18px;padding:12px 10px 11px;min-height:124px;background:rgba(11,16,32,.92);overflow:hidden;min-width:0;cursor:pointer;}.stat .ico{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;margin-bottom:12px;flex:0 0 auto;}.stat .ico svg{width:17px;height:17px;}.stat .title{font-size:10px;line-height:1.3;color:#aeb6c5;margin-bottom:6px;white-space:normal;word-break:break-word;overflow:visible;}.stat .value{font-size:14px;line-height:1.1;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.stat .sub{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .chart-card{border-radius:24px;padding:14px 14px 10px;overflow:hidden;}.chart-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px;}.chart-title{font-size:18px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;}.profit{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--green);white-space:nowrap;min-width:0;}.profit .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(34,197,94,.65);flex:0 0 auto;}.profit .muted{color:var(--muted);font-size:13px;font-weight:500;}.chart-wrap{position:relative;height:250px;margin-top:4px;overflow:hidden;}.chart-svg{width:100%;height:100%;display:block;overflow:visible;shape-rendering:geometricPrecision;}.axis-text{font-size:10px;fill:#9ca3af;}.ytext{font-size:10px;fill:#9ca3af;}
+        .transactions{border-radius:24px;overflow:hidden;}.tx-row{display:flex;align-items:center;gap:12px;padding:14px 14px;border-bottom:1px solid rgba(255,255,255,.05);}.tx-row:last-child{border-bottom:0}.tx-ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}.tx-ico svg{width:24px;height:24px;}.tx-main{min-width:0;flex:1;}.tx-title{font-size:15px;font-weight:700;color:#f8fafc;margin-bottom:4px;}.tx-sub{font-size:12px;color:#9aa3b2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.tx-right{text-align:right;flex:0 0 auto;min-width:98px;}.tx-amt{font-size:15px;font-weight:700;margin-bottom:4px;white-space:nowrap;}.status{display:inline-flex;align-items:center;justify-content:center;min-width:70px;height:22px;border-radius:999px;background:rgba(34,197,94,.09);color:#34d399;font-size:11px;font-weight:700;margin-bottom:2px;padding:0 10px;white-space:nowrap;}.menu{width:18px;height:18px;flex:0 0 auto;color:#6b7280;margin-left:6px;}
+
+        /* INVEST */
+        .overview-card{padding:14px;position:relative;overflow:hidden;background:radial-gradient(circle at 90% 0%, rgba(168,85,247,.15), transparent 20%),linear-gradient(180deg, rgba(16,10,37,.88), rgba(11,16,32,.96));border:1px solid rgba(168,85,247,.16);box-shadow:0 0 40px rgba(124,58,237,.10), var(--shadow2);}.overview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}.overview-head h2{margin:0;font-size:18px;line-height:1.3;letter-spacing:-.03em;white-space:normal;word-break:break-word;}.hide-balance{display:inline-flex;align-items:center;gap:7px;color:#d8dbe8;font-size:13px;white-space:nowrap;cursor:pointer;user-select:none;}.hide-balance svg{flex:0 0 auto;width:16px;height:16px;}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}.stat2{min-width:0;border:1px solid rgba(255,255,255,.06);border-radius:14px;background:rgba(11,16,32,.84);padding:12px 12px 11px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.02);}.stat2 .label{font-size:12px;line-height:1.35;color:#d7dae6;margin-bottom:8px;white-space:normal;word-break:break-word;overflow:visible;}.stat2 .value{font-size:18px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.stat2 .ico{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.04);}.stat2 .ico svg{width:16px;height:16px;}
+        .tabs{display:flex;align-items:center;gap:10px;padding:0 2px;margin:18px 6px 0;overflow-x:auto;scrollbar-width:none;}.tabs::-webkit-scrollbar{display:none}.tab{flex:1 0 auto;min-width:max-content;padding:14px 18px 12px;color:#c6cad6;font-size:14px;font-weight:500;text-align:center;position:relative;white-space:nowrap;user-select:none;cursor:pointer;}.tab.active{color:#b56cff;font-weight:600}.tab.active:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,#a855f7,transparent);box-shadow:0 0 14px rgba(168,85,247,.42);}.tab-line{height:1px;background:rgba(255,255,255,.07);margin-top:-1px}
+        .plans-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 16px 12px;}.plans-head h3{margin:0;font-size:17px;line-height:1.3;letter-spacing:-.03em;white-space:normal;word-break:break-word;}.compare-btn{border:1px solid rgba(122,140,255,.18);background:linear-gradient(180deg, rgba(48,58,100,.35), rgba(22,28,51,.65));color:#b7c0ff;height:34px;padding:0 13px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;flex:0 0 auto;white-space:nowrap;cursor:pointer;}.compare-btn svg{width:16px;height:16px;}.plan-card{margin:0 16px 12px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(8,12,24,.96), rgba(9,14,28,.94));box-shadow:var(--shadow2);overflow:hidden;}.plan-main{display:grid;grid-template-columns:94px minmax(0,1fr) 112px;gap:12px;align-items:stretch;}.plan-badge{border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 8px;min-height:110px;gap:6px;text-align:center;overflow:hidden;}.plan-badge .name{font-size:12px;line-height:1.2;white-space:normal;word-break:break-word;max-width:100%;}.plan-badge svg{width:28px;height:28px;}.plan-copy{min-width:0;padding-top:2px;}.plan-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}.plan-title{font-size:15px;font-weight:700;line-height:1.2;white-space:normal;word-break:break-word;}.popular{font-size:11px;font-weight:500;color:#d9c0ff;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.16);padding:4px 8px;border-radius:999px;white-space:nowrap;}.plan-desc{margin:0;color:#c4cad8;font-size:13px;line-height:1.5;max-width:100%;white-space:normal;word-break:break-word;overflow:visible;}.profit-box{border-left:1px solid rgba(255,255,255,.06);padding-left:14px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;min-width:0;gap:10px;}.profit-box .small{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}.profit-box .rate{font-size:32px;line-height:1;font-weight:800;letter-spacing:-.05em;white-space:nowrap;}.invest-now{margin-top:auto;width:100%;height:42px;border:0;border-radius:10px;color:#fff;font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 10px 22px rgba(0,0,0,.22);}.green-btn{background:linear-gradient(180deg,#1f8f49,#106b33)}.purple-btn{background:linear-gradient(180deg,#7a33db,#5420a7)}.amber-btn{background:linear-gradient(180deg,#d98b13,#a86200)}.blue-btn{background:linear-gradient(180deg,#2877d7,#1451a6)}.plan-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);}.meta-item{min-width:0;overflow:hidden;padding-right:8px;border-right:1px solid rgba(255,255,255,.05);}.meta-item:last-child{border-right:0;padding-right:0}.meta-label{color:#98a2b7;font-size:11px;line-height:1.2;margin-bottom:6px;white-space:normal;word-break:break-word;}.meta-value{font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+        .feature-row{margin:4px 16px 0;padding:14px 12px;border-radius:18px;border:1px solid rgba(255,255,255,.06);background:rgba(9,14,28,.90);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}.feature{display:flex;align-items:flex-start;gap:10px;min-width:0;}.feature .icon{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);}.feature .icon svg{width:14px;height:14px;}.feature .txt{min-width:0}.feature .txt b{display:block;font-size:11px;line-height:1.3;margin-bottom:2px;white-space:normal;word-break:break-word;}.feature .txt span{display:block;font-size:10px;line-height:1.3;color:#9aa3b2;white-space:normal;word-break:break-word;}
+
+        .promo{margin:14px 16px 0;padding:16px;border-radius:18px;position:relative;overflow:hidden;border:1px solid rgba(168,85,247,.20);background:radial-gradient(circle at 90% 50%, rgba(168,85,247,.24), transparent 18%),radial-gradient(circle at 100% 0%, rgba(59,130,246,.20), transparent 22%),linear-gradient(135deg, rgba(48,14,78,.98), rgba(25,11,58,.95));box-shadow:0 0 30px rgba(168,85,247,.08), var(--shadow2);}.promo:after{content:"";position:absolute;right:8px;bottom:-6px;width:120px;height:120px;background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), transparent 55%);opacity:.7;pointer-events:none;}.promo-grid{display:grid;grid-template-columns: minmax(0,1fr) auto;gap:16px;align-items:center;position:relative;z-index:1;}.promo h4{margin:0 0 8px;font-size:18px;line-height:1.3;letter-spacing:-.03em;white-space:normal;word-break:break-word;}.promo p{margin:0;font-size:13px;line-height:1.5;color:#d8d7ef;max-width:240px;white-space:normal;word-break:break-word;}.upgrade{border:1px solid rgba(189,160,255,.24);background:rgba(13,11,40,.3);color:#eee7ff;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;box-shadow: inset 0 1px 0 rgba(255,255,255,.05);}.upgrade svg{width:16px;height:16px;}
+
+        /* WITHDRAW */
+        .withdraw-hero{padding:16px;overflow:hidden;background:radial-gradient(circle at 75% 25%, rgba(168,85,247,.22), transparent 18%),linear-gradient(145deg, rgba(7,10,22,.98) 0%, rgba(10,15,30,.98) 62%, rgba(21,9,42,.98) 100%);border:1px solid rgba(168,85,247,.14);}.withdraw-hero-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:12px;align-items:center;}.withdraw-copy{min-width:0}.withdraw-label{display:flex;align-items:center;gap:8px;font-size:15px;color:#d6d9e4;margin-bottom:12px;white-space:nowrap;}.withdraw-eye{width:18px;height:18px;opacity:.85;flex:0 0 auto;}.withdraw-balance{font-size: clamp(30px,7vw,34px);font-weight:700;line-height:1.05;letter-spacing:-.05em;margin-bottom:8px;white-space:nowrap;}.withdraw-fx{font-size:14px;color:var(--muted);}.withdrawable-block{margin-top:18px;}.withdrawable-label{display:flex;align-items:center;gap:8px;font-size:14px;color:#cdd3df;margin-bottom:8px;white-space:nowrap;}.info-ico{width:16px;height:16px;opacity:.8;flex:0 0 auto;}.withdrawable-value{font-size:18px;font-weight:700;color:#b56cff;}.withdraw-art{display:flex;align-items:center;justify-content:center;min-width:0;}.withdraw-art svg{width:100%;max-width:190px;height:auto;display:block;}.withdraw-section-title{font-size:18px;font-weight:600;margin-bottom:14px;}.withdraw-method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}.method-card{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:#0b1020;padding:14px 10px 13px;text-align:center;color:#fff;cursor:pointer;}.method-card.active{border-color:#9333ea;box-shadow:0 0 0 1px rgba(147,51,234,.15), inset 0 0 0 1px rgba(147,51,234,.06);}.method-icon{width:48px;height:48px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;}.method-icon svg{width:28px;height:28px;}.method-purple{background:linear-gradient(135deg,#6d28d9,#a855f7)}.method-green{background:linear-gradient(135deg,#15803d,#22c55e)}.method-amber{background:linear-gradient(135deg,#b45309,#f59e0b)}.method-blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}.method-name{font-size:14px;font-weight:600;line-height:1.3;}.method-time{font-size:12px;color:#9ca3af;margin-top:6px;}.method-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:#9333ea;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;}.withdraw-form{padding:16px;}.field-label{font-size:14px;color:#cfd3dd;margin-bottom:10px;}.bank-select{height:60px;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:#0b1020;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 12px;margin-bottom:14px;gap:12px;}.bank-left{display:flex;align-items:center;gap:12px;min-width:0;}.bank-badge{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(168,85,247,.14);color:#b56cff;flex:0 0 auto;}.bank-badge svg{width:20px;height:20px;}.bank-info{min-width:0;}.bank-top{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.bank-top span{font-weight:500;color:#c9ced8;margin-left:6px;}.bank-sub{font-size:13px;color:#9ca3af;margin-top:4px;}.drop-ico{width:18px;height:18px;color:#b56cff;flex:0 0 auto;}.amount-input{height:56px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:#0b1020;display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:12px;}.placeholder{color:#707887;font-size:16px;}.currency{font-weight:600;color:#c7ccd5;}.amount-presets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:16px;}.preset{height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.07);background:#0b1020;color:#e5e7eb;font-size:13px;font-weight:500;cursor:pointer;}.preset-max{color:#b56cff;}.fee-row,.receive-row{display:flex;justify-content:space-between;align-items:center;gap:10px;}.fee-row{color:#d4d8e1;margin-bottom:12px;font-size:14px;}.receive-row{font-size:16px;font-weight:700;color:#22c55e;margin-bottom:0;}.receive-row span:first-child{font-size:15px;font-weight:400;color:#d4d8e1;}.withdraw-btn{width:100%;height:52px;border:0;border-radius:14px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(180deg,#7c3aed,#5b21b6);box-shadow:0 10px 24px rgba(124,58,237,.28);}.notice-box{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}.notice-title{color:#b56cff;font-weight:600;margin-bottom:8px;}.notice-text{color:#9ca3af;font-size:14px;line-height:1.6;}.field-error{color:#f87171; font-size:12px; margin-top:-8px; margin-bottom:8px; display:none;}
+
+        /* WALLET VIEW */
+        .wallet-hero{padding:16px;overflow:hidden;background:radial-gradient(circle at 74% 24%, rgba(168,85,247,.22), transparent 18%),linear-gradient(145deg, rgba(7,10,22,.98) 0%, rgba(10,15,30,.98) 60%, rgba(21,9,42,.98) 100%);border:1px solid rgba(168,85,247,.14);}.wallet-hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:14px;align-items:center;}.wallet-copy{min-width:0}.wallet-label{display:flex;align-items:center;gap:8px;font-size:15px;color:#d6d9e4;margin-bottom:12px;white-space:nowrap;}.wallet-eye{width:18px;height:18px;opacity:.85;flex:0 0 auto;}.wallet-balance{font-size: clamp(31px,7vw,35px);font-weight:700;line-height:1.05;letter-spacing:-.05em;margin-bottom:8px;white-space:nowrap;}.wallet-fx{font-size:14px;color:var(--muted);}.wallet-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;}.wallet-stat{min-width:0;}.wallet-stat-split{padding-left:14px;border-left:1px solid rgba(255,255,255,.07);}.wallet-stat-label{display:flex;align-items:center;gap:6px;font-size:14px;color:#cdd3df;margin-bottom:8px;white-space:nowrap;}.wallet-stat-value{font-size:18px;font-weight:700;white-space:nowrap;}.wallet-green{color:#22f06a}.wallet-purple{color:#b56cff}.wallet-art-container{display:flex;align-items:center;justify-content:center;min-width:0;}.wallet-art-container svg{width:100%;max-width:205px;height:auto;display:block;}.wallet-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;}.wallet-action{border-radius:16px;border:1px solid rgba(255,255,255,.06);background:#0b1020;padding:14px 8px 13px;text-align:center;cursor:pointer;color:#fff;min-width:0;}.wallet-action-ico{width:40px;height:40px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;}.wallet-action-ico svg{width:20px;height:20px;color:#fff;}.wallet-action-ico.green{background:rgba(34,197,94,.14);color:#22c55e}.wallet-action-ico.purple{background:rgba(168,85,247,.14);color:#b56cff}.wallet-action-ico.blue{background:rgba(59,130,246,.14);color:#60a5fa}.wallet-action-ico.amber{background:rgba(245,158,11,.14);color:#f59e0b}.wallet-action-ico.cobalt{background:rgba(96,165,250,.14);color:#60a5fa}.wallet-action-title{font-size:14px;font-weight:600;line-height:1.2;margin-bottom:4px;}.wallet-action-sub{font-size:12px;color:#9ca3af;line-height:1.15;}.wallet-head{margin-bottom:12px;}.wallet-manage{color:#b56cff;}.wallet-card-list{padding:2px 0;overflow:hidden;}.wallet-account{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 14px;border-bottom:1px solid rgba(255,255,255,.05);}.wallet-account:last-child{border-bottom:0;}.wallet-account-left{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}.wallet-coin{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}.wallet-coin svg{width:24px;height:24px;}.wallet-coin.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed)}.wallet-coin.green{background:linear-gradient(135deg,#15803d,#22c55e)}.wallet-coin.amber{background:linear-gradient(135deg,#a16207,#f59e0b)}.wallet-account-info{min-width:0;}.wallet-account-top{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:4px;}.wallet-account-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.primary-tag{font-size:11px;color:#cfa8ff;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.14);padding:3px 7px;border-radius:999px;flex:0 0 auto;}.wallet-account-value{font-size:15px;font-weight:700;margin-bottom:4px;white-space:nowrap;}.wallet-account-sub{font-size:12px;color:#9ca3af;white-space:nowrap;}.wallet-account-actions{display:flex;align-items:center;gap:10px;flex:0 0 auto;}.small-action{height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0b1020;color:#e8ebf1;padding:0 12px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;white-space:nowrap;cursor:pointer;}.small-action svg{width:14px;height:14px;}.deposit-purple{color:#c792ff;background:rgba(168,85,247,.14);border-color:rgba(168,85,247,.15);}.deposit-green{color:#22c55e;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.14);}.deposit-amber{color:#f59e0b;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.14);}.row-chevron{width:16px;height:16px;color:#9097a7;flex:0 0 auto;}.wallet-transactions{padding:2px 0;}.wallet-tx-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);}.wallet-tx-row:last-child{border-bottom:0;}.secure-banner{padding:16px;background:radial-gradient(circle at 12% 50%, rgba(168,85,247,.18), transparent 17%),linear-gradient(135deg, rgba(27,9,55,.95), rgba(10,15,30,.98));border:1px solid rgba(168,85,247,.16);display:flex;align-items:center;justify-content:space-between;gap:16px;}.secure-left{display:flex;align-items:center;gap:14px;min-width:0;flex:1;}.secure-ico{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%, rgba(168,85,247,.30), rgba(91,33,182,.18));flex:0 0 auto;box-shadow:0 0 22px rgba(168,85,247,.16);}.secure-ico svg{width:32px;height:32px;color:#c084fc;}.secure-title{font-size:16px;font-weight:700;margin-bottom:4px;}.secure-text{font-size:13px;color:#c9ced8;line-height:1.35;max-width:190px;}.secure-btn{height:44px;border:0;border-radius:10px;padding:0 16px;color:#fff;background:linear-gradient(180deg,#7c3aed,#5b21b6);display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px rgba(124,58,237,.25);}.secure-btn svg{width:16px;height:16px;}
+
+        /* COMMUNITY VIEW */
+        .community-hero{border-radius:26px;padding:18px;background:linear-gradient(145deg, rgba(10,14,30,.98), rgba(18,10,40,.98));border:1px solid rgba(168,85,247,.15);box-shadow:0 0 40px rgba(124,58,237,.12), var(--shadow2);overflow:hidden;}.community-hero-top{display:flex;align-items:flex-start;gap:14px;}.community-avatar{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 40% 40%, rgba(168,85,247,.35), rgba(91,33,182,.20));display:grid;place-items:center;flex:0 0 auto;box-shadow:0 0 40px rgba(168,85,247,.5);}.community-avatar svg{width:44px;height:44px;color:#c084fc;}.community-hero-info{flex:1;min-width:0;}.community-hero-title{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.2;display:flex;align-items:center;gap:6px;}.verified-check{width:20px;height:20px;border-radius:50%;background:#8b5cf6;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}.verified-check svg{width:12px;height:12px;color:#fff;}.community-members-row{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:#c9ced8;}.online-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.6);flex:0 0 auto;}.online-text{color:#22c55e;font-weight:600;}.community-desc{font-size:13px;color:#9aa3b2;line-height:1.5;margin-top:10px;}.community-invite-btn{height:46px;padding:0 20px;border-radius:14px;border:0;background:linear-gradient(90deg,#6d28d9,#8b5cf6);color:#fff;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;white-space:nowrap;box-shadow:0 10px 24px rgba(124,58,237,.25);margin-top:14px;cursor:pointer;}.community-invite-btn svg{width:16px;height:16px;}
+
+        .community-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}.community-quick-card{height:100px;border-radius:18px;border:1px solid rgba(255,255,255,.05);background:rgba(11,16,32,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:12px 6px;cursor:pointer;}.community-quick-ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}.community-quick-ico svg{width:20px;height:20px;color:#fff;}.community-quick-ico.purple{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}.community-quick-ico.blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}.community-quick-ico.green{background:linear-gradient(135deg,#15803d,#22c55e)}.community-quick-ico.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}.community-quick-label{font-size:13px;font-weight:600;}.community-quick-status{font-size:11px;color:#9ca3af;}.community-quick-status .live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;box-shadow:0 0 8px rgba(34,197,94,.5);}
+
+        .community-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 2px;scrollbar-width:none;}.community-tabs::-webkit-scrollbar{display:none}.community-tab{flex:1 0 auto;min-width:max-content;padding:12px 16px;font-size:13px;font-weight:500;color:#9ca3af;text-align:center;white-space:nowrap;cursor:pointer;position:relative;}.community-tab.active{color:#b56cff;font-weight:600;border-bottom:2px solid #a855f7;}
+
+        .community-pinned{padding:14px;border-radius:18px;background:#0a1020;border:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;}.community-pin-ico{width:36px;height:36px;border-radius:50%;background:rgba(168,85,247,.14);display:grid;place-items:center;flex:0 0 auto;}.community-pin-ico svg{width:18px;height:18px;color:#b56cff;}.community-pin-text{flex:1;min-width:0;}.community-pin-title{font-size:14px;font-weight:600;margin-bottom:4px;}.community-pin-sub{font-size:12px;color:#9ca3af;}.community-pin-arrow{width:18px;height:18px;color:#6b7280;flex:0 0 auto;}
+
+        .community-chat-layout{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:10px;align-items:start;}.community-chat-col{display:flex;flex-direction:column;gap:10px;max-height:600px;overflow-y:auto;}.community-sidebar-col{display:flex;flex-direction:column;gap:10px;}
+
+        .community-chat-card{border-radius:18px;border:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg, rgba(11,16,32,.98), rgba(7,10,20,.98));padding:14px;}.chat-msg-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}.chat-msg-avatar{width:36px;height:36px;border-radius:50%;background:rgba(168,85,247,.18);display:grid;place-items:center;flex:0 0 auto;font-weight:700;font-size:15px;}.chat-msg-name{font-size:14px;font-weight:600;}.chat-msg-badge{font-size:10px;padding:2px 6px;border-radius:999px;font-weight:600;white-space:nowrap;}.badge-vip{background:rgba(168,85,247,.14);color:#c084fc;border:1px solid rgba(168,85,247,.18);}.badge-admin{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.18);}.chat-msg-body{font-size:14px;line-height:1.55;color:#e5e7eb;margin-bottom:10px;}.chat-proof-card{background:#fff;border-radius:14px;padding:10px;margin-bottom:10px;}.chat-proof-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}.chat-proof-check{width:26px;height:26px;border-radius:50%;background:#22c55e;display:grid;place-items:center;}.chat-proof-check svg{width:14px;height:14px;color:#fff;}.chat-proof-title{font-size:13px;font-weight:700;color:#111;}.chat-proof-amount{font-size:22px;font-weight:800;color:#111;letter-spacing:-.03em;}.chat-proof-sub{font-size:11px;color:#666;margin-top:2px;}.chat-reactions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}.chat-reaction{height:28px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:#0b1020;display:inline-flex;align-items:center;gap:4px;padding:0 10px;font-size:11px;color:#d1d5db;cursor:pointer;}.chat-msg-time{font-size:11px;color:#6b7280;text-align:right;}
+
+        .community-sidebar-card{border-radius:18px;border:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg, rgba(11,16,32,.98), rgba(7,10,20,.98));padding:14px;}.sidebar-card-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}.sidebar-member-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}.sidebar-member-row:last-child{border-bottom:0;}.sidebar-member-avatar{width:30px;height:30px;border-radius:50%;background:rgba(168,85,247,.16);display:grid;place-items:center;flex:0 0 auto;font-size:12px;font-weight:700;}.sidebar-member-name{font-size:13px;font-weight:500;flex:1;min-width:0;}.sidebar-view-all{color:#b56cff;font-size:12px;font-weight:600;margin-top:10px;display:block;text-align:center;cursor:pointer;}
+
+        .live-withdrawal-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}.live-withdrawal-row:last-child{border-bottom:0;}.live-wd-check{width:24px;height:24px;border-radius:50%;background:rgba(34,197,94,.14);display:grid;place-items:center;flex:0 0 auto;}.live-wd-check svg{width:12px;height:12px;color:#22c55e;}.live-wd-info{flex:1;min-width:0;}.live-wd-name{font-size:13px;font-weight:600;}.live-wd-loc{font-size:11px;color:#9ca3af;}.live-wd-amount{font-size:14px;font-weight:700;color:#22c55e;}.live-wd-time{font-size:10px;color:#6b7280;text-align:right;}
+
+        .community-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}.community-stat-mini{display:flex;align-items:center;gap:8px;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.04);background:rgba(11,16,32,.7);}.community-stat-mini-ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}.community-stat-mini-ico svg{width:15px;height:15px;color:#fff;}.community-stat-mini-val{font-size:17px;font-weight:700;line-height:1;}.community-stat-mini-label{font-size:10px;color:#9ca3af;margin-top:2px;}
+
+        .community-input-bar{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(80px + var(--safe));width:min(400px, calc(100% - 20px));z-index:19;height:56px;border-radius:18px;background:rgba(11,16,32,.98);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 12px;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.45);}.community-input-placeholder{flex:1;color:#6b7280;font-size:14px;}.community-emoji-btn{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.04);color:#9ca3af;display:grid;place-items:center;cursor:pointer;font-size:18px;}.community-send-btn{width:40px;height:40px;border-radius:50%;border:0;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 0 18px rgba(124,58,237,.4);}.community-send-btn svg{width:18px;height:18px;}
+
+        .drawer-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:30;opacity:0;pointer-events:none;transition:opacity .35s ease;}.drawer-overlay.open{opacity:1;pointer-events:auto;}.drawer-panel{position:fixed;top:0;left:0;width:82%;max-width:360px;height:100vh;background:linear-gradient(180deg, rgba(7,10,20,.98), rgba(5,8,18,.99));border-right:1px solid rgba(255,255,255,.05);box-shadow:0 0 50px rgba(0,0,0,.65),0 0 40px rgba(139,92,246,.08);border-radius:0 34px 34px 0;z-index:31;transform:translateX(-100%);transition:transform .45s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding:24px 22px 40px;display:flex;flex-direction:column;}.drawer-panel.open{transform:translateX(0);}.drawer-close-btn{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.03);border:0;color:#fff;display:grid;place-items:center;cursor:pointer;opacity:.7;}.drawer-close-btn svg{width:18px;height:18px;}
+
+        .drawer-profile{display:flex;align-items:center;gap:14px;margin-bottom:28px;}.drawer-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(180deg,#8b5cf6,#4c1d95);box-shadow:0 0 35px rgba(139,92,246,.45);display:grid;place-items:center;flex:0 0 auto;font-size:26px;font-weight:700;cursor:pointer;overflow:visible;position:relative;}.drawer-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;}.drawer-avatar .camera-icon{ position:absolute; bottom:-2px; right:-2px; width:24px; height:24px; background:#9333ea; border-radius:50%; display:grid; place-items:center; box-shadow:0 0 8px rgba(0,0,0,.5); }.drawer-avatar .camera-icon svg{width:12px;height:12px;color:#fff;}.drawer-user-info{min-width:0;}.drawer-name{font-size:26px;font-weight:700;letter-spacing:-.04em;display:flex;align-items:center;gap:4px;}.drawer-name .verified-check{width:20px;height:20px;border-radius:50%;background:#8b5cf6;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}.drawer-name .verified-check svg{width:12px;height:12px;color:#fff;}.drawer-membership{font-size:13px;color:#a855f7;margin-top:4px;}.drawer-id{font-size:12px;color:#7c8597;margin-top:6px;display:flex;align-items:center;gap:6px;}.drawer-id svg{width:13px;height:13px;}.drawer-vip-card{border-radius:22px;padding:18px;background:linear-gradient(145deg, rgba(45,15,85,.95), rgba(25,10,50,.95));border:1px solid rgba(168,85,247,.18);box-shadow:0 0 30px rgba(139,92,246,.12);display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;cursor:pointer;}.drawer-section-label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7c8597;margin:26px 0 14px;}.drawer-menu-item{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 4px;cursor:pointer;}.drawer-menu-left{display:flex;align-items:center;gap:14px;}.drawer-menu-icon{width:20px;height:20px;opacity:.92;}.drawer-menu-label{font-size:17px;font-weight:500;}.drawer-menu-arrow{opacity:.5;width:16px;height:16px;}.drawer-colored-icon{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto;}.drawer-colored-icon svg{width:18px;height:18px;}.drawer-help-card{border-radius:20px;padding:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:12px;margin-top:auto;margin-bottom:20px;}.drawer-help-card svg{width:16px;height:16px;}.drawer-footer{display:flex;justify-content:space-between;color:#7c8597;font-size:13px;padding-top:16px;border-top:1px solid rgba(255,255,255,.05);}
+
+        .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:40;display:none;justify-content:center;align-items:center;padding:20px;}.modal-overlay.open{display:flex}.modal-panel{background:linear-gradient(180deg, rgba(12,18,38,.92), rgba(10,15,30,.92));border:1px solid var(--line);border-radius:24px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.6);}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}.modal-title{font-size:20px;font-weight:700;}.modal-close-btn{background:rgba(255,255,255,.05);border:0;color:#fff;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer;}
+
+        .payment-account-card{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.14);border-radius:18px;padding:16px;margin:16px 0;text-align:center;position:relative;}.payment-account-number{font-size:24px;font-weight:800;letter-spacing:2px;color:#c084fc;margin-bottom:8px;}.payment-account-name{font-size:15px;color:#d8d7ef;margin-bottom:4px;}.payment-account-bank{font-size:13px;color:#9ca3af;}.copy-btn{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;}.copy-btn.copied{background:rgba(34,197,94,.14);border-color:#22c55e;color:#4ade80;}
+
+        .processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:60;display:none;justify-content:center;align-items:center;flex-direction:column;gap:20px;}.processing-overlay.open{display:flex}.spinner{width:60px;height:60px;border:4px solid rgba(168,85,247,.2);border-top-color:#a855f7;border-radius:50%;animation:spin .8s linear infinite;}@keyframes spin{to{transform:rotate(360deg)}}.processing-text{color:#fff;font-size:18px;font-weight:600;}
+
+        .success-check-wrap{width:80px;height:80px;margin:0 auto 20px;position:relative;display:grid;place-items:center;}.success-check-circle{width:80px;height:80px;border-radius:50%;background:rgba(34,197,94,0.12);position:absolute;border:3px solid #22c55e;box-shadow:0 0 30px rgba(34,197,94,0.25);animation:pulseCheck 1.8s ease-in-out infinite;}@keyframes pulseCheck{0%,100%{box-shadow:0 0 20px rgba(34,197,94,0.25)}50%{box-shadow:0 0 50px rgba(34,197,94,0.6)}}.success-check-mark{position:relative;z-index:2;}.success-check-mark svg{width:40px;height:40px;}.success-check-mark svg path{stroke:#22c55e;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:drawCheck 0.6s ease forwards 0.4s;}@keyframes drawCheck{to{stroke-dashoffset:0}}
+
+        .detail-square{background:rgba(11,16,32,.7);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.06);margin-bottom:16px;}.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}.detail-row:last-child{border-bottom:0;}.detail-label{color:#9ca3af;font-size:13px;}.detail-value{font-weight:600;font-size:14px;color:#e5e7eb;}.detail-value.green{color:#22c55e;}.detail-value.red{color:#f87171;}.detail-value.ref{font-family:'Courier New',monospace;font-size:12px;letter-spacing:1px;}
+
+        .currency-selector{position:relative}.currency-btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;cursor:pointer}.currency-dropdown{position:absolute;top:100%;right:0;margin-top:6px;background:#0d1128;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.5);display:none;z-index:50}.currency-dropdown.open{display:block}.currency-option{padding:10px 18px;font-size:14px;cursor:pointer;white-space:nowrap;color:#d1d5db;font-weight:500}.currency-option:hover{background:rgba(255,255,255,.04)}.currency-option.selected{color:#a855f7;font-weight:600}
+
+        .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(10px + var(--safe));width:min(430px,100%);z-index:20;padding:0 10px;}.nav-shell{display:flex;align-items:stretch;justify-content:space-between;padding:2px 4px;border-radius:26px;background:rgba(11,16,32,.98);border:1px solid rgba(255,255,255,.05);box-shadow:var(--shadow);backdrop-filter:blur(16px);}.nav-item{flex:1;min-width:0;border:0;background:transparent;color:#9aa3b2;padding:10px 2px 11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;line-height:1;cursor:pointer;position:relative;overflow:hidden;}.nav-item svg{width:22px;height:22px;}.nav-item span{width:100%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}.nav-item.active{color:#a855f7}.nav-item.active svg{color:#a855f7}.nav-item .dot{position:absolute;bottom:3px;width:6px;height:6px;border-radius:50%;background:#a855f7;box-shadow:0 0 10px rgba(168,85,247,.5);display:none;}.nav-item.active .dot{display:block}
+
+        @media (max-width:390px){.overview-head h2{font-size:17px}.stat-grid{gap:8px}.stat{padding:11px 10px}.stat .value{font-size:16px}.plan-main{grid-template-columns:84px minmax(0,1fr) 104px}.plan-badge{min-height:104px}.profit-box .rate{font-size:30px}.feature-row{gap:10px}.wallet-actions{gap:8px}.wallet-action{padding:13px 6px 12px}.wallet-action-sub{font-size:11px}.wallet-account{padding:13px 12px}.small-action{padding:0 10px}.community-chat-layout{grid-template-columns:1fr}.community-sidebar-col{display:none}}
+        @media (max-width:360px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-main{grid-template-columns:1fr}.plan-badge{min-height:88px}.profit-box{border-left:0;padding-left:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}.plan-meta{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))}.promo-grid{grid-template-columns:1fr}.upgrade{justify-content:center;width:100%}.wallet-hero-grid{grid-template-columns:1fr}.wallet-art-container{order:-1}.wallet-stats{grid-template-columns:1fr}.wallet-stat-split{padding-left:0;border-left:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}.wallet-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.wallet-account{flex-direction:column;align-items:flex-start}.wallet-account-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}.secure-banner{flex-direction:column;align-items:flex-start}.secure-btn{width:100%;justify-content:center}.community-hero-top{flex-direction:column;align-items:center;text-align:center}.community-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer-panel" id="drawerPanel">
+        <button class="drawer-close-btn" id="drawerCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        <div class="drawer-profile">
+            <div class="drawer-avatar" id="drawerAvatar" title="Change avatar">
+                J
+                <input type="file" id="avatarInput" accept="image/*" style="display:none">
+                <div class="camera-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+            </div>
+            <div class="drawer-user-info">
+                <div class="drawer-name">John Adeyemi <span class="verified-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span></div>
+                <div class="drawer-membership">👑 Premium Member</div>
+                <div class="drawer-id">ID: 87364521 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+            </div>
+        </div>
+        <div class="drawer-vip-card" id="upgradeVipBtn">
+            <div><div style="font-size:18px;font-weight:700;">👑 Upgrade to VIP</div><div style="font-size:13px;color:#c9ced8;margin-top:4px;">Unlock higher limits...</div></div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+        </div>
+        <div class="drawer-section-label">Main Menu</div>
+        <div class="drawer-menu-item" data-nav="home"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h6v-6h2v6h6V9"/></svg><span class="drawer-menu-label">Home</span></div><svg class="drawer-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-menu-item" data-nav="invest"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-6"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg><span class="drawer-menu-label">Invest</span></div><svg class="drawer-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-menu-item" data-nav="withdraw"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="drawer-menu-label">Withdraw</span></div><svg class="drawer-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-menu-item" data-nav="wallet"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M3 7h18v10H3z"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M8 11h8"/></svg><span class="drawer-menu-label">Wallet</span></div><svg class="drawer-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-menu-item" data-nav="community"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/><path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/></svg><span class="drawer-menu-label">Community</span></div><svg class="drawer-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-section-label">Quick Actions</div>
+        <div class="drawer-menu-item" id="drawerDepositBtn"><div class="drawer-menu-left"><div class="drawer-colored-icon" style="background:rgba(34,197,94,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div><span class="drawer-menu-label">Deposit Funds</span></div></div>
+        <div class="drawer-menu-item" id="drawerReferBtn"><div class="drawer-menu-left"><div class="drawer-colored-icon" style="background:rgba(245,158,11,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.1"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/><path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/></svg></div><span class="drawer-menu-label">Refer & Earn</span></div></div>
+        <div class="drawer-menu-item" id="drawerTxHistoryBtn"><div class="drawer-menu-left"><div class="drawer-colored-icon" style="background:rgba(59,130,246,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="drawer-menu-label">Transaction History</span></div></div>
+        <div class="drawer-menu-item" id="drawerHelpBtn"><div class="drawer-menu-left"><div class="drawer-colored-icon" style="background:rgba(168,85,247,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.1"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="drawer-menu-label">Help Center</span></div></div>
+        <div class="drawer-section-label">Other</div>
+        <div class="drawer-menu-item" id="drawerNotificationsBtn"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M15 17H5c1.1-1 2-2.2 2-4V9a5 5 0 0 1 10 0v4c0 1.8.9 3 2 4h-4"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="drawer-menu-label">Notifications</span><span class="badge" style="position:static;margin-left:8px;">3</span></div></div>
+        <div class="drawer-menu-item" id="drawerSecurityBtn"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="drawer-menu-label">Security Center</span></div></div>
+        <div class="drawer-menu-item" id="drawerSettingsBtn"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="drawer-menu-label">Settings</span></div></div>
+        <div class="drawer-menu-item" id="drawerLogoutBtn"><div class="drawer-menu-left"><svg class="drawer-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.1"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="drawer-menu-label" style="color:#ef4444;">Log Out</span></div></div>
+        <div class="drawer-help-card"><div style="font-size:24px;">🎧</div><div style="flex:1;"><div style="font-weight:600;">Need Help?</div><div style="font-size:12px;color:#9ca3af;">Our support team is 24/7</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="drawer-footer"><span>Version 2.4.1</span><span>🛡 100% Secure</span></div>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <button class="icon-btn" id="menuBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+        <div class="title" id="pageTitle">Home</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div class="currency-selector" id="currencySelector"><button class="currency-btn" id="currencyBtn">NGN ▾</button><div class="currency-dropdown" id="currencyDropdown"><div class="currency-option selected" data-currency="NGN">₦ NGN</div><div class="currency-option" data-currency="USD">$ USD</div><div class="currency-option" data-currency="EUR">€ EUR</div><div class="currency-option" data-currency="GBP">£ GBP</div></div></div>
+            <button class="icon-btn" id="notificationBell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17H5c1.1-1 2-2.2 2-4V9a5 5 0 0 1 10 0v4c0 1.8.9 3 2 4h-4"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="badge">3</span></button>
+        </div>
+    </div>
+
+    <!-- Home View -->
+    <div class="view active" id="homeView">
+        <div class="section"><div class="balance-card"><div class="balance-grid"><div><div class="balance-label"><span>Total Balance</span><svg class="eye" id="homeBalanceEye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="M3 21l18-18"/></svg></div><div class="amount" id="homeBalance">₦ 322,000.00</div><div class="fx" id="homeFx">≈ $ 215.74</div><div class="cta-row"><button class="btn btn-primary" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Deposit</button><button class="btn btn-outline" data-nav="withdraw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>Withdraw</button></div></div><div class="home-wallet-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6Z"/><path d="M16 14h4"/><circle cx="16.5" cy="14" r="1.5" fill="currentColor" stroke="none"/></svg></div></div></div></div>
+        <div class="section"><div class="quick-actions" id="quickActions"></div></div>
+        <div class="section" style="margin-top:20px;"><div class="section-header"><div class="section-title">Today's Overview</div><button class="chip" id="overviewPeriodChip">Today<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="overview-grid" id="overviewCards"></div></div>
+        <div class="section" style="margin-top:20px;"><div class="chart-card panel"><div class="chart-top"><div><div class="chart-title">Portfolio Performance</div><div class="profit"><span class="dot"></span>+<span id="profitPercent">220%</span><span class="muted">Since Feb 18</span></div></div><button class="chip">All Time<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="chart-wrap" id="chartContainer"></div></div></div>
+        <div class="section" style="margin-top:20px;"><div class="section-header"><div class="section-title">Recent Transactions</div><button class="icon-btn" style="color:#a855f7;font-size:15px;font-weight:500" id="viewAllTransactionsBtn">View All<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:2px"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="transactions panel" id="recentTransactions"></div></div>
+    </div>
+
+    <!-- Invest View -->
+    <div class="view" id="investView">
+        <div class="section"><div class="overview-card panel"><div class="overview-head"><h2>My Investment Overview</h2><div class="hide-balance" id="hideBalanceToggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="M3 21l18-18"/></svg><span>Hide Balance</span></div></div><div class="stat-grid"><div class="stat2"><div class="label">Total Invested</div><div class="value" style="color:#34d399" id="totalInvested">₦ 100,000.00</div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M4 7h10a2 2 0 0 1 2 2v10H6a2 2 0 0 1-2-2V7Z"/><path d="M8 7V5a2 2 0 0 1 2-2h8v10"/><path d="M8 12h6"/></svg></div></div><div class="stat2"><div class="label">Total Profit</div><div class="value" style="color:#34d399" id="totalProfit">₦ 68,000.00</div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#9bb0ff" stroke-width="2"><path d="M4 17l6-6 4 4 6-6"/><path d="M14 9h6v6"/></svg></div></div><div class="stat2"><div class="label">Active Plans</div><div class="value" style="color:#4ea1ff" id="activePlansCount">2</div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#7fb3ff" stroke-width="2"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M9 11h6"/></svg></div></div><div class="stat2"><div class="label">Total Withdrawn</div><div class="value" style="color:#b56cff" id="totalWithdrawn">₦ 154,000.00</div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div></div></div></div></div>
+        <div class="tabs" id="investTabs"><div class="tab active" data-tab="plans">Investment Plans</div><div class="tab" data-tab="myinvestments">My Investments</div><div class="tab" data-tab="history">Investment History</div></div><div class="tab-line"></div>
+        <div id="investPlansView">
+            <div class="plans-head"><h3>Choose an Investment Plan</h3><button class="compare-btn" id="comparePlansBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M6 7l-2 4h4z"/><path d="M18 7l-2 4h4z"/><path d="M5 17h14"/></svg>Compare Plans</button></div>
+            <div class="plan-card" data-plan="beginner"><div class="plan-main"><div class="plan-badge" style="color:#45ea7b"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 16.8 6.4 19.2l1.1-6.2L3 8.6l6.2-.9L12 2Z"/></svg><div class="name">Beginner Plan</div></div><div class="plan-copy"><div class="plan-title-row"><div class="plan-title" style="color:#2fe56a">Beginner Plan</div><div class="popular">Most Popular</div></div><p class="plan-desc">Perfect for beginners to start earning consistent daily profits.</p></div><div class="profit-box" style="color:#22e05f"><div class="small">Daily Profit</div><div class="rate">3.0%</div><button class="invest-now green-btn invest-now-btn">Invest Now</button></div></div><div class="plan-meta"><div class="meta-item"><div class="meta-label">Minimum Invest</div><div class="meta-value" id="planMin1">₦ 1,000</div></div><div class="meta-item"><div class="meta-label">Maximum Invest</div><div class="meta-value" id="planMax1">₦ 49,999</div></div><div class="meta-item"><div class="meta-label">Duration</div><div class="meta-value">30 Days</div></div><div class="meta-item"><div class="meta-label">Return</div><div class="meta-value">Principal + Profit</div></div></div></div>
+            <div class="plan-card" data-plan="standard"><div class="plan-main"><div class="plan-badge" style="color:#b96cff"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 3 8l3 11h12l3-11-9-6Zm0 3 5.8 4.1-2 7.1H8.2l-2-7.1L12 5Z"/></svg><div class="name">Standard Plan</div></div><div class="plan-copy"><div class="plan-title-row"><div class="plan-title" style="color:#b56cff">Standard Plan</div></div><p class="plan-desc">Higher returns for growing investors.</p></div><div class="profit-box" style="color:#b56cff"><div class="small">Daily Profit</div><div class="rate">3.5%</div><button class="invest-now purple-btn invest-now-btn">Invest Now</button></div></div><div class="plan-meta"><div class="meta-item"><div class="meta-label">Minimum Invest</div><div class="meta-value" id="planMin2">₦ 50,000</div></div><div class="meta-item"><div class="meta-label">Maximum Invest</div><div class="meta-value" id="planMax2">₦ 199,999</div></div><div class="meta-item"><div class="meta-label">Duration</div><div class="meta-value">30 Days</div></div><div class="meta-item"><div class="meta-label">Return</div><div class="meta-value">Principal + Profit</div></div></div></div>
+            <div class="plan-card" data-plan="premium"><div class="plan-main"><div class="plan-badge" style="color:#ffb020"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9.4 7.5l-6 .9 4.3 4.2-1 6 5.3-2.8 5.3 2.8-1-6 4.3-4.2-6-.9L12 2Z"/><path d="M7 22h10"/></svg><div class="name">Premium Plan</div></div><div class="plan-copy"><div class="plan-title-row"><div class="plan-title" style="color:#f2a31b">Premium Plan</div></div><p class="plan-desc">Our most chosen plan with maximum benefits.</p></div><div class="profit-box" style="color:#f2a31b"><div class="small">Daily Profit</div><div class="rate">4.5%</div><button class="invest-now amber-btn invest-now-btn">Invest Now</button></div></div><div class="plan-meta"><div class="meta-item"><div class="meta-label">Minimum Invest</div><div class="meta-value" id="planMin3">₦ 200,000</div></div><div class="meta-item"><div class="meta-label">Maximum Invest</div><div class="meta-value" id="planMax3">₦ 499,999</div></div><div class="meta-item"><div class="meta-label">Duration</div><div class="meta-value">30 Days</div></div><div class="meta-item"><div class="meta-label">Return</div><div class="meta-value">Principal + Profit</div></div></div></div>
+            <div class="plan-card" data-plan="vip" id="vipPlanCard"><div class="plan-main"><div class="plan-badge" style="color:#42a5ff"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2.5 7.2 5 20h14l2.5-12.8L12 2Zm0 4 5.4 3-1.5 7.8H8.1L6.6 9 12 6Z"/></svg><div class="name">VIP Plan</div></div><div class="plan-copy"><div class="plan-title-row"><div class="plan-title" style="color:#4fa0ff">VIP Plan</div></div><p class="plan-desc">Exclusive plan with highest returns and priority support.</p></div><div class="profit-box" style="color:#4fa0ff"><div class="small">Daily Profit</div><div class="rate">6.0%</div><button class="invest-now blue-btn invest-now-btn">Invest Now</button></div></div><div class="plan-meta"><div class="meta-item"><div class="meta-label">Minimum Invest</div><div class="meta-value" id="planMin4">₦ 500,000</div></div><div class="meta-item"><div class="meta-label">Maximum Invest</div><div class="meta-value" id="planMax4">Unlimited</div></div><div class="meta-item"><div class="meta-label">Duration</div><div class="meta-value">30 Days</div></div><div class="meta-item"><div class="meta-label">Return</div><div class="meta-value">Principal + Profit</div></div></div></div>
+            <div class="feature-row"><div class="feature"><div class="icon" style="color:#6bd6ff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 5v6c0 5.5 3.8 9.7 9 11 5.2-1.3 9-5.5 9-11V5l-9-3Z"/><path d="M9 12l2 2 4-5"/></svg></div><div class="txt"><b>100% Secure</b><span>Bank-level security</span></div></div><div class="feature"><div class="icon" style="color:#ffb020"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h7l-1 8 10-13h-7l0-7Z"/></svg></div><div class="txt"><b>Instant Withdrawals</b><span>Withdraw in minutes</span></div></div><div class="feature"><div class="icon" style="color:#39d98a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></div><div class="txt"><b>24/7 Support</b><span>We're here to help</span></div></div><div class="feature"><div class="icon" style="color:#ff7da6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16"/><path d="M12 4v16"/></svg></div><div class="txt"><b>No Hidden Fees</b><span>Transparent system</span></div></div></div>
+            <div class="promo"><div class="promo-grid"><div><h4>Increase Your Earnings</h4><p>Upgrade to VIP and get higher daily profits, priority withdrawals and exclusive bonuses.</p></div><button class="upgrade" id="promoUpgradeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 8 8l-6 1 4 5-1 7 7-4 7 4-1-7 4-5-6-1-4-6Z"/></svg>Upgrade to VIP<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button></div></div>
+        </div>
+        <div id="myInvestmentsView" style="display:none;"><div class="section"><div class="panel" style="padding:20px; text-align:center; color:#9ca3af;">You don't have any active investments. Start investing now!</div></div></div>
+        <div id="investHistoryView" style="display:none;"><div class="section"><div class="panel" style="padding:20px; text-align:center; color:#9ca3af;">No investment history yet.</div></div></div>
+    </div>
+
+    <!-- Withdraw View -->
+    <div class="view" id="withdrawView">
+        <div class="section"><div class="withdraw-hero panel"><div class="withdraw-hero-grid"><div class="withdraw-copy"><div class="withdraw-label">Available Balance<svg class="withdraw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="withdraw-balance" id="withdrawBalance">₦ 322,000.00</div><div class="withdraw-fx" id="withdrawFx">≈ $ 215.74</div><div class="withdrawable-block"><div class="withdrawable-label">Withdrawable Amount<svg class="info-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div><div class="withdrawable-value" id="withdrawableAmount">₦ 318,000.00</div></div></div><div class="withdraw-art"><svg viewBox="0 0 260 220"><defs><linearGradient id="wgrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c084fc"/><stop offset="55%" stop-color="#9333ea"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient><linearGradient id="wgrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7" stop-opacity=".95"/><stop offset="100%" stop-color="#6d28d9" stop-opacity=".7"/></linearGradient></defs><rect x="86" y="54" width="102" height="92" rx="14" fill="url(#wgrad1)"/><rect x="74" y="42" width="108" height="84" rx="14" fill="url(#wgrad2)" opacity=".7"/><rect x="62" y="30" width="112" height="80" rx="14" fill="#7c3aed" opacity=".55"/><circle cx="172" cy="152" r="18" fill="#7c3aed"/><path d="M172 142v18M164 150l8-8 8 8" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div></div>
+        <div class="section"><div class="withdraw-section-title">1. Choose Withdrawal Method</div><div class="withdraw-method-grid">
+            <button class="method-card active" data-method="bank"><div class="method-icon method-purple"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg></div><div class="method-name">Bank Transfer</div><div class="method-time">1-24 Hours</div><span class="method-check">✓</span></button>
+            <button class="method-card" data-method="usdt_trc20"><div class="method-icon method-green"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">₮</text></svg></div><div class="method-name">USDT (TRC20)</div><div class="method-time">5-30 Minutes</div></button>
+            <button class="method-card" data-method="usdt_bep20"><div class="method-icon method-amber"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">₮</text></svg></div><div class="method-name">USDT (BEP20)</div><div class="method-time">5-30 Minutes</div></button>
+            <button class="method-card" data-method="ewallet"><div class="method-icon method-blue"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 8h-6a2 2 0 0 0 0 4h6"/></svg></div><div class="method-name">E-Wallet</div><div class="method-time">Instant</div></button>
+        </div></div>
+        <div class="section"><div class="withdraw-section-title">2. Enter Withdrawal Details</div><div class="panel withdraw-form" id="withdrawDetailsForm"></div></div>
+        <div class="section" style="margin-bottom:120px;"><div class="section-header"><div class="section-title">Recent Withdrawals</div><button class="chip" id="viewAllWithdrawalsBtn">View All<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="transactions panel" id="recentWithdrawals"></div></div>
+    </div>
+
+    <!-- Wallet View -->
+    <div class="view" id="walletView">
+        <div class="section"><div class="wallet-hero panel"><div class="wallet-hero-grid"><div class="wallet-copy"><div class="wallet-label"><span>Total Wallet Balance</span><svg class="wallet-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="wallet-balance" id="walletTotalBalance">₦ 322,000.00</div><div class="wallet-fx" id="walletTotalFx">≈ $ 215.74</div><div class="wallet-stats"><div class="wallet-stat"><div class="wallet-stat-label">Available Balance</div><div class="wallet-stat-value wallet-green" id="availableBalance">₦ 318,000.00</div></div><div class="wallet-stat wallet-stat-split"><div class="wallet-stat-label">Locked Balance<svg class="info-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div><div class="wallet-stat-value wallet-purple" id="lockedBalance">₦ 4,000.00</div></div></div></div><div class="wallet-art-container"><svg viewBox="0 0 260 220"><defs><linearGradient id="walletGrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="50%" stop-color="#6d28d9"/><stop offset="100%" stop-color="#3b0764"/></linearGradient><linearGradient id="walletGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7" stop-opacity=".95"/><stop offset="100%" stop-color="#5b21b6" stop-opacity=".72"/></linearGradient></defs><rect x="88" y="54" width="104" height="92" rx="16" fill="url(#walletGrad1)"/><rect x="74" y="42" width="108" height="84" rx="14" fill="url(#walletGrad2)" opacity=".8"/><rect x="60" y="30" width="112" height="82" rx="14" fill="#5b21b6" opacity=".46"/><circle cx="175" cy="154" r="18" fill="#7c3aed"/><path d="M175 144v18M167 152l8-8 8 8" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div></div>
+        <div class="section"><div class="wallet-actions">
+            <button class="wallet-action"><div class="wallet-action-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div><div class="wallet-action-title">Deposit</div><div class="wallet-action-sub">Add Funds</div></button>
+            <button class="wallet-action"><div class="wallet-action-ico purple"><svg viewBox="0 0 24 24" fill="none" stroke="#b56cff" stroke-width="2.2"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg></div><div class="wallet-action-title">Withdraw</div><div class="wallet-action-sub">Cash Out</div></button>
+            <button class="wallet-action"><div class="wallet-action-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2"><path d="M7 7h14"/><path d="m18 4 3 3-3 3"/><path d="M17 17H3"/><path d="m6 14-3 3 3 3"/></svg></div><div class="wallet-action-title">Transfer</div><div class="wallet-action-sub">Send Money</div></button>
+            <button class="wallet-action"><div class="wallet-action-ico amber"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></div><div class="wallet-action-title">History</div><div class="wallet-action-sub">View All</div></button>
+            <button class="wallet-action"><div class="wallet-action-ico cobalt"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"/><path d="M7 15h3"/></svg></div><div class="wallet-action-title">Cards</div><div class="wallet-action-sub">Manage Cards</div></button>
+        </div></div>
+        <div class="section"><div class="section-header wallet-head"><div class="section-title">Wallet Accounts</div><button class="chip wallet-manage">Manage<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="panel wallet-card-list">
+            <div class="wallet-account"><div class="wallet-account-left"><div class="wallet-coin purple"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><text x="12" y="17" text-anchor="middle" fill="white" font-size="12" font-weight="bold">₦</text></svg></div><div class="wallet-account-info"><div class="wallet-account-top"><span class="wallet-account-name">Naira Wallet</span><span class="primary-tag">Primary</span></div><div class="wallet-account-value" id="nairaWallet">₦ 318,000.00</div><div class="wallet-account-sub">Available</div></div></div><div class="wallet-account-actions"><button class="small-action deposit-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/></svg>Deposit</button><button class="small-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/></svg>Withdraw</button><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="m9 6 6 6-6 6"/></svg></div></div>
+            <div class="wallet-account"><div class="wallet-account-left"><div class="wallet-coin green"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">₮</text></svg></div><div class="wallet-account-info"><div class="wallet-account-top"><span class="wallet-account-name">USDT Wallet (TRC20)</span></div><div class="wallet-account-value">100.50 USDT</div><div class="wallet-account-sub">≈ ₦ 1,620.00</div></div></div><div class="wallet-account-actions"><button class="small-action deposit-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/></svg>Deposit</button><button class="small-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/></svg>Withdraw</button><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="m9 6 6 6-6 6"/></svg></div></div>
+            <div class="wallet-account"><div class="wallet-account-left"><div class="wallet-coin amber"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="bold">₮</text></svg></div><div class="wallet-account-info"><div class="wallet-account-top"><span class="wallet-account-name">USDT Wallet (BEP20)</span></div><div class="wallet-account-value">50.00 USDT</div><div class="wallet-account-sub">≈ ₦ 805.00</div></div></div><div class="wallet-account-actions"><button class="small-action deposit-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/></svg>Deposit</button><button class="small-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/></svg>Withdraw</button><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="m9 6 6 6-6 6"/></svg></div></div>
+        </div></div>
+        <div class="section"><div class="section-header wallet-head"><div class="section-title">Recent Transactions</div><button class="chip wallet-manage" id="viewAllWalletTx">View All<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="panel wallet-transactions" id="walletRecentTx"></div></div>
+        <div class="section" style="margin-bottom:120px;"><div class="secure-banner panel"><div class="secure-left"><div class="secure-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 2l8 4v6c0 5-3.5 9.2-8 10-4.5-.8-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-5"/></svg></div><div><div class="secure-title">Secure Your Wallet</div><div class="secure-text">Enable 2FA and transaction PIN to keep your funds safe.</div></div></div><button class="secure-btn" id="secureNowBtn">Secure Now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="m9 6 6 6-6 6"/></svg></button></div></div>
+    </div>
+
+    <!-- Community View -->
+    <div class="view" id="communityView">
+        <div class="section"><div class="community-hero"><div class="community-hero-top"><div class="community-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/><path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/></svg></div><div class="community-hero-info"><div class="community-hero-title">AI Trading Community<span class="verified-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span></div><div class="community-members-row"><span>12,586 Members</span><span class="online-dot"></span><span class="online-text" id="onlineCount">1,256 Online</span></div><div class="community-desc">Official community for investors to connect, share wins, learn and grow together.</div><button class="community-invite-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>Invite Friends</button></div></div></div></div>
+        <div class="section"><div class="community-quick-grid">
+            <div class="community-quick-card"><div class="community-quick-ico purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="community-quick-label">Chat</div><div class="community-quick-status"><span class="live-dot"></span>Active</div></div>
+            <div class="community-quick-card"><div class="community-quick-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="community-quick-label">Announcements</div><div class="community-quick-status">12 New</div></div>
+            <div class="community-quick-card"><div class="community-quick-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9.2-8 10-4.5-.8-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-5"/></svg></div><div class="community-quick-label">Withdrawals</div><div class="community-quick-status"><span class="live-dot"></span>Live</div></div>
+            <div class="community-quick-card"><div class="community-quick-ico amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/></svg></div><div class="community-quick-label">Members</div><div class="community-quick-status">12.5k</div></div>
+        </div></div>
+        <div class="section"><div class="community-tabs"><div class="community-tab active">General Chat</div><div class="community-tab">Wins & Proofs</div><div class="community-tab">Market Updates</div><div class="community-tab">Help Desk</div></div></div>
+        <div class="section"><div class="community-pinned"><div class="community-pin-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg></div><div class="community-pin-text"><div class="community-pin-title">Welcome to AI Trading Community!</div><div class="community-pin-sub">Read the rules and introduce yourself. Happy trading!</div></div><svg class="community-pin-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></div></div>
+        <div class="section" style="margin-bottom:120px;"><div class="community-chat-layout"><div class="community-chat-col" id="communityChatColumn"></div><div class="community-sidebar-col"><div class="community-sidebar-card"><div class="sidebar-card-title"><span class="online-dot"></span>Online Members <span id="sidebarOnlineCount">1,256</span></div><div id="sidebarOnlineMembers"></div><span class="sidebar-view-all">View All Members →</span></div><div class="community-sidebar-card"><div class="sidebar-card-title">Live Withdrawals</div><div id="liveWithdrawalsFeed"></div></div><div class="community-sidebar-card"><div class="sidebar-card-title">Community Stats</div><div class="community-stats-grid"><div class="community-stat-mini"><div class="community-stat-mini-ico" style="background:rgba(168,85,247,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/></svg></div><div><div class="community-stat-mini-val">12.5k</div><div class="community-stat-mini-label">Total Members</div></div></div><div class="community-stat-mini"><div class="community-stat-mini-ico" style="background:rgba(34,197,94,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><div><div class="community-stat-mini-val" id="onlineStatCount">1,256</div><div class="community-stat-mini-label">Online Now</div></div></div><div class="community-stat-mini"><div class="community-stat-mini-ico" style="background:rgba(59,130,246,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="community-stat-mini-val">842</div><div class="community-stat-mini-label">Messages Today</div></div></div><div class="community-stat-mini"><div class="community-stat-mini-ico" style="background:rgba(245,158,11,.14);"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/></svg></div><div><div class="community-stat-mini-val">156</div><div class="community-stat-mini-label">Withdrawals Today</div></div></div></div></div></div></div></div>
+        <div class="community-input-bar"><span class="community-input-placeholder">Type a message...</span><button class="community-emoji-btn">😊</button><button class="community-send-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button></div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="transactionModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title" id="modalTitle">All Transactions</div><button class="modal-close-btn" id="modalCloseBtn">✕</button></div><div id="modalTransactionsList"></div></div></div>
+    <div class="modal-overlay" id="withdrawConfirmModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Confirm Withdrawal</div><button class="modal-close-btn" id="closeWithdrawConfirmBtn">✕</button></div><div class="tx-row"><div class="tx-main"><div class="tx-title">Bank</div><div class="tx-sub" id="confirmBank">GTBank - 0123456789</div></div></div><div class="tx-row"><div class="tx-main"><div class="tx-title">Amount</div><div class="tx-sub" id="confirmAmount">₦ 0.00</div></div></div><div class="tx-row"><div class="tx-main"><div class="tx-title">Fee</div><div class="tx-sub" style="color:#f87171;">- <span id="confirmFee">₦ 50.00</span></div></div></div><div class="tx-row"><div class="tx-main"><div class="tx-title">You will receive</div><div class="tx-sub" style="color:#22c55e;font-weight:700;" id="confirmReceive">₦ 0.00</div></div></div><div class="tx-row"><div class="tx-main"><div class="tx-title">Date</div><div class="tx-sub" id="confirmDate">May 22, 2026</div></div></div><button style="width:100%;height:52px;border:0;border-radius:14px;color:#fff;font-size:16px;font-weight:700;background:linear-gradient(180deg,#7c3aed,#5b21b6);box-shadow:0 10px 24px rgba(124,58,237,.28);margin-top:14px;" id="finalConfirmWithdrawBtn">Confirm Withdrawal</button></div></div>
+    <div class="modal-overlay" id="investModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Invest in <span id="investPlanName">Plan</span></div><button class="modal-close-btn" id="closeInvestModalBtn">✕</button></div><div class="field-label">Amount (min <span id="investMin">1,000</span>)</div><div class="amount-input"><input type="number" id="investAmountInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">NGN</span></div><div class="fee-row"><span>Daily Profit</span><span id="investDailyRate">3.0%</span></div><div class="receive-row"><span>Expected Return (30 days)</span><span style="color:#22c55e;font-weight:700;" id="investExpectedReturn">₦ 0.00</span></div><button class="withdraw-btn" id="confirmInvestBtn" style="margin-top:14px;">Proceed to Payment</button></div></div>
+    <div class="modal-overlay" id="paymentModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title" id="paymentModalTitle">Deposit Payment</div><button class="modal-close-btn" id="closePaymentModalBtn">✕</button></div><div class="field-label">Amount to Pay</div><div class="amount-input"><span class="placeholder" id="paymentAmount">₦ 0.00</span><span class="currency">NGN</span></div><div class="payment-account-card"><button class="copy-btn" id="copyAccountBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button><div class="payment-account-name">Palmpay Account</div><div class="payment-account-number" id="accountNumberDisplay">8123 4567 8901</div><div class="payment-account-bank">Palmpay - John Adeyemi</div></div><div class="notice-box"><div class="notice-title">Payment Instructions:</div><div class="notice-text">Transfer the exact amount above to the Palmpay account shown. Once payment is confirmed, your balance will be credited automatically.</div></div><button class="withdraw-btn" id="confirmPaymentBtn" style="margin-top:14px;">I've Made Payment</button></div></div>
+    <div class="modal-overlay" id="depositModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Enter Deposit Amount</div><button class="modal-close-btn" id="closeDepositModalBtn">✕</button></div><div class="field-label">How much would you like to deposit?</div><div class="amount-input"><input type="number" id="depositAmountInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">NGN</span></div><div class="amount-presets"><button type="button" class="preset" data-amount="1000">₦1,000</button><button type="button" class="preset" data-amount="5000">₦5,000</button><button type="button" class="preset" data-amount="10000">₦10,000</button><button type="button" class="preset" data-amount="25000">₦25,000</button><button type="button" class="preset" data-amount="50000">₦50,000</button></div><div class="field-error" id="depositError" style="display:none;"></div><button class="withdraw-btn" id="confirmDepositBtn" style="margin-top:8px;">Proceed to Payment</button></div></div>
+    <div class="modal-overlay" id="transferModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Transfer Funds</div><button class="modal-close-btn" id="closeTransferModalBtn">✕</button></div><div class="field-label">Recipient Username</div><div class="amount-input"><input type="text" id="transferRecipient" placeholder="Enter username" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"></div><div class="field-label">Amount</div><div class="amount-input"><input type="number" id="transferAmountInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">NGN</span></div><div class="fee-row"><span>Fee</span><span>₦ 0.00 (Free)</span></div><button class="withdraw-btn" id="confirmTransferBtn" style="margin-top:14px;">Send Transfer</button></div></div>
+    <div class="modal-overlay" id="cardModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Virtual Card</div><button class="modal-close-btn" id="closeCardModalBtn">✕</button></div><div style="background:linear-gradient(135deg, #1e293b, #0f172a); border-radius:20px; padding:20px; margin:10px 0; border:1px solid rgba(255,255,255,0.1);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><span style="font-weight:700; font-size:18px;">Platinum</span><svg width="40" height="40" viewBox="0 0 40 40"><circle cx="25" cy="15" r="12" fill="#eb001b" opacity="0.9"/><circle cx="15" cy="25" r="12" fill="#f79e1b" opacity="0.9"/></svg></div><div style="font-size:24px; letter-spacing:3px; font-weight:700; margin-bottom:16px;">4532 **** **** 8972</div><div style="display:flex; justify-content:space-between; font-size:13px; color:#94a3b8;"><div><div style="font-size:10px;">CARD HOLDER</div>John Adeyemi</div><div><div style="font-size:10px;">EXPIRES</div>12/28</div><div><div style="font-size:10px;">CVV</div>***</div></div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button class="btn btn-outline" style="justify-content:center;">Freeze Card</button><button class="btn btn-outline" style="justify-content:center;">View Details</button></div><div class="notice-box" style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.06); padding-top:14px;"><div class="notice-title">Card Limits</div><div class="notice-text">Daily spending limit: ₦500,000<br>ATM withdrawal: ₦100,000/day</div></div></div></div>
+    <div class="processing-overlay" id="processingOverlay"><div class="spinner"></div><div class="processing-text">Processing...</div></div>
+    <div class="modal-overlay" id="withdrawalSuccessModal"><div class="modal-panel" style="text-align:center; padding:30px 20px;"><div class="success-check-wrap"><div class="success-check-circle"></div><div class="success-check-mark"><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7"/></svg></div></div><div class="modal-title" style="margin-bottom:20px;font-size:20px;">Withdrawal Successful!</div><div class="detail-square"><div class="detail-row"><span class="detail-label">Bank</span><span class="detail-value" id="successBank">GTBank</span></div><div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" id="successAmount">₦ 0.00</span></div><div class="detail-row"><span class="detail-label">Fee</span><span class="detail-value red" id="successFee">- ₦ 50.00</span></div><div class="detail-row"><span class="detail-label">You Received</span><span class="detail-value green" id="successReceive">₦ 0.00</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value" id="successDate">May 22, 2026</span></div><div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value ref" id="successRef">WD87264521</span></div></div><button class="withdraw-btn" id="closeSuccessModalBtn">Done</button></div></div>
+    <div class="modal-overlay" id="helpModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Help Center</div><button class="modal-close-btn" id="closeHelpModalBtn">✕</button></div><div class="notice-box"><div class="notice-title">24/7 Support</div><div class="notice-text">Our support team is available around the clock. Send us a message and we'll get back to you within minutes.</div></div><button class="withdraw-btn" style="margin-top:16px;">Contact Support</button></div></div>
+    <div class="modal-overlay" id="settingsModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Settings</div><button class="modal-close-btn" id="closeSettingsModalBtn">✕</button></div><div class="field-label">Notification Preferences</div><div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05);"><span>Push Notifications</span><label class="switch" style="position:relative; display:inline-block; width:44px; height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,.2); border-radius:24px; transition:.3s;"></span></label></div><div class="field-label" style="margin-top:14px;">Language</div><select style="width:100%;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#0b1020;color:#fff;padding:0 12px;font-size:14px;margin-bottom:14px;"><option>English</option></select><div class="field-label">Display</div><div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;"><span>Dark Mode</span><label class="switch" style="position:relative; display:inline-block; width:44px; height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,.2); border-radius:24px; transition:.3s;"></span></label></div><button class="withdraw-btn" style="margin-top:20px;">Save Settings</button></div></div>
+    <div class="modal-overlay" id="securityModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Security Center</div><button class="modal-close-btn" id="closeSecurityModalBtn">✕</button></div><div class="notice-box"><div class="notice-title">Enable 2FA</div><div class="notice-text">Add an extra layer of protection to your account by enabling two-factor authentication.</div></div><button class="withdraw-btn" style="margin-top:16px;">Enable 2FA</button></div></div>
+    <div class="modal-overlay" id="notificationsModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close-btn" id="closeNotificationsModalBtn">✕</button></div><div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05);"><div class="tx-ico" style="background:rgba(34,197,94,.12);"><svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/></svg></div><div><div style="font-weight:600;">Deposit Successful</div><div style="font-size:12px;color:#9ca3af;">₦15,000 credited to your wallet.</div></div></div><div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05);"><div class="tx-ico" style="background:rgba(245,158,11,.12);"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/></svg></div><div><div style="font-weight:600;">Withdrawal Processed</div><div style="font-size:12px;color:#9ca3af;">₦20,000 sent to Opay.</div></div></div><div style="display:flex; align-items:center; gap:12px; padding:12px 0;"><div class="tx-ico" style="background:rgba(168,85,247,.12);"><svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div><div><div style="font-weight:600;">Security Alert</div><div style="font-size:12px;color:#9ca3af;">New login from Lagos, NG.</div></div></div></div></div>
+    <div class="modal-overlay" id="referModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Refer & Earn</div><button class="modal-close-btn" id="closeReferModalBtn">✕</button></div><div class="payment-account-card"><div class="payment-account-name">Your Referral Code</div><div class="payment-account-number" style="font-size:28px;">JOHN872</div><div class="payment-account-bank">Share with friends and earn 5% commission</div></div><div class="detail-square"><div class="detail-row"><span class="detail-label">Total Referrals</span><span class="detail-value">8</span></div><div class="detail-row"><span class="detail-label">Commissions Earned</span><span class="detail-value green">₦ 12,000.00</span></div></div><button class="withdraw-btn" id="copyReferBtn" style="margin-top:14px;">Copy Referral Link</button></div></div>
+    <div class="modal-overlay" id="comparePlansModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Compare Plans</div><button class="modal-close-btn" id="closeCompareModalBtn">✕</button></div><div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; font-size:13px;">
+        <div style="background:rgba(34,197,94,.08); border-radius:12px; padding:10px; border:1px solid rgba(34,197,94,.2);"><div style="color:#22c55e; font-weight:700; margin-bottom:6px;">Beginner</div><div>Min: ₦1,000</div><div>Max: ₦49,999</div><div>Daily: 3%</div><div>30-day ROI: 190%</div></div>
+        <div style="background:rgba(168,85,247,.08); border-radius:12px; padding:10px; border:1px solid rgba(168,85,247,.2);"><div style="color:#b56cff; font-weight:700; margin-bottom:6px;">Standard</div><div>Min: ₦50,000</div><div>Max: ₦199,999</div><div>Daily: 3.5%</div><div>30-day ROI: 280%</div></div>
+        <div style="background:rgba(245,158,11,.08); border-radius:12px; padding:10px; border:1px solid rgba(245,158,11,.2);"><div style="color:#f59e0b; font-weight:700; margin-bottom:6px;">Premium</div><div>Min: ₦200,000</div><div>Max: ₦499,999</div><div>Daily: 4.5%</div><div>30-day ROI: 370%</div></div>
+        <div style="background:rgba(59,130,246,.08); border-radius:12px; padding:10px; border:1px solid rgba(59,130,246,.2);"><div style="color:#3b82f6; font-weight:700; margin-bottom:6px;">VIP</div><div>Min: ₦500,000</div><div>Max: Unlimited</div><div>Daily: 6%</div><div>30-day ROI: 560%</div></div>
+    </div>
+    <div class="notice-box" style="margin-top:14px;"><div class="notice-title">Note:</div><div class="notice-text">All plans return principal + profit at the end of the duration.</div></div></div></div>
+    <div class="modal-overlay" id="overviewDetailModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title" id="overviewDetailTitle">Detail</div><button class="modal-close-btn" id="closeOverviewDetailBtn">✕</button></div><div class="detail-square"><div class="detail-row"><span class="detail-label">Value</span><span class="detail-value" id="overviewDetailValue">₦0.00</span></div><div class="detail-row"><span class="detail-label">Description</span><span class="detail-value" id="overviewDetailDesc">-</span></div></div></div></div>
+    <!-- Transfer Success Modal -->
+    <div class="modal-overlay" id="transferSuccessModal"><div class="modal-panel" style="text-align:center; padding:30px 20px;"><div class="success-check-wrap"><div class="success-check-circle"></div><div class="success-check-mark"><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7"/></svg></div></div><div class="modal-title" style="margin-bottom:20px;font-size:20px;">Transfer Successful!</div><div class="detail-square"><div class="detail-row"><span class="detail-label">Recipient</span><span class="detail-value" id="transferSuccessRecipient">-</span></div><div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" id="transferSuccessAmount">₦0.00</span></div><div class="detail-row"><span class="detail-label">Fee</span><span class="detail-value">₦ 0.00 (Free)</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value" id="transferSuccessDate">-</span></div><div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value ref" id="transferSuccessRef">-</span></div></div><button class="withdraw-btn" id="closeTransferSuccessBtn">Done</button></div></div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav"><div class="nav-shell">
+    <button class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h6v-6h2v6h6V9"/></svg><span>Home</span><span class="dot"></span></button>
+    <button class="nav-item" data-view="invest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-6"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg><span>Invest</span><span class="dot"></span></button>
+    <button class="nav-item" data-view="withdraw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span>Withdraw</span><span class="dot"></span></button>
+    <button class="nav-item" data-view="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M3 7h18v10H3z"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M8 11h8"/></svg><span>Wallet</span><span class="dot"></span></button>
+    <button class="nav-item" data-view="community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/><path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/></svg><span>Community</span><span class="dot"></span></button>
+</div></div>
+
+<script>
+(function() {
+  const rates = { NGN:1, USD:0.00067, EUR:0.00061, GBP:0.00052 };
+  const symbols = { NGN:'₦', USD:'$', EUR:'€', GBP:'£' };
+  let currentCurrency = 'NGN';
+  const FEE = 50;
+  let balanceHidden = false;
+  let overviewPeriod = 'today';
+  const base = { homeBalance:322000, totalInvested:100000, totalProfit:68000, totalWithdrawn:154000, walletTotal:322000, walletAvailable:318000, walletLocked:4000, nairaWallet:318000, withdrawable:318000, txFee:FEE, activePlans:2, planMin1:1000, planMax1:49999, planMin2:50000, planMax2:199999, planMin3:200000, planMax3:499999, planMin4:500000 };
+  let chartData = [{ label:'Feb 18', value:0 },{ label:'Feb 22', value:8000 },{ label:'Mar 01', value:15000 },{ label:'Mar 10', value:22000 },{ label:'Mar 20', value:30000 },{ label:'Mar 30', value:45000 },{ label:'Apr 05', value:60000 },{ label:'Apr 12', value:78000 },{ label:'Apr 20', value:95000 },{ label:'Apr 28', value:120000 },{ label:'May 05', value:150000 },{ label:'May 10', value:190000 },{ label:'May 15', value:230000 },{ label:'May 18', value:270000 },{ label:'May 22', value:322000 }];
+  let allTransactions = [
+    { title:'Deposit', subtitle:'From GTBank', meta:'Feb 18, 2026 10:15 AM', amount:15000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'Feb 25, 2026 02:22 PM', amount:20000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'Mar 05, 2026 09:45 AM', amount:30000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Withdrawal', subtitle:'To Opay', meta:'Mar 15, 2026 05:30 PM', amount:-10000, amountColor:'#f87171', iconType:'opay', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'Mar 28, 2026 11:10 AM', amount:50000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Withdrawal', subtitle:'To USDT (TRC20)', meta:'Apr 05, 2026 08:20 AM', amount:-20000, amountColor:'#f87171', iconType:'usdt', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'Apr 15, 2026 03:00 PM', amount:80000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Withdrawal', subtitle:'To Opay', meta:'Apr 28, 2026 09:55 AM', amount:-25000, amountColor:'#f87171', iconType:'opay', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'May 10, 2026 07:15 PM', amount:100000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Withdrawal', subtitle:'To GTBank', meta:'May 18, 2026 04:30 PM', amount:-50000, amountColor:'#f87171', iconType:'bank', status:'Completed' },
+    { title:'Withdrawal', subtitle:'To Opay', meta:'May 22, 2026 12:10 PM', amount:-20000, amountColor:'#f87171', iconType:'opay', status:'Completed' },
+    { title:'Deposit', subtitle:'From GTBank', meta:'May 22, 2026 02:00 PM', amount:29000, amountColor:'#4ade80', iconType:'bank', status:'Completed' },
+    { title:'Deposit (USDT)', subtitle:'From Binance', meta:'May 15, 2026 11:20 AM', amount:500, amountColor:'#4ade80', currency:'USD', iconType:'usdt', status:'Completed' },
+    { title:'Withdrawal (USDT)', subtitle:'To Wallet', meta:'May 20, 2026 09:45 AM', amount:-200, amountColor:'#f87171', currency:'USD', iconType:'usdt', status:'Completed' }
+  ];
+  let withdrawalsOnly = allTransactions.filter(tx => tx.title.includes('Withdrawal'));
+
+  function convert(a) { return (a * rates[currentCurrency]).toFixed(2); }
+  function fmt(a) { return symbols[currentCurrency] + ' ' + Number(convert(a)).toLocaleString('en', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+  function addTransaction(type, amount, subtitle, meta, currency=null, iconType=null) {
+    const tx = { title:type, subtitle, meta, amount, amountColor: amount>0?'#4ade80':'#f87171', iconType: iconType || (amount>0?'bank':'opay'), status:'Completed', currency };
+    allTransactions.push(tx);
+    if (type==='Withdrawal') withdrawalsOnly.push(tx);
+  }
+
+  function getIconSVG(type) {
+    if (type==='bank') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>';
+    if (type==='opay') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 8h-6a2 2 0 0 0 0 4h6"/></svg>';
+    if (type==='usdt') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="17" text-anchor="middle" fill="currentColor" font-size="10" font-weight="bold">₮</text></svg>';
+    if (type==='deposit') return '<svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>';
+    if (type==='withdraw') return '<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
+  }
+
+  function updateAll() {
+    if (balanceHidden) {
+      const hideFields = ['homeBalance','homeFx','walletTotalBalance','walletTotalFx','availableBalance','lockedBalance','nairaWallet','withdrawBalance','withdrawFx','withdrawableAmount','totalInvested','totalProfit','totalWithdrawn'];
+      hideFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '****';
+      });
+      document.querySelectorAll('.value').forEach(el => el.textContent = '****');
+      document.getElementById('profitPercent').textContent = '220%';
+      return;
+    }
+    let cv = chartData[chartData.length-1].value;
+    document.getElementById('homeBalance').textContent = fmt(cv);
+    document.getElementById('homeFx').textContent = `≈ $ ${(cv*rates['USD']).toFixed(2)}`;
+    base.homeBalance = cv; base.walletTotal = cv; base.walletAvailable = cv - 4000; base.nairaWallet = base.walletAvailable; base.withdrawable = base.walletAvailable;
+    base.totalProfit = cv - base.totalInvested - base.totalWithdrawn + 68000;
+    document.getElementById('totalInvested').textContent = fmt(base.totalInvested);
+    document.getElementById('totalProfit').textContent = fmt(Math.max(0,base.totalProfit));
+    document.getElementById('totalWithdrawn').textContent = fmt(base.totalWithdrawn);
+    document.getElementById('activePlansCount').textContent = base.activePlans;
+    document.getElementById('walletTotalBalance').textContent = fmt(base.walletTotal);
+    document.getElementById('walletTotalFx').textContent = `≈ $ ${(base.walletTotal*rates['USD']).toFixed(2)}`;
+    document.getElementById('availableBalance').textContent = fmt(base.walletAvailable);
+    document.getElementById('lockedBalance').textContent = fmt(base.walletLocked);
+    document.getElementById('nairaWallet').textContent = fmt(base.nairaWallet);
+    document.getElementById('withdrawBalance').textContent = fmt(base.homeBalance);
+    document.getElementById('withdrawFx').textContent = `≈ $ ${(base.homeBalance*rates['USD']).toFixed(2)}`;
+    document.getElementById('withdrawableAmount').textContent = fmt(base.withdrawable);
+    document.getElementById('withdrawFee').textContent = fmt(base.txFee);
+    document.getElementById('profitPercent').textContent = Math.round(((cv-(chartData[0].value||1))/(chartData[0].value||1))*100) + '%';
+    document.getElementById('planMin1').textContent = fmt(base.planMin1);
+    document.getElementById('planMax1').textContent = fmt(base.planMax1);
+    document.getElementById('planMin2').textContent = fmt(base.planMin2);
+    document.getElementById('planMax2').textContent = fmt(base.planMax2);
+    document.getElementById('planMin3').textContent = fmt(base.planMin3);
+    document.getElementById('planMax3').textContent = fmt(base.planMax3);
+    document.getElementById('planMin4').textContent = fmt(base.planMin4);
+    document.getElementById('currencyBtn').textContent = currentCurrency + ' ▾';
+    document.querySelectorAll('.currency-option').forEach(o => o.classList.toggle('selected', o.dataset.currency===currentCurrency));
+    let amt = parseFloat(document.getElementById('withdrawInput')?.value)||0;
+    let fee = amt>0 ? FEE : 0;
+    if (document.getElementById('receiveAmount')) document.getElementById('receiveAmount').textContent = fmt(Math.max(0,amt-fee));
+    if (document.getElementById('withdrawFee')) document.getElementById('withdrawFee').textContent = fmt(fee);
+    buildChart();
+    renderRecentTx(); renderRecentWithdrawals(); renderWalletTx(); renderOverviewCards();
+  }
+
+  // Currency
+  document.getElementById('currencyBtn').addEventListener('click', () => document.getElementById('currencyDropdown').classList.toggle('open'));
+  document.getElementById('currencyDropdown').addEventListener('click', e => {
+    let opt = e.target.closest('.currency-option'); if(!opt) return;
+    currentCurrency = opt.dataset.currency;
+    document.getElementById('currencyDropdown').classList.remove('open');
+    updateAll();
+  });
+  document.addEventListener('click', e => { if(!e.target.closest('#currencySelector')) document.getElementById('currencyDropdown').classList.remove('open'); });
+
+  // Home balance eye toggle
+  document.getElementById('homeBalanceEye').addEventListener('click', () => {
+    balanceHidden = !balanceHidden;
+    const toggleEl = document.getElementById('hideBalanceToggle');
+    if (toggleEl) toggleEl.querySelector('span').textContent = balanceHidden ? 'Show Balance' : 'Hide Balance';
+    updateAll();
+  });
+
+  // Invest hide balance toggle
+  document.getElementById('hideBalanceToggle').addEventListener('click', () => {
+    balanceHidden = !balanceHidden;
+    const toggleEl = document.getElementById('hideBalanceToggle');
+    toggleEl.querySelector('span').textContent = balanceHidden ? 'Show Balance' : 'Hide Balance';
+    updateAll();
+  });
+
+  // Notification bell
+  document.getElementById('notificationBell').addEventListener('click', () => openModal('notificationsModal'));
+
+  // Overview period chip
+  const periodChip = document.getElementById('overviewPeriodChip');
+  const periods = ['Today','Week','Month'];
+  let periodIndex = 0;
+  periodChip.addEventListener('click', () => {
+    periodIndex = (periodIndex + 1) % periods.length;
+    overviewPeriod = periods[periodIndex].toLowerCase();
+    periodChip.innerHTML = `${periods[periodIndex]}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>`;
+    renderOverviewCards();
+  });
+
+  // Withdraw form rendering
+  let activeWithdrawMethod = 'bank';
+  const withdrawFormContainer = document.getElementById('withdrawDetailsForm');
+  function renderWithdrawForm(method) {
+    let html = '';
+    if (method === 'bank') {
+      html = `
+        <div class="field-label">Recipient Account Number</div>
+        <div class="amount-input"><input type="text" id="withdrawAccountInput" class="placeholder" placeholder="Enter account number" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"></div>
+        <div class="field-label">Bank Name</div>
+        <select id="bankSelect" style="width:100%;height:56px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:#0b1020;color:#fff;padding:0 16px;font-size:16px;margin-bottom:14px;appearance:none;cursor:pointer;">
+          <option value="GTBank">GTBank</option><option value="Opay">Opay</option><option value="Access Bank">Access Bank</option><option value="First Bank">First Bank</option><option value="UBA">UBA</option><option value="Zenith Bank">Zenith Bank</option>
+        </select>
+        <div class="field-label">Amount</div>
+        <div class="amount-input"><input type="number" id="withdrawInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">NGN</span></div>
+        <div class="amount-presets"><button type="button" class="preset" data-amount="1000">₦1,000</button><button type="button" class="preset" data-amount="5000">₦5,000</button><button type="button" class="preset" data-amount="10000">₦10,000</button><button type="button" class="preset" data-amount="25000">₦25,000</button><button type="button" class="preset preset-max" id="maxBtn">Max</button></div>
+        <div class="fee-row"><span>Transaction Fee</span><span id="withdrawFee">₦ 50.00</span></div>
+        <div class="receive-row"><span>You Will Receive</span><span id="receiveAmount">₦ 0.00</span></div>
+        <span class="field-error" id="withdrawError"></span>
+        <button class="withdraw-btn" id="requestWithdrawalBtn">Request Withdrawal</button>
+        <div class="notice-box"><div class="notice-title">Withdrawal Notice:</div><div class="notice-text">Please ensure your details are correct. Incorrect details may cause delay or failed transactions.</div></div>
+      `;
+    } else if (method === 'usdt_trc20' || method === 'usdt_bep20') {
+      const network = method === 'usdt_trc20' ? 'TRC20' : 'BEP20';
+      html = `
+        <div class="field-label">Wallet Address (${network})</div>
+        <div class="amount-input"><input type="text" id="withdrawAccountInput" class="placeholder" placeholder="Enter ${network} wallet address" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"></div>
+        <div class="field-label">Amount (USDT)</div>
+        <div class="amount-input"><input type="number" id="withdrawInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">USDT</span></div>
+        <div class="amount-presets"><button type="button" class="preset" data-amount="10">10 USDT</button><button type="button" class="preset" data-amount="50">50 USDT</button><button type="button" class="preset" data-amount="100">100 USDT</button><button type="button" class="preset" data-amount="500">500 USDT</button><button type="button" class="preset preset-max" id="maxBtn">Max</button></div>
+        <div class="fee-row"><span>Network Fee</span><span id="withdrawFee">1 USDT</span></div>
+        <div class="receive-row"><span>You Will Receive</span><span id="receiveAmount">0 USDT</span></div>
+        <span class="field-error" id="withdrawError"></span>
+        <button class="withdraw-btn" id="requestWithdrawalBtn">Request Withdrawal</button>
+        <div class="notice-box"><div class="notice-title">Withdrawal Notice:</div><div class="notice-text">Ensure the wallet address is correct. USDT withdrawals are processed automatically.</div></div>
+      `;
+    } else if (method === 'ewallet') {
+      html = `
+        <div class="field-label">E-Wallet ID / Email</div>
+        <div class="amount-input"><input type="text" id="withdrawAccountInput" class="placeholder" placeholder="Enter e-wallet ID or email" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"></div>
+        <div class="field-label">Amount</div>
+        <div class="amount-input"><input type="number" id="withdrawInput" class="placeholder" placeholder="Enter amount" style="background:transparent;border:none;color:#fff;font-size:16px;width:100%;outline:none"><span class="currency">NGN</span></div>
+        <div class="amount-presets"><button type="button" class="preset" data-amount="1000">₦1,000</button><button type="button" class="preset" data-amount="5000">₦5,000</button><button type="button" class="preset" data-amount="10000">₦10,000</button><button type="button" class="preset" data-amount="25000">₦25,000</button><button type="button" class="preset preset-max" id="maxBtn">Max</button></div>
+        <div class="fee-row"><span>Transaction Fee</span><span id="withdrawFee">₦ 50.00</span></div>
+        <div class="receive-row"><span>You Will Receive</span><span id="receiveAmount">₦ 0.00</span></div>
+        <span class="field-error" id="withdrawError"></span>
+        <button class="withdraw-btn" id="requestWithdrawalBtn">Request Withdrawal</button>
+        <div class="notice-box"><div class="notice-title">Withdrawal Notice:</div><div class="notice-text">Ensure your e-wallet details are correct. Instant processing.</div></div>
+      `;
+    }
+    withdrawFormContainer.innerHTML = html;
+    bindWithdrawFormEvents();
+  }
+
+  function bindWithdrawFormEvents() {
+    const withdrawInput = document.getElementById('withdrawInput');
+    if (withdrawInput) {
+      withdrawInput.addEventListener('input', () => {
+        let amt = parseFloat(withdrawInput.value)||0;
+        if (activeWithdrawMethod === 'usdt_trc20' || activeWithdrawMethod === 'usdt_bep20') {
+          document.getElementById('receiveAmount').textContent = (Math.max(0, amt - 1)).toFixed(2) + ' USDT';
+          document.getElementById('withdrawFee').textContent = '1 USDT';
+        } else {
+          document.getElementById('receiveAmount').textContent = fmt(Math.max(0, amt - FEE));
+          document.getElementById('withdrawFee').textContent = fmt(amt > 0 ? FEE : 0);
+        }
+      });
+    }
+    const presets = document.querySelectorAll('.preset');
+    presets.forEach(b => {
+      b.addEventListener('click', () => {
+        if (b.id === 'maxBtn') {
+          if (activeWithdrawMethod === 'usdt_trc20' || activeWithdrawMethod === 'usdt_bep20') {
+            document.getElementById('withdrawInput').value = 1000;
+          } else {
+            document.getElementById('withdrawInput').value = base.withdrawable;
+          }
+        } else {
+          document.getElementById('withdrawInput').value = b.dataset.amount;
+        }
+        document.getElementById('withdrawInput').dispatchEvent(new Event('input'));
+      });
+    });
+    const requestBtn = document.getElementById('requestWithdrawalBtn');
+    if (requestBtn) {
+      requestBtn.addEventListener('click', () => {
+        const amount = parseFloat(document.getElementById('withdrawInput').value);
+        const accountNumber = document.getElementById('withdrawAccountInput').value.trim();
+        const errorEl = document.getElementById('withdrawError');
+        if (isNaN(amount)||amount<=0) {
+          errorEl.textContent = 'Please enter a valid amount.'; errorEl.style.display = 'block';
+          setTimeout(() => { errorEl.style.display = 'none'; }, 3000); return;
+        }
+        if (!accountNumber) {
+          errorEl.textContent = 'Please fill in the required field.'; errorEl.style.display = 'block';
+          setTimeout(() => { errorEl.style.display = 'none'; }, 3000); return;
+        }
+        let fee = activeWithdrawMethod.startsWith('usdt') ? 1 : FEE;
+        let receive = Math.max(0, amount - fee);
+        document.getElementById('confirmBank').textContent = activeWithdrawMethod === 'bank' ? `${document.getElementById('bankSelect').value} - ${accountNumber}` : `${activeWithdrawMethod} - ${accountNumber}`;
+        document.getElementById('confirmAmount').textContent = activeWithdrawMethod.startsWith('usdt') ? amount + ' USDT' : fmt(amount);
+        document.getElementById('confirmFee').textContent = activeWithdrawMethod.startsWith('usdt') ? '1 USDT' : fmt(fee);
+        document.getElementById('confirmReceive').textContent = activeWithdrawMethod.startsWith('usdt') ? receive + ' USDT' : fmt(receive);
+        document.getElementById('confirmDate').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+        withdrawConfirmModal.classList.add('open');
+      });
+    }
+  }
+
+  document.querySelectorAll('.method-card').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.method-card').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      activeWithdrawMethod = c.dataset.method;
+      renderWithdrawForm(activeWithdrawMethod);
+      if (activeWithdrawMethod === 'usdt_trc20' || activeWithdrawMethod === 'usdt_bep20') {
+        document.getElementById('withdrawBalance').textContent = '1000.00 USDT';
+        document.getElementById('withdrawFx').textContent = '≈ $ 1000.00';
+        document.getElementById('withdrawableAmount').textContent = '1000.00 USDT';
+      } else {
+        updateAll();
+      }
+    });
+  });
+  renderWithdrawForm('bank');
+
+  // Avatar upload
+  document.getElementById('drawerAvatar').addEventListener('click', () => document.getElementById('avatarInput').click());
+  document.getElementById('avatarInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      const avatar = document.getElementById('drawerAvatar');
+      avatar.innerHTML = '';
+      avatar.appendChild(img);
+      const camera = document.createElement('div');
+      camera.className = 'camera-icon';
+      camera.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+      avatar.appendChild(camera);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Drawer actions
+  document.getElementById('upgradeVipBtn').addEventListener('click', () => {
+    setView('invest');
+    setTimeout(() => document.getElementById('vipPlanCard').scrollIntoView({ behavior:'smooth' }), 200);
+    closeDrawer();
+  });
+  document.getElementById('promoUpgradeBtn').addEventListener('click', () => {
+    document.getElementById('vipPlanCard').scrollIntoView({ behavior:'smooth' });
+  });
+  document.getElementById('drawerDepositBtn').addEventListener('click', () => openDepositModal());
+  document.getElementById('drawerReferBtn').addEventListener('click', () => openModal('referModal'));
+  document.getElementById('drawerTxHistoryBtn').addEventListener('click', () => showModal('All Transactions', allTransactions));
+  document.getElementById('drawerHelpBtn').addEventListener('click', () => openModal('helpModal'));
+  document.getElementById('drawerNotificationsBtn').addEventListener('click', () => openModal('notificationsModal'));
+  document.getElementById('drawerSecurityBtn').addEventListener('click', () => openModal('securityModal'));
+  document.getElementById('drawerSettingsBtn').addEventListener('click', () => openModal('settingsModal'));
+  document.getElementById('drawerLogoutBtn').addEventListener('click', () => { if(confirm('Are you sure you want to log out?')) alert('Logged out successfully.'); });
+  document.getElementById('secureNowBtn').addEventListener('click', () => openModal('securityModal'));
+
+  function closeDrawer() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('drawerPanel').classList.remove('open');
+  }
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // Modal close buttons and overlay clicks
+  document.getElementById('closeHelpModalBtn').addEventListener('click', () => closeModal('helpModal'));
+  document.getElementById('closeSettingsModalBtn').addEventListener('click', () => closeModal('settingsModal'));
+  document.getElementById('closeSecurityModalBtn').addEventListener('click', () => closeModal('securityModal'));
+  document.getElementById('closeNotificationsModalBtn').addEventListener('click', () => closeModal('notificationsModal'));
+  document.getElementById('closeReferModalBtn').addEventListener('click', () => closeModal('referModal'));
+  document.getElementById('closeCompareModalBtn').addEventListener('click', () => closeModal('comparePlansModal'));
+  document.getElementById('closeOverviewDetailBtn').addEventListener('click', () => closeModal('overviewDetailModal'));
+  ['helpModal','settingsModal','securityModal','notificationsModal','referModal','comparePlansModal','overviewDetailModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => { if(e.target === document.getElementById(id)) closeModal(id); });
+  });
+
+  document.getElementById('comparePlansBtn').addEventListener('click', () => openModal('comparePlansModal'));
+  document.getElementById('copyReferBtn').addEventListener('click', () => { navigator.clipboard.writeText('JOHN872').then(() => alert('Referral code copied!')); });
+
+  // Deposit modal with processing overlay
+  function openDepositModal() { document.getElementById('depositModal').classList.add('open'); }
+  document.getElementById('closeDepositModalBtn').addEventListener('click', () => closeModal('depositModal'));
+  document.getElementById('depositModal').addEventListener('click', e => { if(e.target===document.getElementById('depositModal')) closeModal('depositModal'); });
+  document.querySelectorAll('#depositModal .preset').forEach(b => b.addEventListener('click', () => { document.getElementById('depositAmountInput').value = b.dataset.amount; }));
+  document.getElementById('confirmDepositBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('depositAmountInput').value);
+    if (isNaN(amount) || amount <= 0) {
+      const err = document.getElementById('depositError');
+      err.textContent = 'Enter a valid deposit amount';
+      err.style.display = 'block';
+      setTimeout(() => { err.style.display = 'none'; }, 3000);
+      return;
+    }
+    closeModal('depositModal');
+    document.getElementById('processingOverlay').classList.add('open');
+    setTimeout(() => {
+      document.getElementById('processingOverlay').classList.remove('open');
+      openPaymentModal('deposit', amount);
+      document.getElementById('depositAmountInput').value = '';
+    }, 1500);
+  });
+
+  // Payment modal
+  const paymentModal = document.getElementById('paymentModal');
+  const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+  const closePaymentModalBtn = document.getElementById('closePaymentModalBtn');
+  let pendingPaymentType = null; let pendingPaymentAmount = 0;
+  function openPaymentModal(type, amount, extraData=null) {
+    pendingPaymentType = type; pendingPaymentAmount = amount;
+    document.getElementById('paymentAmount').textContent = fmt(amount);
+    document.getElementById('paymentModalTitle').textContent = type==='deposit'?'Deposit Payment':'Investment Payment';
+    paymentModal.classList.add('open');
+    if(extraData){ paymentModal.dataset.planName = extraData.planName; paymentModal.dataset.planKey = extraData.planKey; }
+    else { delete paymentModal.dataset.planName; delete paymentModal.dataset.planKey; }
+  }
+  closePaymentModalBtn.addEventListener('click', () => paymentModal.classList.remove('open'));
+  paymentModal.addEventListener('click', e => { if(e.target===paymentModal) paymentModal.classList.remove('open'); });
+  confirmPaymentBtn.addEventListener('click', () => {
+    if(pendingPaymentType==='deposit') {
+      base.homeBalance += pendingPaymentAmount; base.walletTotal = base.homeBalance; base.walletAvailable += pendingPaymentAmount; base.nairaWallet = base.walletAvailable; base.withdrawable = base.walletAvailable;
+      chartData.push({ label: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), value: base.homeBalance });
+      addTransaction('Deposit', pendingPaymentAmount, 'Palmpay Deposit', new Date().toLocaleString(), null, 'bank');
+    } else if(pendingPaymentType==='invest') {
+      if(pendingPaymentAmount > base.walletAvailable) return alert('Insufficient balance.');
+      base.homeBalance -= pendingPaymentAmount; base.walletTotal = base.homeBalance; base.walletAvailable -= pendingPaymentAmount; base.nairaWallet = base.walletAvailable; base.withdrawable = base.walletAvailable;
+      base.totalInvested += pendingPaymentAmount; base.activePlans++;
+      chartData.push({ label: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), value: base.homeBalance });
+      const planName = paymentModal.dataset.planName || 'Plan';
+      addTransaction('Investment', pendingPaymentAmount, `Invested in ${planName}`, new Date().toLocaleString(), null, 'bank');
+    }
+    paymentModal.classList.remove('open');
+    updateAll();
+  });
+  document.getElementById('copyAccountBtn').addEventListener('click', async () => {
+    const account = document.getElementById('accountNumberDisplay').textContent.trim();
+    try {
+      await navigator.clipboard.writeText(account);
+      const btn = document.getElementById('copyAccountBtn');
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy'; }, 2000);
+    } catch(err) { alert('Failed to copy'); }
+  });
+
+  // Invest modal with processing overlay
+  const investModal = document.getElementById('investModal');
+  document.getElementById('closeInvestModalBtn').addEventListener('click', () => investModal.classList.remove('open'));
+  investModal.addEventListener('click', e => { if(e.target===investModal) investModal.classList.remove('open'); });
+  let currentInvestPlan = null;
+  function openInvestModal(planName, min, dailyRate, planKey) {
+    document.getElementById('investPlanName').textContent = planName;
+    document.getElementById('investMin').textContent = min.toLocaleString();
+    document.getElementById('investDailyRate').textContent = dailyRate + '%';
+    document.getElementById('investAmountInput').value = min;
+    updateInvestExpected();
+    currentInvestPlan = planKey;
+    investModal.classList.add('open');
+  }
+  function updateInvestExpected() {
+    const amount = parseFloat(document.getElementById('investAmountInput').value)||0;
+    const rate = parseFloat(document.getElementById('investDailyRate').textContent)/100;
+    const totalReturn = amount + (amount * rate * 30);
+    document.getElementById('investExpectedReturn').textContent = fmt(totalReturn);
+  }
+  document.getElementById('investAmountInput').addEventListener('input', updateInvestExpected);
+  document.getElementById('confirmInvestBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('investAmountInput').value);
+    if(isNaN(amount)||amount<=0) return alert('Enter valid amount.');
+    investModal.classList.remove('open');
+    document.getElementById('processingOverlay').classList.add('open');
+    setTimeout(() => {
+      document.getElementById('processingOverlay').classList.remove('open');
+      openPaymentModal('invest', amount, { planName: document.getElementById('investPlanName').textContent, planKey: currentInvestPlan });
+    }, 1500);
+  });
+  document.querySelectorAll('.invest-now-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.plan-card');
+      const plan = card.dataset.plan;
+      const min = plan==='beginner'?1000:plan==='standard'?50000:plan==='premium'?200000:500000;
+      const rate = plan==='beginner'?3.0:plan==='standard'?3.5:plan==='premium'?4.5:6.0;
+      openInvestModal(card.querySelector('.plan-title').textContent, min, rate, plan);
+    });
+  });
+
+  // Transfer modal with processing and success modal
+  const transferModal = document.getElementById('transferModal');
+  const transferSuccessModal = document.getElementById('transferSuccessModal');
+  document.getElementById('closeTransferModalBtn').addEventListener('click', () => transferModal.classList.remove('open'));
+  transferModal.addEventListener('click', e => { if(e.target===transferModal) transferModal.classList.remove('open'); });
+  document.getElementById('closeTransferSuccessBtn').addEventListener('click', () => transferSuccessModal.classList.remove('open'));
+  transferSuccessModal.addEventListener('click', e => { if(e.target===transferSuccessModal) transferSuccessModal.classList.remove('open'); });
+
+  document.getElementById('confirmTransferBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('transferAmountInput').value);
+    const recipient = document.getElementById('transferRecipient').value.trim();
+    if (isNaN(amount)||amount<=0) return alert('Enter valid amount.');
+    if (!recipient) return alert('Enter recipient username.');
+    if (amount > base.walletAvailable) return alert('Insufficient balance.');
+
+    transferModal.classList.remove('open');
+    document.getElementById('processingOverlay').classList.add('open');
+
+    setTimeout(() => {
+      document.getElementById('processingOverlay').classList.remove('open');
+
+      base.homeBalance -= amount;
+      base.walletTotal = base.homeBalance;
+      base.walletAvailable -= amount;
+      base.nairaWallet = base.walletAvailable;
+      base.withdrawable = base.walletAvailable;
+      chartData.push({ label: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), value: base.homeBalance });
+      addTransaction('Transfer', -amount, `To ${recipient}`, new Date().toLocaleString(), null, 'wallet');
+
+      document.getElementById('transferAmountInput').value = '';
+      document.getElementById('transferRecipient').value = '';
+
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      const ref = 'TRF' + Math.floor(Math.random()*90000000+10000000);
+      document.getElementById('transferSuccessRecipient').textContent = recipient;
+      document.getElementById('transferSuccessAmount').textContent = fmt(amount);
+      document.getElementById('transferSuccessDate').textContent = date;
+      document.getElementById('transferSuccessRef').textContent = ref;
+      transferSuccessModal.classList.add('open');
+
+      updateAll();
+    }, 1500);
+  });
+
+  document.body.addEventListener('click', e => {
+    const action = e.target.closest('.wallet-action');
+    if(action && action.querySelector('.wallet-action-title')?.textContent.trim()==='Transfer') { transferModal.classList.add('open'); }
+    if(action && action.querySelector('.wallet-action-title')?.textContent.trim()==='Deposit') { openDepositModal(); }
+    if(action && action.querySelector('.wallet-action-title')?.textContent.trim()==='Withdraw') { setView('withdraw'); }
+    if(action && action.querySelector('.wallet-action-title')?.textContent.trim()==='History') { showModal('All Transactions', allTransactions); }
+    if(action && action.querySelector('.wallet-action-title')?.textContent.trim()==='Cards') { document.getElementById('cardModal').classList.add('open'); }
+  });
+  document.getElementById('closeCardModalBtn').addEventListener('click', () => document.getElementById('cardModal').classList.remove('open'));
+  document.getElementById('cardModal').addEventListener('click', e => { if(e.target===document.getElementById('cardModal')) document.getElementById('cardModal').classList.remove('open'); });
+
+  // Invest tabs
+  const investTabs = document.querySelectorAll('#investTabs .tab');
+  investTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      investTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const tabName = tab.dataset.tab;
+      document.getElementById('investPlansView').style.display = tabName === 'plans' ? 'block' : 'none';
+      document.getElementById('myInvestmentsView').style.display = tabName === 'myinvestments' ? 'block' : 'none';
+      document.getElementById('investHistoryView').style.display = tabName === 'history' ? 'block' : 'none';
+    });
+  });
+
+  // Navigation
+  function setView(v) {
+    ['homeView','investView','withdrawView','walletView','communityView'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(v+'View').classList.add('active');
+    document.getElementById('pageTitle').textContent = { home:'Home', invest:'Invest', withdraw:'Withdrawal', wallet:'Wallet', community:'Community' }[v]||'Home';
+    document.querySelectorAll('.nav-item[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view===v));
+    updateAll();
+  }
+  document.querySelectorAll('.nav-item[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  document.addEventListener('click', e => { let t = e.target.closest('[data-nav]'); if(t && t.dataset.nav) setView(t.dataset.nav); });
+
+  // Drawer
+  let drawer = document.getElementById('drawerOverlay'), panel = document.getElementById('drawerPanel');
+  document.getElementById('menuBtn').addEventListener('click', () => { drawer.classList.add('open'); panel.classList.add('open'); });
+  document.getElementById('drawerCloseBtn').addEventListener('click', () => { drawer.classList.remove('open'); panel.classList.remove('open'); });
+  drawer.addEventListener('click', () => { drawer.classList.remove('open'); panel.classList.remove('open'); });
+
+  // Transaction modal
+  let modal = document.getElementById('transactionModal');
+  document.getElementById('modalCloseBtn').addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('open'); });
+  function showModal(t, arr) {
+    document.getElementById('modalTitle').textContent = t;
+    let list = document.getElementById('modalTransactionsList');
+    list.innerHTML = '';
+    arr.forEach(tx => {
+      let s = tx.currency==='USD' ? `${tx.amount>=0?'+':'-'}$${Math.abs(tx.amount).toFixed(2)}` : `${tx.amount>=0?'+':''}${fmt(Math.abs(tx.amount))}`;
+      let row = document.createElement('div');
+      row.className = 'tx-row';
+      row.innerHTML = `<div class="tx-ico" style="background:${tx.amount>0?'rgba(34,197,94,.12)':'rgba(245,158,11,.12)'}">${getIconSVG(tx.iconType)}</div><div class="tx-main"><div class="tx-title">${tx.title}</div><div class="tx-sub">${tx.subtitle} • ${tx.meta}</div></div><div class="tx-right"><div class="tx-amt" style="color:${tx.amountColor}">${s}</div><div class="status">${tx.status}</div></div>`;
+      list.appendChild(row);
+    });
+    modal.classList.add('open');
+  }
+  document.getElementById('viewAllTransactionsBtn').addEventListener('click', () => showModal('All Transactions', allTransactions));
+  document.getElementById('viewAllWithdrawalsBtn').addEventListener('click', () => showModal('All Withdrawals', withdrawalsOnly));
+  document.getElementById('viewAllWalletTx').addEventListener('click', () => showModal('Wallet Transactions', allTransactions));
+
+  // Chart
+  function buildChart() {
+    let maxV = Math.max(...chartData.map(d=>d.value))*1.1||340000;
+    let W=360,H=250,pl=24,pr=20,pt=26,pb=30;
+    let gw=W-pl-pr, gh=H-pt-pb;
+    let xs=i=>pl+(i/(chartData.length-1))*gw;
+    let ys=v=>pt+gh-(v/maxV)*gh;
+    let lp='', ap='';
+    chartData.forEach((p,i)=>{
+      let x=xs(i), y=ys(p.value);
+      if(i===0){ lp+=`M ${x} ${y}`; ap+=`M ${x} ${H-pb} L ${x} ${y}`; }
+      else { lp+=` L ${x} ${y}`; ap+=` L ${x} ${y}`; }
+    });
+    ap+=` L ${xs(chartData.length-1)} ${H-pb} Z`;
+    let yl=[0,Math.round(maxV/2),Math.round(maxV)];
+    let yle=yl.map(v=>`<text class="ytext" x="${pl-6}" y="${ys(v)+4}" text-anchor="end">${symbols[currentCurrency]} ${convert(v)}</text>`).join('');
+    let xle=chartData.filter((_,i)=>i%3===0||i===chartData.length-1).map(p=>`<text class="axis-text" x="${xs(chartData.indexOf(p))}" y="${H-8}" text-anchor="middle">${p.label}</text>`).join('');
+    document.getElementById('chartContainer').innerHTML=`<svg class="chart-svg" viewBox="0 0 ${W} ${H}"><defs><linearGradient id="fillGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.35"/><stop offset="70%" stop-color="#22c55e" stop-opacity="0.08"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>${yl.map(v=>`<line x1="${pl}" y1="${ys(v)}" x2="${W-pr}" y2="${ys(v)}" stroke="rgba(255,255,255,.06)"/>`).join('')}${yle}${xle}<path d="${ap}" fill="url(#fillGreen)"/><path d="${lp}" fill="none" stroke="#22c55e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${xs(chartData.length-1)}" cy="${ys(chartData[chartData.length-1].value)}" r="7" fill="#22c55e"/><circle cx="${xs(chartData.length-1)}" cy="${ys(chartData[chartData.length-1].value)}" r="3" fill="#fff"/></svg>`;
+  }
+  setInterval(()=>{
+    let last=chartData[chartData.length-1];
+    chartData.push({ label: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), value: last.value+Math.floor(Math.random()*1500)+500 });
+    if(chartData.length>20) chartData.shift();
+    updateAll();
+  },30000);
+
+  function renderRecentTx() {
+    let c=document.getElementById('recentTransactions'); c.innerHTML='';
+    allTransactions.slice(-4).reverse().forEach(tx=>{
+      let s=tx.currency==='USD'? `${tx.amount>=0?'+':'-'}$${Math.abs(tx.amount).toFixed(2)}`: `${tx.amount>=0?'+':''}${fmt(Math.abs(tx.amount))}`;
+      c.innerHTML+=`<div class="tx-row"><div class="tx-ico" style="background:${tx.amount>0?'rgba(34,197,94,.12)':'rgba(245,158,11,.12)'}">${getIconSVG(tx.iconType)}</div><div class="tx-main"><div class="tx-title">${tx.title}</div><div class="tx-sub">${tx.subtitle} • ${tx.meta}</div></div><div class="tx-right"><div class="tx-amt" style="color:${tx.amountColor}">${s}</div><div class="status">${tx.status}</div></div><svg class="menu" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></div>`;
+    });
+  }
+  function renderRecentWithdrawals() {
+    let c=document.getElementById('recentWithdrawals'); c.innerHTML='';
+    withdrawalsOnly.slice(-4).reverse().forEach(tx=>{
+      let s=tx.currency==='USD'? `-$${Math.abs(tx.amount).toFixed(2)}`: `-${fmt(Math.abs(tx.amount))}`;
+      c.innerHTML+=`<div class="tx-row"><div class="tx-ico" style="background:${tx.amount>0?'rgba(34,197,94,.12)':'rgba(245,158,11,.12)'}">${getIconSVG(tx.iconType)}</div><div class="tx-main"><div class="tx-title">${tx.title}</div><div class="tx-sub">${tx.subtitle} • ${tx.meta}</div></div><div class="tx-right"><div class="tx-amt" style="color:${tx.amountColor}">${s}</div><div class="status">${tx.status}</div></div><svg class="menu" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></div>`;
+    });
+  }
+  function renderWalletTx() {
+    let c=document.getElementById('walletRecentTx'); c.innerHTML='';
+    allTransactions.slice(-4).reverse().forEach(tx=>{
+      let s=tx.currency==='USD'? `${tx.amount>=0?'+':'-'}$${Math.abs(tx.amount).toFixed(2)}`: `${tx.amount>=0?'+':''}${fmt(Math.abs(tx.amount))}`;
+      c.innerHTML+=`<div class="wallet-tx-row"><div class="tx-ico" style="background:${tx.amount>0?'rgba(34,197,94,.12)':'rgba(245,158,11,.12)'}">${getIconSVG(tx.iconType)}</div><div class="tx-main"><div class="tx-title">${tx.title}</div><div class="tx-sub">${tx.subtitle} • ${tx.meta}</div></div><div class="tx-right"><div class="tx-amt" style="color:${tx.amountColor}">${s}</div><div class="status">${tx.status}</div></div><svg class="menu row-chevron" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></div>`;
+    });
+  }
+  function renderOverviewCards() {
+    let c = document.getElementById('overviewCards');
+    let totalProfitValue = base.totalProfit, investedValue = base.totalInvested, referralValue = 12000, withdrawnValue = base.totalWithdrawn;
+    if (overviewPeriod === 'week') {
+      totalProfitValue = Math.round(base.totalProfit * 0.25); investedValue = Math.round(base.totalInvested * 0.25); referralValue = 3000; withdrawnValue = Math.round(base.totalWithdrawn * 0.2);
+    } else if (overviewPeriod === 'month') {
+      totalProfitValue = base.totalProfit; investedValue = base.totalInvested; referralValue = 12000; withdrawnValue = base.totalWithdrawn;
+    }
+    let cards = [
+      { title:"Total Profit", value:totalProfitValue, sub:"+68%", subColor:"#34d399", iconBg:"rgba(34,197,94,.12)", iconColor:"#4ade80", icon:'<path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/>' },
+      { title:"Active Investments", value:investedValue, sub:"2 Plans", subColor:"#94a3b8", iconBg:"rgba(59,130,246,.12)", iconColor:"#60a5fa", icon:'<path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/>' },
+      { title:"Referral Earnings", value:referralValue, sub:"8 Referrals", subColor:"#94a3b8", iconBg:"rgba(245,158,11,.12)", iconColor:"#fbbf24", icon:'<path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/>' },
+      { title:"Withdrawn", value:withdrawnValue, sub:"This Month", subColor:"#94a3b8", iconBg:"rgba(168,85,247,.12)", iconColor:"#c084fc", icon:'<path d="M3 7h18v10H3z"/><path d="M16 12h4"/><circle cx="16.5" cy="12" r="1.2" fill="#c084fc" stroke="none"/>' }
+    ];
+    c.innerHTML = cards.map(ca => `<div class="stat" data-title="${ca.title}" data-value="${fmt(ca.value)}" data-sub="${ca.sub}"><div class="ico" style="background:${ca.iconBg}"><svg viewBox="0 0 24 24" fill="none" stroke="${ca.iconColor}" stroke-width="2.2">${ca.icon}</svg></div><div class="title">${ca.title}</div><div class="value">${balanceHidden?'****':fmt(ca.value)}</div><div class="sub" style="color:${ca.subColor}">${ca.sub}</div></div>`).join('');
+    document.querySelectorAll('#overviewCards .stat').forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.querySelector('.title').textContent;
+        const value = card.querySelector('.value').textContent;
+        const sub = card.querySelector('.sub').textContent;
+        document.getElementById('overviewDetailTitle').textContent = title;
+        document.getElementById('overviewDetailValue').textContent = value;
+        document.getElementById('overviewDetailDesc').textContent = sub;
+        openModal('overviewDetailModal');
+      });
+    });
+  }
+  (function initQuickActions(){
+    let actions = [
+      { label:"Invest", color:"linear-gradient(135deg,#6d28d9,#8b5cf6)", nav:'invest', icon:'<path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-6"/><path d="M12 16V8"/><path d="M16 16v-3"/>' },
+      { label:"Deposit", color:"linear-gradient(135deg,#16a34a,#4ade80)", nav:'wallet', icon:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>' },
+      { label:"Withdraw", color:"linear-gradient(135deg,#d97706,#f59e0b)", nav:'withdraw', icon:'<path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/>' },
+      { label:"Transfer", color:"linear-gradient(135deg,#2563eb,#60a5fa)", nav:'wallet', icon:'<path d="M7 7h14"/><path d="m18 4 3 3-3 3"/><path d="M17 17H3"/><path d="m6 14-3 3 3 3"/>' },
+      { label:"Wallet", color:"linear-gradient(135deg,#db2777,#f472b6)", nav:'wallet', icon:'<path d="M3 7h18v10H3z"/><path d="M16 12h4"/><circle cx="16.5" cy="12" r="1.2" fill="white" stroke="none"/>' },
+      { label:"Community", color:"linear-gradient(135deg,#5b21b6,#8b5cf6)", nav:'community', icon:'<path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3Z"/><path d="M8 13c1.7 0 3-1.3 3-3S9.7 7 8 7 5 8.3 5 10s1.3 3 3 3Z"/><path d="M3 19c.7-2.7 3-4 5-4s4.3 1.3 5 4"/>' }
+    ];
+    document.getElementById('quickActions').innerHTML = actions.map(a => `<div class="action" data-nav="${a.nav}"><div class="circle" style="background:${a.color}"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">${a.icon}</svg></div><div class="label">${a.label}</div></div>`).join('');
+  })();
+
+  // Withdrawal confirmation flow
+  const withdrawConfirmModal = document.getElementById('withdrawConfirmModal');
+  const closeWithdrawConfirmBtn = document.getElementById('closeWithdrawConfirmBtn');
+  const processingOverlay = document.getElementById('processingOverlay');
+  const withdrawalSuccessModal = document.getElementById('withdrawalSuccessModal');
+  const closeSuccessModalBtn = document.getElementById('closeSuccessModalBtn');
+  closeWithdrawConfirmBtn.addEventListener('click', () => withdrawConfirmModal.classList.remove('open'));
+  withdrawConfirmModal.addEventListener('click', e => { if(e.target===withdrawConfirmModal) withdrawConfirmModal.classList.remove('open'); });
+  closeSuccessModalBtn.addEventListener('click', () => withdrawalSuccessModal.classList.remove('open'));
+  withdrawalSuccessModal.addEventListener('click', e => { if(e.target===withdrawalSuccessModal) withdrawalSuccessModal.classList.remove('open'); });
+
+  document.getElementById('finalConfirmWithdrawBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('withdrawInput').value);
+    const accountNumber = document.getElementById('withdrawAccountInput').value.trim();
+    const bankName = activeWithdrawMethod === 'bank' ? document.getElementById('bankSelect').value : activeWithdrawMethod;
+    const fee = activeWithdrawMethod.startsWith('usdt') ? 1 : FEE;
+    const receive = Math.max(0, amount - fee);
+    const bankString = `${bankName} - ${accountNumber}`;
+    const dateStr = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const ref = 'WD' + Math.floor(Math.random()*90000000+10000000);
+    withdrawConfirmModal.classList.remove('open');
+    processingOverlay.classList.add('open');
+    setTimeout(() => {
+      processingOverlay.classList.remove('open');
+      base.homeBalance -= amount; base.walletTotal = base.homeBalance; base.walletAvailable -= amount; base.nairaWallet = base.walletAvailable; base.withdrawable = base.walletAvailable; base.totalWithdrawn += amount;
+      base.totalProfit = base.homeBalance - base.totalInvested - base.totalWithdrawn + 68000;
+      chartData.push({ label: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), value: base.homeBalance });
+      addTransaction('Withdrawal', -amount, `To ${bankName}`, new Date().toLocaleString(), null, 'bank');
+      document.getElementById('withdrawInput').value = '';
+      document.getElementById('withdrawAccountInput').value = '';
+      if (document.getElementById('receiveAmount')) document.getElementById('receiveAmount').textContent = activeWithdrawMethod.startsWith('usdt') ? '0 USDT' : fmt(0);
+      if (document.getElementById('withdrawFee')) document.getElementById('withdrawFee').textContent = activeWithdrawMethod.startsWith('usdt') ? '1 USDT' : fmt(FEE);
+      updateAll();
+      document.getElementById('successBank').textContent = bankName; // only bank name, no account number
+      document.getElementById('successAmount').textContent = activeWithdrawMethod.startsWith('usdt') ? amount + ' USDT' : fmt(amount);
+      document.getElementById('successFee').textContent = activeWithdrawMethod.startsWith('usdt') ? '1 USDT' : fmt(fee);
+      document.getElementById('successReceive').textContent = activeWithdrawMethod.startsWith('usdt') ? receive + ' USDT' : fmt(receive);
+      document.getElementById('successDate').textContent = dateStr;
+      document.getElementById('successRef').textContent = ref;
+      withdrawalSuccessModal.classList.add('open');
+    }, 2500);
+  });
+
+  updateAll(); setView('home');
+})();
+</script>
+<script>
+  (function() {
+    const personaNames = [
+      { name: "CryptoQueen", vip: 2 }, { name: "TradeMaster", vip: 3 }, { name: "Ngozi Wealth", vip: 0, admin: true }, { name: "Ola Ade", vip: 0 },
+      { name: "Bola King", vip: 1 }, { name: "Emeka Lagos", vip: 0 }, { name: "Amina Abuja", vip: 2 }, { name: "Fatima Kano", vip: 0 },
+      { name: "David O", vip: 0 }, { name: "Grace B", vip: 1 }, { name: "Samuel T", vip: 0 }, { name: "Blessing C", vip: 2 },
+      { name: "John Doe", vip: 0 }, { name: "Jane Smith", vip: 0 }, { name: "Michael P", vip: 1 }, { name: "Sandra J", vip: 0 },
+      { name: "Kemi Afolabi", vip: 3 }, { name: "Yusuf Alabi", vip: 0 }, { name: "Chiamaka Okafor", vip: 0 }, { name: "Ibrahim Musa", vip: 1 },
+      { name: "Nkechi Eze", vip: 0 }, { name: "Obinna Okonkwo", vip: 2 }, { name: "Zainab Usman", vip: 0 }, { name: "Chukwudi Obi", vip: 0 },
+      { name: "Aisha Bello", vip: 0 }, { name: "Tunde Bakare", vip: 1 }, { name: "Bimbo Adeyemi", vip: 0 }, { name: "Lola Sholola", vip: 0 },
+      { name: "Segun Arinze", vip: 2 }, { name: "Funke Akindele", vip: 0 }, { name: "Rita Dominic", vip: 1 }, { name: "Genevieve Nnaji", vip: 3 },
+      { name: "Wale Adenuga", vip: 0 }, { name: "Adaobi Okeke", vip: 0 }, { name: "Chinedu Obi", vip: 1 }, { name: "Nnenna Eze", vip: 0 },
+      { name: "Chuka Okafor", vip: 0 }, { name: "Yetunde Bakare", vip: 2 }, { name: "Musa Ibrahim", vip: 0 }, { name: "Adeola Adeyemi", vip: 0 },
+      { name: "Tolu Adebayo", vip: 1 }, { name: "Bolanle Ogun", vip: 0 }, { name: "Seyi Makinde", vip: 0 }, { name: "Ronke Ojo", vip: 0 },
+      { name: "Jide Kosoko", vip: 2 }, { name: "RMD", vip: 1 }, { name: "Patience Ozokwor", vip: 3 }, { name: "Pete Edochie", vip: 1 },
+      { name: "Kanayo O. Kanayo", vip: 0 }, { name: "Ini Edo", vip: 0 }, { name: "Ruth Kadiri", vip: 2 }, { name: "Mercy Johnson", vip: 1 },
+      { name: "Yul Edochie", vip: 0 }, { name: "Chika Ike", vip: 0 }, { name: "Mike Ezuruonye", vip: 0 }, { name: "Uche Jombo", vip: 1 },
+      { name: "Omotola Jalade", vip: 3 }, { name: "Bimbo Thomas", vip: 0 }, { name: "Ireti Doyle", vip: 2 }, { name: "Dakore Egbuson", vip: 0 },
+      { name: "Toni Tones", vip: 0 }, { name: "Sharon Ooja", vip: 1 }, { name: "Bisola Aiyeola", vip: 0 }, { name: "Efe Irele", vip: 0 },
+      { name: "Timini Egbuson", vip: 2 }, { name: "Bella Shmurda", vip: 0 }, { name: "Rema", vip: 1 }, { name: "Fireboy DML", vip: 0 },
+      { name: "Asake", vip: 0 }, { name: "Davido", vip: 3 }, { name: "Wizkid", vip: 2 }, { name: "Burna Boy", vip: 1 },
+      { name: "Zlatan", vip: 0 }, { name: "Naira Marley", vip: 0 }, { name: "Seyi Vibez", vip: 0 }, { name: "Omah Lay", vip: 1 },
+      { name: "Tems", vip: 0 }, { name: "Ayra Starr", vip: 2 }, { name: "Ckay", vip: 0 }, { name: "Ruger", vip: 0 },
+      { name: "Joeboy", vip: 1 }, { name: "Buju", vip: 0 }, { name: "Pheelz", vip: 0 }, { name: "Olamide", vip: 3 },
+      { name: "Phyno", vip: 0 }, { name: "Flavour", vip: 1 }, { name: "Kizz Daniel", vip: 2 }, { name: "Adekunle Gold", vip: 0 },
+      { name: "Simi", vip: 0 }, { name: "Tiwa Savage", vip: 3 }, { name: "Yemi Alade", vip: 1 }, { name: "Falz", vip: 0 },
+      { name: "Vector", vip: 0 }, { name: "MI Abaga", vip: 2 }, { name: "Ice Prince", vip: 0 }, { name: "Jesse Jagz", vip: 0 },
+      { name: "Banky W", vip: 1 }, { name: "Waje", vip: 0 }, { name: "Chidinma", vip: 0 }, { name: "Praiz", vip: 0 },
+      { name: "Iyanya", vip: 2 }, { name: "Tekno", vip: 0 }, { name: "Mr Eazi", vip: 1 }, { name: "Runtown", vip: 0 },
+      { name: "Timaya", vip: 0 }, { name: "Patoranking", vip: 1 }, { name: "Duncan Mighty", vip: 0 }, { name: "R2Bees", vip: 0 },
+      { name: "Sarkodie", vip: 2 }, { name: "Stonebwoy", vip: 0 }, { name: "Shatta Wale", vip: 1 }, { name: "Kuami Eugene", vip: 0 },
+      { name: "KiDi", vip: 0 }, { name: "King Promise", vip: 0 }, { name: "M.anifest", vip: 1 }, { name: "Efya", vip: 0 },
+      { name: "MzVee", vip: 0 }, { name: "Becca", vip: 2 }, { name: "Wendy Shay", vip: 0 }, { name: "Adina", vip: 0 },
+      { name: "Cina Soul", vip: 1 }, { name: "Darkovibes", vip: 0 }, { name: "La Meme Gang", vip: 0 }, { name: "Ground Up", vip: 0 },
+      { name: "Super Jazz Club", vip: 0 }, { name: "B4bonah", vip: 0 }, { name: "Akan", vip: 1 }, { name: "Kofi Mole", vip: 0 },
+      { name: "Kwesi Arthur", vip: 0 }, { name: "Medikal", vip: 0 }, { name: "Strongman", vip: 0 }, { name: "Fameye", vip: 1 },
+      { name: "Kweku Darlington", vip: 0 }, { name: "Yaw Tog", vip: 0 }, { name: "Kofi Jamar", vip: 0 }, { name: "Reggie Rockstone", vip: 3 },
+      { name: "Obrafour", vip: 1 }, { name: "Tinny", vip: 0 }, { name: "VIP", vip: 2 }, { name: "4x4", vip: 0 },
+      { name: "Buk Bak", vip: 0 }, { name: "Tic Tac", vip: 0 }, { name: "Joe Mettle", vip: 0 }, { name: "Diana Hamilton", vip: 2 },
+      { name: "Ohemaa Mercy", vip: 0 }, { name: "Celestine Donkor", vip: 1 }, { name: "Akesse Brempong", vip: 0 },
+      { name: "MOG Music", vip: 0 }, { name: "Eben", vip: 1 }, { name: "Frank Edwards", vip: 0 }, { name: "Sinach", vip: 3 }
+    ];
+    const chatColumn = document.getElementById('communityChatColumn');
+    if(!chatColumn) return;
+    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function getRandomPersona(){ return personaNames[randomInt(0,personaNames.length-1)]; }
+    function formatTime(){ const now=new Date(); const hours=now.getHours(); const minutes=now.getMinutes().toString().padStart(2,'0'); return `${hours%12||12}:${minutes} ${hours>=12?'PM':'AM'}`; }
+    function createChatCard(persona, message, isProof=false, proofAmount=0){
+      const initials=persona.name.split(' ').map(n=>n[0]).join('').toUpperCase();
+      const badgeHtml=persona.admin?'<span class="chat-msg-badge badge-admin">Admin</span>':(persona.vip>0?`<span class="chat-msg-badge badge-vip">VIP ${persona.vip}</span>`:'');
+      let proofHtml='';
+      if(isProof && proofAmount>0){
+        const bank=['GTBank','Access Bank','First Bank','UBA','Zenith Bank'][randomInt(0,4)];
+        proofHtml=`<div class="chat-proof-card"><div class="chat-proof-top"><div class="chat-proof-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></div><div class="chat-proof-title">Withdrawal Successful</div></div><div class="chat-proof-amount">₦ ${proofAmount.toLocaleString()}.00</div><div class="chat-proof-sub">To ${bank} • ${new Date().toLocaleDateString()}</div></div>`;
+      }
+      return `<div class="community-chat-card"><div class="chat-msg-top"><div class="chat-msg-avatar" style="background:${persona.admin?'rgba(245,158,11,.22)':'rgba(168,85,247,.22)'}">${initials}</div><div><div class="chat-msg-name">${persona.name} ${badgeHtml}</div><div style="font-size:11px;color:#6b7280;">Just now</div></div></div><div class="chat-msg-body">${message}</div>${proofHtml}<div class="chat-reactions"><div class="chat-reaction">👍 ${randomInt(5,99)}</div><div class="chat-reaction">❤️ ${randomInt(2,50)}</div>${randomInt(0,1)?'<div class="chat-reaction">🔥 '+randomInt(1,30)+'</div>':''}${randomInt(0,1)?'<div class="chat-reaction">🚀 '+randomInt(1,20)+'</div>':''}</div><div class="chat-msg-time">${formatTime()}</div></div>`;
+    }
+    const messageTemplates=[
+      (p) => `Just received another payout! This platform never disappoints. Keep investing and stay consistent! 🚀`,
+      (p) => `I started with ₦5,000 and now look at my balance growing daily. Consistency is key!`,
+      (p) => `Wow! Just got my withdrawal in minutes. This is the best investment platform ever! 💯`,
+      (p) => `For new members: start with the Beginner Plan, reinvest profits, and scale up gradually.`,
+      (p) => `Anyone else feeling bullish today? The market is looking great! 📈`,
+      (p) => `Just upgraded to ${p.vip>=2?'VIP '+p.vip:'Standard Plan'} and the profits are amazing!`,
+      (p) => `Happy Friday everyone! Keep pushing, keep earning. 💪`,
+      (p) => `Thanks to the admin for the quick support. You guys rock! 🎉`,
+      (p) => `Another day, another profit. Who else is cashing out today? 💸`,
+      (p) => `I referred my cousin and got my bonus instantly. This referral program is lit! 🔥`,
+      (p) => `Just hit ₦500,000 in total profits! Hard work and patience pays off. 🙏`,
+      (p) => `Can't believe how fast the withdrawals are. Just received in under 5 minutes.`,
+      (p) => `Best decision I made this year was joining this community. 💰`,
+      (p) => `Good morning fam! May today bring us massive profits. 🌅`,
+      (p) => `If you're still doubting, just take the first step. You won't regret it.`,
+      (p) => `Who's ready for the weekend? Let's finish strong! 🚀`,
+      (p) => `I see a lot of new members. Welcome aboard! Let's grow together.`,
+      (p) => `Just reinvested ₦100,000. Watch me hit ₦1M soon! 😎`,
+      (p) => `Consistency is the secret. Don't give up!`,
+      (p) => `Can we get some fire emojis for the team? 🔥🔥🔥`,
+      (p) => `My account just got upgraded automatically. VIP perks are awesome!`,
+      (p) => `Friday payouts are the best! Who else got paid today?`,
+      (p) => `Shoutout to the admin team. You guys are the real MVPs.`,
+      (p) => `Never seen a platform this transparent. Every penny accounted for.`,
+      (p) => `Just hit my first ₦50,000 profit. Feeling grateful! 🥳`,
+      (p) => `To the newbies: stay consistent and you'll see results. Trust the process.`
+    ];
+    function getRandomMessage(persona){ return messageTemplates[randomInt(0,messageTemplates.length-1)](persona); }
+    function addRandomChatMessage(){
+      const persona=getRandomPersona();
+      const isProof=Math.random()<0.3 && persona.vip>=1;
+      const proofAmount=isProof?randomInt(10000,500000):0;
+      const cardHtml=createChatCard(persona, getRandomMessage(persona), isProof, proofAmount);
+      chatColumn.insertAdjacentHTML('afterbegin', cardHtml);
+      while(chatColumn.children.length>50){ chatColumn.removeChild(chatColumn.lastChild); }
+    }
+    function updateOnlineMembers(){
+      const onlineCount=randomInt(800,1800);
+      document.getElementById('onlineCount').textContent = `${onlineCount.toLocaleString()} Online`;
+      document.getElementById('sidebarOnlineCount').textContent = onlineCount.toLocaleString();
+      document.getElementById('onlineStatCount').textContent = onlineCount.toLocaleString();
+      const numVisible=randomInt(4,8);
+      const shuffled=[...personaNames].sort(()=>0.5-Math.random());
+      const onlinePersonas=shuffled.slice(0,numVisible);
+      document.getElementById('sidebarOnlineMembers').innerHTML = onlinePersonas.map(p=>{
+        const initials=p.name.split(' ').map(n=>n[0]).join('').toUpperCase();
+        const badgeHtml=p.admin?'<span class="chat-msg-badge badge-admin">Admin</span>':(p.vip>0?`<span class="chat-msg-badge badge-vip">VIP ${p.vip}</span>`:'');
+        return `<div class="sidebar-member-row"><div class="sidebar-member-avatar" style="background:${p.admin?'rgba(245,158,11,.18)':'rgba(168,85,247,.18)'}">${initials}</div><span class="sidebar-member-name">${p.name} ${badgeHtml}</span></div>`;
+      }).join('');
+    }
+    function updateLiveWithdrawals(){
+      const withdrawals=[];
+      for(let i=0;i<3;i++){
+        const persona=getRandomPersona();
+        const amount=randomInt(5000,200000);
+        const method=['Bank Transfer','USDT (TRC20)','Opay','E-Wallet'][randomInt(0,3)];
+        const time=`${randomInt(1,59)} mins ago`;
+        withdrawals.push({ persona, amount, method, time });
+      }
+      document.getElementById('liveWithdrawalsFeed').innerHTML = withdrawals.map(w=>`
+        <div class="live-withdrawal-row"><div class="live-wd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></div><div class="live-wd-info"><div class="live-wd-name">${w.persona.name}</div><div class="live-wd-loc">${w.method}</div></div><div><div class="live-wd-amount">₦${w.amount.toLocaleString()}</div><div class="live-wd-time">${w.time}</div></div></div>`).join('');
+    }
+    function startCommunitySimulation(){
+      for(let i=0;i<5;i++) addRandomChatMessage();
+      updateOnlineMembers();
+      updateLiveWithdrawals();
+      setInterval(()=>{
+        addRandomChatMessage();
+        if(Math.random()<0.3){ updateOnlineMembers(); updateLiveWithdrawals(); }
+      },8000);
+      setInterval(()=>{ updateOnlineMembers(); updateLiveWithdrawals(); },45000);
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', startCommunitySimulation);
+    else startCommunitySimulation();
+  })();
+</script>
+</body>
+</html>
