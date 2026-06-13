@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>EasyTask Pro – Earn with Simple Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f9;
+            padding: 16px;
+            color: #1a2c3e;
+        }
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 36px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0a2b3d 0%, #134152 100%);
+            color: white;
+            padding: 24px 22px 20px;
+        }
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .user-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: #ffb74d;
+            color: #1a2c3e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 40px;
+        }
+        .balance-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 18px;
+            margin-top: 8px;
+        }
+        .balance-label {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+        .balance-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-top: 5px;
+            letter-spacing: -0.5px;
+        }
+        .earned-badge {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.25);
+            padding: 10px 12px;
+            border-radius: 20px;
+        }
+        /* Stats row */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            padding: 18px 22px;
+            background: white;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .stat {
+            flex: 1;
+            background: #fafcff;
+            padding: 12px 8px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid #eef2f9;
+        }
+        .stat-value {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0a2b3d;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #5e6f8d;
+            margin-top: 4px;
+        }
+        /* Tasks */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 22px 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .task-list {
+            padding: 0 22px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-card {
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 22px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.1s;
+        }
+        .task-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .task-info p {
+            font-size: 0.75rem;
+            color: #5f7d9c;
+            margin-top: 4px;
+        }
+        .btn-task {
+            background: #eef2fa;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .btn-task:hover {
+            background: #e2e8f2;
+        }
+        .btn-task.completed {
+            background: #cfe6db;
+            color: #116b3c;
+            cursor: default;
+        }
+        /* Group Chat */
+        .chat-container {
+            background: #ffffff;
+            border-top: 1px solid #ecf0f5;
+            border-bottom: 1px solid #ecf0f5;
+            margin: 8px 0;
+        }
+        .chat-header-bar {
+            background: #f8fafd;
+            padding: 14px 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .chat-messages-area {
+            height: 280px;
+            overflow-y: auto;
+            padding: 12px 18px;
+            background: #fefefe;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chat-bubble {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .chat-avatar {
+            width: 34px;
+            height: 34px;
+            background: #e2eaf5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1f3b4c;
+            flex-shrink: 0;
+        }
+        .chat-bubble .message {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 20px;
+            border-top-left-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            max-width: 85%;
+            position: relative;
+        }
+        .message strong {
+            color: #0f2b3d;
+        }
+        .message small {
+            font-size: 0.65rem;
+            color: #6c7a91;
+            display: block;
+            margin-top: 6px;
+            text-align: right;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 12px 18px;
+            background: white;
+            border-top: 1px solid #edf2f7;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            border: 1px solid #dce3ec;
+            border-radius: 30px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            outline: none;
+            transition: 0.15s;
+        }
+        .chat-input-area input:focus {
+            border-color: #0f2b3d;
+        }
+        .chat-input-area button {
+            background: #0f2b3d;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .chat-input-area button:hover {
+            background: #1e4b62;
+        }
+        /* Buttons */
+        .withdraw-btn {
+            background: #0f2b3d;
+            color: white;
+            border: none;
+            width: calc(100% - 44px);
+            margin: 8px 22px 28px;
+            padding: 16px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .withdraw-btn:hover:not(.disabled) {
+            background: #1e4b62;
+        }
+        .withdraw-btn.disabled {
+            background: #b9c2d0;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: white;
+            max-width: 340px;
+            width: 90%;
+            border-radius: 40px;
+            padding: 28px 22px;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.2);
+        }
+        .price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 12px 0;
+        }
+        .pay-btn {
+            background: #0f2b3d;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            margin-top: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .pay-btn:hover {
+            background: #1e4b62;
+        }
+        .bank-details {
+            background: #f4f8fe;
+            padding: 14px;
+            border-radius: 20px;
+            margin: 12px 0;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .footer-note {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 14px 22px 24px;
+            color: #8c9bb0;
+            border-top: 1px solid #ecf0f5;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2f3e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            z-index: 1100;
+            display: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        i.fa, i.far { margin-right: 6px; }
+        /* smooth scrolling for chat */
+        .chat-messages-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages-area::-webkit-scrollbar-track {
+            background: #eef2f8;
+        }
+        .chat-messages-area::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="user-row">
+            <div class="user-name">
+                <i class="fas fa-user-astronaut"></i> Wizkid FC
+                <span class="badge">Standard Member</span>
+            </div>
+            <i class="fas fa-bell" style="opacity:0.8"></i>
+        </div>
+        <div class="balance-card">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount">₦ <span id="totalBalance">0.00</span></div>
+            <div class="earned-badge">
+                <span><i class="fas fa-tasks"></i> Today: ₦<span id="todayEarned">0</span></span>
+                <span><i class="fas fa-users"></i> Referrals: ₦0</span>
+            </div>
+        </div>
+    </div>
+    <div class="stats-row">
+        <div class="stat"><div class="stat-value" id="taskCount">0/6</div><div class="stat-label">Tasks completed</div></div>
+        <div class="stat"><div class="stat-value">₦25k</div><div class="stat-label">Min withdrawal</div></div>
+        <div class="stat"><div class="stat-value">VIP 1</div><div class="stat-label">Next tier</div></div>
+    </div>
+    <div class="section-title"><span><i class="fas fa-list-check"></i> Daily Missions</span> <span id="progressHint" style="font-size:0.7rem; color:#f5a623;">complete all → withdraw</span></div>
+    <div class="task-list" id="taskList"></div>
+
+    <!-- GROUP CHAT SECTION -->
+    <div class="chat-container">
+        <div class="chat-header-bar">
+            <i class="fas fa-comments"></i> Community Chat 
+            <span style="margin-left:auto; font-size:0.7rem; background:#e9edf2; padding:4px 10px; border-radius:50px;"><i class="fas fa-circle" style="color:#2ecc71; font-size:0.5rem;"></i> <span id="onlineCountChat">1,245</span> online</span>
+        </div>
+        <div class="chat-messages-area" id="chatMessagesArea">
+            <div class="chat-bubble"><div class="chat-avatar">CE</div><div class="message"><strong>Chinedu E.</strong> just withdrew ₦45,000 after VIP upgrade 🔥<small>2 min ago</small></div></div>
+            <div class="chat-bubble"><div class="chat-avatar">AB</div><div class="message"><strong>Aisha B.:</strong> I've made ₦120k this week, tasks are super easy 💰<small>7 min ago</small></div></div>
+            <div class="chat-bubble"><div class="chat-avatar">MC</div><div class="message"><strong>Mr. Collins:</strong> I was skeptical at first, but withdrawal hit my bank today ✅<small>14 min ago</small></div></div>
+            <div class="chat-bubble"><div class="chat-avatar">AD</div><div class="message"><strong>Admin:</strong> VIP slots filling fast! Upgrade now to secure 5x earnings 🚀<small>22 min ago</small></div></div>
+            <div class="chat-bubble"><div class="chat-avatar">TO</div><div class="message"><strong>Tunde O.:</strong> Just upgraded to VIP 2, my daily limit doubled! thanks team<small>35 min ago</small></div></div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendChatBtn">Send</button>
+        </div>
+    </div>
+
+    <button class="withdraw-btn disabled" id="withdrawBtn" disabled><i class="fas fa-lock"></i> Withdraw (min ₦25,000)</button>
+    <div class="footer-note">
+        <i class="fas fa-shield-alt"></i> SSL secured • Instant payouts • 24/7 support
+    </div>
+</div>
+
+<!-- VIP Upgrade Modal -->
+<div id="vipModal" class="modal">
+    <div class="modal-card">
+        <i class="fas fa-crown" style="font-size:2.2rem; color:#ffb347;"></i>
+        <h3>Upgrade to VIP 1</h3>
+        <p>Higher rewards, priority withdrawals & exclusive tasks</p>
+        <div class="price">₦25,000</div>
+        <button class="pay-btn" id="confirmUpgradeBtn">Upgrade Now</button>
+        <button id="closeModalBtn" style="margin-top:12px; background:none; border:none; color:#7f8fa4; cursor:pointer;">Maybe later</button>
+        <div style="font-size:0.7rem; margin-top:12px;">🔥 Only 3 slots left today</div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-card">
+        <i class="fas fa-university" style="font-size:2rem;"></i>
+        <h3>Complete Payment</h3>
+        <p>Transfer exactly ₦25,000 to the account below:</p>
+        <div class="bank-details">
+            <strong>Account Name:</strong> EARN TECH LTD<br>
+            <strong>Account Number:</strong> 0123456789<br>
+            <strong>Bank:</strong> Guaranty Trust Bank (GTBank)
+        </div>
+        <button class="pay-btn" id="simulatePaymentBtn">I have made the transfer</button>
+        <button id="closePaymentModal" style="margin-top:10px; background:none; border:none; cursor:pointer;">Cancel</button>
+    </div>
+</div>
+<div id="toastMsg" class="toast">Withdrawal request submitted. Funds will be credited within 2‑3 business days.</div>
+
+<script>
+    // ---------- Task Data ----------
+    const tasks = [
+        { id: 1, name: "Watch YouTube video", reward: 60, completed: false },
+        { id: 2, name: "Like Instagram post", reward: 40, completed: false },
+        { id: 3, name: "Subscribe to channel", reward: 120, completed: false },
+        { id: 4, name: "Boost product (simulated)", reward: 250, completed: false },
+        { id: 5, name: "Share referral link", reward: 180, completed: false },
+        { id: 6, name: "Follow on TikTok", reward: 90, completed: false }
+    ];
+    let balance = 0;
+    let completedCount = 0;
+    let upgraded = false;
+
+    // DOM elements
+    const totalSpan = document.getElementById('totalBalance');
+    const todaySpan = document.getElementById('todayEarned');
+    const taskCountSpan = document.getElementById('taskCount');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const taskContainer = document.getElementById('taskList');
+    const progressHint = document.getElementById('progressHint');
+    const vipModal = document.getElementById('vipModal');
+    const paymentModal = document.getElementById('paymentModal');
+    const toast = document.getElementById('toastMsg');
+
+    // Group chat elements
+    const chatMessagesDiv = document.getElementById('chatMessagesArea');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendChatBtn');
+    const onlineSpan = document.getElementById('onlineCountChat');
+
+    // Helper: add message to group chat
+    function addChatMessage(sender, message, isSystem = false) {
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-avatar';
+        if (sender === 'Admin') avatar.innerText = 'AD';
+        else if (sender === 'System') avatar.innerText = '📢';
+        else avatar.innerText = sender.split(' ').map(n => n[0]).join('').toUpperCase();
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message';
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        msgDiv.innerHTML = `<strong>${sender}</strong> ${message}<small>${time}</small>`;
+        bubble.appendChild(avatar);
+        bubble.appendChild(msgDiv);
+        chatMessagesDiv.appendChild(bubble);
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        // keep last 60 messages
+        while (chatMessagesDiv.children.length > 60) chatMessagesDiv.removeChild(chatMessagesDiv.firstChild);
+    }
+
+    // Auto‑generate fake community messages (social proof)
+    const fakeCommunityMessages = [
+        { name: "Precious N.", msg: "Just withdrew ₦32k! So fast 🙌" },
+        { name: "Emeka O.", msg: "Upgraded to VIP 2 and my earnings tripled" },
+        { name: "Linda A.", msg: "Best platform I've used this year" },
+        { name: "Samuel K.", msg: "How long for withdrawal normally?" },
+        { name: "Admin", msg: "Withdrawals take 24‑48hrs, we're working on instant!" },
+        { name: "Joy C.", msg: "I love how transparent the group is 👍" },
+        { name: "Victor E.", msg: "VIP 1 is totally worth it, got my money back in 3 days" }
+    ];
+    let msgIndex = 0;
+    setInterval(() => {
+        const entry = fakeCommunityMessages[msgIndex % fakeCommunityMessages.length];
+        addChatMessage(entry.name, entry.msg);
+        msgIndex++;
+        // Update online count (realistic fluctuation)
+        let current = parseInt(onlineSpan.innerText.replace(/,/g, ''));
+        let delta = Math.floor(Math.random() * 40) - 10;
+        let newVal = Math.min(2100, Math.max(800, current + delta));
+        onlineSpan.innerText = newVal.toLocaleString();
+    }, 16000);
+
+    // User sends message
+    sendBtn.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addChatMessage("Wizkid FC", text);
+        chatInput.value = "";
+        // Admin replies after a few seconds to simulate engagement
+        setTimeout(() => {
+            addChatMessage("Admin", "Thanks for your message! Keep completing tasks, VIP unlocks higher earnings 👍");
+        }, 4000);
+    });
+
+    // Task rendering and logic
+    function updateUI() {
+        totalSpan.innerText = balance.toFixed(2);
+        todaySpan.innerText = balance;
+        taskCountSpan.innerText = `${completedCount}/${tasks.length}`;
+        if (completedCount === tasks.length && !upgraded) {
+            progressHint.innerText = '🎉 Upgrade to VIP 1 to withdraw!';
+            withdrawBtn.disabled = true;
+            withdrawBtn.classList.add('disabled');
+            withdrawBtn.innerHTML = '<i class="fas fa-gem"></i> Upgrade Required (VIP 1)';
+        } else if (upgraded && balance >= 25000) {
+            withdrawBtn.disabled = false;
+            withdrawBtn.classList.remove('disabled');
+            withdrawBtn.innerHTML = '<i class="fas fa-wallet"></i> Withdraw Now';
+        } else if (upgraded && balance < 25000) {
+            withdrawBtn.disabled = true;
+            withdrawBtn.classList.add('disabled');
+            withdrawBtn.innerHTML = '<i class="fas fa-hourglass-half"></i> Keep earning (min ₦25k)';
+        } else {
+            withdrawBtn.disabled = true;
+            withdrawBtn.classList.add('disabled');
+            withdrawBtn.innerHTML = '<i class="fas fa-lock"></i> Complete all tasks first';
+        }
+        renderTasks();
+    }
+
+    function renderTasks() {
+        taskContainer.innerHTML = '';
+        tasks.forEach(task => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="task-info">
+                    <h4>${task.name}</h4>
+                    <p>Reward: ₦${task.reward}</p>
+                </div>
+                <button class="btn-task ${task.completed ? 'completed' : ''}" data-id="${task.id}" ${task.completed ? 'disabled' : ''}>
+                    ${task.completed ? 'Completed ✓' : 'Complete'}
+                </button>
+            `;
+            taskContainer.appendChild(card);
+        });
+        document.querySelectorAll('.btn-task:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                completeTask(id);
+            });
+        });
+    }
+
+    function completeTask(taskId) {
+        const task = tasks.find(t => t.id === taskId);
+        if (task.completed) return;
+        task.completed = true;
+        balance += task.reward;
+        completedCount++;
+        updateUI();
+        addChatMessage("System", `You completed "${task.name}" and earned ₦${task.reward}`, true);
+        if (completedCount === tasks.length && !upgraded) {
+            setTimeout(() => {
+                vipModal.style.display = 'flex';
+            }, 800);
+        }
+    }
+
+    // Upgrade modal flow
+    document.getElementById('confirmUpgradeBtn').onclick = () => {
+        vipModal.style.display = 'none';
+        paymentModal.style.display = 'flex';
+    };
+    document.getElementById('closeModalBtn').onclick = () => vipModal.style.display = 'none';
+    document.getElementById('closePaymentModal').onclick = () => paymentModal.style.display = 'none';
+    document.getElementById('simulatePaymentBtn').onclick = () => {
+        upgraded = true;
+        balance += 55000;  // bonus upon upgrade
+        updateUI();
+        paymentModal.style.display = 'none';
+        addChatMessage("System", "✅ VIP 1 Activated! Bonus ₦55,000 credited. Withdrawals now available after ₦25k balance.", true);
+        setTimeout(() => {
+            addChatMessage("Admin", "Congrats on VIP upgrade! You now have priority withdrawals 🔥", true);
+        }, 2000);
+    };
+
+    // Withdraw button simulation (realistic, no alert)
+    withdrawBtn.addEventListener('click', () => {
+        if (withdrawBtn.disabled) return;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 4000);
+        const originalBtnText = withdrawBtn.innerHTML;
+        withdrawBtn.disabled = true;
+        withdrawBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+        setTimeout(() => {
+            withdrawBtn.disabled = false;
+            if (upgraded && balance >= 25000) {
+                withdrawBtn.disabled = false;
+                withdrawBtn.innerHTML = originalBtnText;
+            } else {
+                withdrawBtn.disabled = true;
+                withdrawBtn.classList.add('disabled');
+                withdrawBtn.innerHTML = '<i class="fas fa-lock"></i> Withdraw (min ₦25k)';
+            }
+            // In a real scam, this would lead to additional fees. For sandbox we just show the toast.
+        }, 3000);
+    });
+
+    // Initial render
+    updateUI();
+</script>
+</body>
+</html>
