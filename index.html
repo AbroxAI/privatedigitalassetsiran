@@ -1,0 +1,557 @@
+<!--
+  ============================================================
+  Project: Google Careers Hub – Eligibility Form (Optimized)
+  Description: Clean, accessible, pixel‑perfect.
+  Author: TaskEarn Pro Team
+  License: MIT
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Careers Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ----- Design Tokens ----- */
+    :root {
+      --color-primary: #1a73e8;
+      --color-primary-hover: #1557b0;
+      --color-title: #1a0dab;
+      --color-subtitle: #5f6368;
+      --color-text: #202124;
+      --color-urgent: #d93025;
+      --bg-urgent: #fce8e6;
+      --bg-security: #f8f9fa;
+      --border-color: #dadce0;
+      --font: 'Google Sans', 'Inter', -apple-system, sans-serif;
+      --radius: 8px;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+      --padding-inner: 24px 20px 16px 20px;
+    }
+
+    /* ----- Reset & Base ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: #f1f3f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 540px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow 0.25s;
+    }
+
+    .card:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
+
+    .inner {
+      padding: var(--padding-inner);
+    }
+
+    /* ----- Header ----- */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 2px;
+    }
+
+    .google-logo {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .google-logo img {
+      display: block;
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-title);
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-subtitle);
+      letter-spacing: 0.15px;
+    }
+
+    /* ----- Dividers ----- */
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border-color);
+      margin: 12px 0;
+    }
+
+    /* ----- Urgent Banner ----- */
+    .urgent-banner {
+      background: var(--bg-urgent);
+      padding: 10px 16px;
+      border-radius: 4px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .urgent-banner span {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-urgent);
+      letter-spacing: 0.2px;
+    }
+
+    /* ----- Section Label ----- */
+    .section-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    /* ----- Form Fields ----- */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 400;
+      font-family: var(--font);
+      color: var(--color-text);
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input::placeholder {
+      color: #70757a;
+      font-size: 14px;
+      font-weight: 400;
+      opacity: 0.6;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    .form-group select {
+      cursor: pointer;
+      appearance: auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235f6368' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+
+    /* ----- Eligibility Section ----- */
+    .eligibility-head {
+      font-size: 13px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-subtitle);
+      margin-top: 24px;
+      margin-bottom: 12px;
+      letter-spacing: 0.15px;
+    }
+
+    /* ----- Security Note ----- */
+    .security-note {
+      background: var(--bg-security);
+      opacity: 0.95;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--color-subtitle);
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .security-note .lock-icon {
+      flex-shrink: 0;
+      font-size: 14px;
+      margin-top: 1px;
+    }
+
+    .security-note a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .security-note a:hover { text-decoration: underline; }
+
+    /* ----- Button ----- */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 32px;
+      margin-top: 24px;
+      background: var(--color-primary);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      letter-spacing: 0.2px;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-hover);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+    }
+
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top: 2px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .btn-primary.loading .spinner { display: inline-block; }
+    .btn-primary.loading .btn-text { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ----- Toast ----- */
+    .toast {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      transition: opacity 0.3s;
+    }
+
+    .toast.success {
+      display: block;
+      background: #e6f4ea;
+      color: #1e8e3e;
+      border: 1px solid #b7e1cd;
+    }
+
+    .toast.error {
+      display: block;
+      background: #fce8e6;
+      color: #d93025;
+      border: 1px solid #f5d4d0;
+    }
+
+    /* ----- Footer ----- */
+    .footer-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      font-size: 11px;
+    }
+
+    .footer-link a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-link a:hover { text-decoration: underline; }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 480px) {
+      .inner { padding: 18px 16px 12px; }
+      .header-title { font-size: 17px; }
+      .urgent-banner span { font-size: 12px; }
+      .section-label { font-size: 13px; }
+      .form-group input,
+      .form-group select { padding: 10px 14px; font-size: 13px; }
+      .btn-primary { font-size: 15px; padding: 13px 24px; }
+      .security-note { font-size: 10px; padding: 10px 14px; }
+    }
+
+    @media (max-width: 380px) {
+      .header { flex-wrap: wrap; gap: 10px; }
+      .google-logo { width: 40px; height: 40px; }
+      .google-logo img { width: 40px; height: 40px; }
+      .header-title { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" role="main" aria-label="Google Careers Hub Eligibility Form">
+  <div class="inner">
+
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+      <span class="google-logo" aria-hidden="true">
+        <!-- Placeholder logo – replace src with your actual image -->
+        <img src="assets/google-logo.png" alt="Google Logo" width="48" height="48" 
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:20px; font-weight:700; color:#1a0dab;\'>G</span>';" />
+      </span>
+      <div>
+        <div class="header-title">Google Careers Hub</div>
+        <div class="header-subtitle">Official Recruitment Channel</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ===== URGENT BANNER ===== -->
+    <div class="urgent-banner">
+      <span>⚠️ URGENT: Only 3 positions left. Apply now!</span>
+    </div>
+
+    <!-- ===== FORM ===== -->
+    <div class="section-label">Please provide your contact details:</div>
+
+    <div class="form-group">
+      <label for="fullName">Full Legal Name</label>
+      <input type="text" id="fullName" placeholder="e.g., John Doe" autocomplete="name" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="e.g., john@email.com" autocomplete="email" />
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="Include area code" autocomplete="tel" />
+    </div>
+
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" id="location" placeholder="e.g., New York, NY" autocomplete="address-level2" />
+    </div>
+
+    <!-- ===== ELIGIBILITY ===== -->
+    <div class="eligibility-head">— Quick Eligibility Check —</div>
+
+    <div class="form-group">
+      <label for="usResident">US Resident?</label>
+      <select id="usResident">
+        <option value="">— Select —</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="validId">Valid Government-Issued ID?</label>
+      <select id="validId">
+        <option value="">— Select —</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="education">Highest Level of Education?</label>
+      <select id="education">
+        <option value="">— Select —</option>
+        <option value="High School">High School</option>
+        <option value="Bachelor's">Bachelor's</option>
+        <option value="Master's">Master's</option>
+        <option value="PhD">PhD</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="experience">Years of Work Experience?</label>
+      <select id="experience">
+        <option value="">— Select —</option>
+        <option value="0-1">0-1 years</option>
+        <option value="1-3">1-3 years</option>
+        <option value="3-5">3-5 years</option>
+        <option value="5+">5+ years</option>
+      </select>
+    </div>
+
+    <!-- ===== SECURITY NOTE ===== -->
+    <div class="security-note">
+      <span class="lock-icon" aria-hidden="true">🔒</span>
+      <span>
+        Your data is encrypted and secure. We do not share your info.
+        By clicking, you agree to <a href="#" onclick="return false;">SMS updates</a>
+        regarding your application.
+      </span>
+    </div>
+
+    <!-- ===== BUTTON ===== -->
+    <button class="btn-primary" id="eligibilityBtn">
+      <span class="btn-text">✅ Check My Eligibility</span>
+      <span class="spinner"></span>
+    </button>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer-link">
+      <a href="https://www.google.com/about/careers/" target="_blank">&lt; Return to Google Careers</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== JAVASCRIPT (Optimized) ===== -->
+<script>
+  (() => {
+    'use strict';
+
+    // --- DOM refs ---
+    const btn = document.getElementById('eligibilityBtn');
+    const toast = document.getElementById('toast');
+    const fields = {
+      fullName: document.getElementById('fullName'),
+      email: document.getElementById('email'),
+      phone: document.getElementById('phone'),
+      location: document.getElementById('location'),
+      usResident: document.getElementById('usResident'),
+      validId: document.getElementById('validId'),
+      education: document.getElementById('education'),
+      experience: document.getElementById('experience'),
+    };
+
+    // --- Helpers ---
+    const showToast = (msg, type = 'success') => {
+      toast.textContent = msg;
+      toast.className = `toast ${type}`;
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => { toast.className = 'toast'; }, 5000);
+    };
+
+    const validate = () => {
+      const { fullName, email, phone, location, usResident, validId, education, experience } = fields;
+      const val = (el, msg) => {
+        if (!el.value.trim()) { showToast(msg, 'error'); el.focus(); return false; }
+        return true;
+      };
+      if (!val(fullName, 'Please enter your full legal name.')) return false;
+      if (!val(email, 'Please enter your email address.')) return false;
+      const emailVal = email.value.trim();
+      if (!emailVal.includes('@') || !emailVal.includes('.')) {
+        showToast('Please enter a valid email address.', 'error');
+        email.focus();
+        return false;
+      }
+      if (!val(phone, 'Please enter your phone number.')) return false;
+      if (!val(location, 'Please enter your location.')) return false;
+      if (!val(usResident, 'Please select whether you are a US resident.')) return false;
+      if (!val(validId, 'Please select whether you have a valid government‑issued ID.')) return false;
+      if (!val(education, 'Please select your highest level of education.')) return false;
+      if (!val(experience, 'Please select your years of work experience.')) return false;
+      return true;
+    };
+
+    const submit = () => {
+      if (!validate()) return;
+
+      btn.disabled = true;
+      btn.classList.add('loading');
+
+      // Simulate network request
+      const delay = 1600 + Math.random() * 800;
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+
+        const name = fields.fullName.value.trim();
+        const eligible =
+          fields.usResident.value === 'Yes' &&
+          fields.validId.value === 'Yes' &&
+          ['Bachelor\'s', 'Master\'s', 'PhD'].includes(fields.education.value) &&
+          ['1-3', '3-5', '5+'].includes(fields.experience.value);
+
+        showToast(
+          eligible
+            ? `✅ ${name}, you are eligible! A recruiter will reach out within 24 hours.`
+            : `📋 ${name}, we've received your details. Our team will review your profile.`,
+          'success'
+        );
+      }, delay);
+    };
+
+    // --- Events ---
+    btn.addEventListener('click', submit);
+
+    // Enter key triggers submit
+    document.querySelectorAll('input, select').forEach(el =>
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); submit(); }
+      })
+    );
+
+    // Dismiss toast on any click
+    document.addEventListener('click', () => {
+      if (toast.className.includes('toast')) {
+        clearTimeout(toast._timer);
+        toast.className = 'toast';
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
